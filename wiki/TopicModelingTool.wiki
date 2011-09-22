@@ -2,9 +2,22 @@
 
 = Introduction =
 
-Add your content here.
+This is a simple GUI-based application for topic modeling that uses the popular MALLET toolkit for the back-end.
+Topic models provide a simple way to analyze large volumes of unlabeled text. A "topic" consists of a cluster of words that frequently occur together. Using contextual clues, topic models can connect words with similar meanings and distinguish between uses of words with multiple meanings. For a general introduction to topic modeling, see for example Probabilistic Topic Models by Steyvers and Griffiths (2007). 
 
+For instructions on downloading and installation, please visit the Quick Start page.
 
+The GUI has two main windows - Basic and Advanced.
+
+=Basic Options=
+
+*Input* : The first step is to specify the location of data to import. The GUI supports importing from either a single file or from a directory.
+When the input is a single file, each line of the file is taken as a document instance.
+When importing from a directory, each text file is taken to be a document instance. In this case, also make sure that the directory contains only text files.
+
+*Output Directory* : This is where all the output files produced by the system go. By default, this is the current directory of the JAR file.
+
+*Number of topics* : This option sets the total number of topics T, fit by the topic modeling algorithm to the input document instances. Changing this parameter allows one to vary the granularity of produced topics. Although there is no hard-and-fast rule to set T, it is usually a good idea to take into account the size of the input dataset. Here are some recommended settings.
 = Details =
 
 Add your content here.  Format your content with:
