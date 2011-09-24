@@ -7,11 +7,13 @@
 2. Double-click the downloaded file to run it. †
 
 3. Select and download a testdata file from here. Use this text file as input to the system.
-    
+
+<img src="http://www.ics.uci.edu/~abalagop/imls/documentation/images/inputfile_screen.png" height = "25%"/>    
     
 
 4. Set number of topics and the directory to which all output files are written. 
 
+<img src="http://www.ics.uci.edu/~abalagop/imls/documentation/images/set_optns.png" height = "50%"/>
     You may also change more advanced options by clicking the Advanced button.
 
 5. Click Train Topics to import the data and run the topic modeling algorithm. Depending on the size of the test collection, this may take several minutes. 
