@@ -18,6 +18,14 @@ When importing from a directory, each text file is taken to be a document instan
 *Output Directory* : This is where all the output files produced by the system go. By default, this is the current directory of the JAR file.
 
 *Number of topics* : This option sets the total number of topics T, fit by the topic modeling algorithm to the input document instances. Changing this parameter allows one to vary the granularity of produced topics. Although there is no hard-and-fast rule to set T, it is usually a good idea to take into account the size of the input dataset. Here are some recommended settings.
+
+||No. of docs (D)||Topics (T)||
+||1,000||10 - 20||
+||10,000||20 - 60||
+||100,000||50 - 200||
+
+
+
 = Details =
 
 Add your content here.  Format your content with:
