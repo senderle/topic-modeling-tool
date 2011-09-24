@@ -52,19 +52,14 @@ Besides the basic options provided in the first window, there are more advanced 
 *Preserve case* - If checked, do not force all strings to lowercase.
 
 *No. of iterations* - The number of iterations of Gibbs sampling to run. 
-Default is:
-- For T<100 default iterations = 200
-- For T>500 default iterations = 1000
-- Else default iterations = 2*T
+<br>Default is:
+
+<br>- For T<100 default iterations = 200
+<br>- For T>500 default iterations = 1000
+<br>- Else default iterations = 2*T
+
 Suggestion: Feel free to use the default setting for number of iterations.  If you run for more iterations, the topic coherence `*`may`*` improve.
 
 *No. of topic words printed* - The number of most probable words to print for each topic after model estimation.  Default is print top-10 words.  Typical range is top-10 to top-20 words.
 
 *Topic proportion threshold* - Do not print topics with proportions less than this threshold value. Good suggested value is 5%.  You may want to increase this threshold for shorter documents.
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
