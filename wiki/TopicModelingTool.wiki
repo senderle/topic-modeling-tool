@@ -24,7 +24,43 @@ When importing from a directory, each text file is taken to be a document instan
 ||10,000||20 - 60||
 ||100,000||50 - 200||
 
+=Building the Topic Model=
 
+With at least the above basic options set, click on the Train Topics button to run the topic modeling algorithm. This may take several minutes to finish running depending on the size of the dataset (typically 5 minutes for a 10,000 document collection of news articles).
+
+*Model Output*
+Output produced by the system is available to the user in mainly two forms - as Comma Separated Value (CSV) files or as static HTML files. Both formats essentially contain similar information, only presented differently.
+
+The CSV output consists of the following 3 files inside the _output`_`csv_ folder.
+
+_Topics`_`Words.csv_ - Top words corresponding to each of the T topics.
+
+_TopicsinDocs.csv_ -  T topics arranged in descending order of importance for each document.
+
+_DocsinTopics.csv_ -  List of top documents (max. of 500) corresponding to each of the T topics.
+
+The HTML output consists of an index file of topics _all`_`topics.html_, T topic web pages and D document web pages. Using the hyperlinks in these pages, one can navigate between topics and documents in a simple and fast manner.
+
+=Advanced Options=
+
+Besides the basic options provided in the first window, there are more advanced parameters that can be set by clicking the Advanced  button.
+
+*Remove stopwords* - If checked, remove a list of "stop words" from the text.
+
+*Stopword file* - Read "stop words" from a file, one per line. Default is Mallet's list of standard English stopwords.
+
+*Preserve case* - If checked, do not force all strings to lowercase.
+
+*No. of iterations* - The number of iterations of Gibbs sampling to run. 
+Default is:
+- For T<100 default iterations = 200
+- For T>500 default iterations = 1000
+- Else default iterations = 2*T
+Suggestion: Feel free to use the default setting for number of iterations.  If you run for more iterations, the topic coherence `*`may`*` improve.
+
+*No. of topic words printed* - The number of most probable words to print for each topic after model estimation.  Default is print top-10 words.  Typical range is top-10 to top-20 words.
+
+*Topic proportion threshold* - Do not print topics with proportions less than this threshold value. Good suggested value is 5%.  You may want to increase this threshold for shorter documents.
 
 = Details =
 
