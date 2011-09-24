@@ -35,9 +35,9 @@ The CSV output consists of the following 3 files inside the _output`_`csv_ folde
 
 _Topics`_`Words.csv_ - Top words corresponding to each of the T topics.
 
-!_TopicsinDocs.csv_ -  T topics arranged in descending order of importance for each document.
+_!TopicsinDocs.csv_ -  T topics arranged in descending order of importance for each document.
 
-!_DocsinTopics.csv_ -  List of top documents (max. of 500) corresponding to each of the T topics.
+_!DocsinTopics.csv_ -  List of top documents (max. of 500) corresponding to each of the T topics.
 
 The HTML output consists of an index file of topics _all`_`topics.html_, T topic web pages and D document web pages. Using the hyperlinks in these pages, one can navigate between topics and documents in a simple and fast manner.
 
