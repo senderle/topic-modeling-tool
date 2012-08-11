@@ -1,5 +1,3 @@
-#summary One-sentence summary of this page.
-
 = Introduction =
 
 This is a simple GUI-based application for topic modeling that uses the popular MALLET toolkit for the back-end.
