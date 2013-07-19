@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/zom/Desktop/mallet-2.0.6/dist/mallet-deps.jar"/>
-	<classpathentry kind="lib" path="C:/Users/zom/Desktop/mallet-2.0.6/class"/>
-	<classpathentry kind="output" path="bin"/>
+  <classpathentry kind="src" path="src/test/java" output="target/test-classes" including="**/*.java"/>
+  <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
+  <classpathentry kind="src" path="src/main/resources" including="**/*.png|**/*.jpg|**/*.gif|**/*.css" excluding="**/*.java"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/4.11/junit-4.11.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/cc/mallet/mallet/2.0.7/mallet-2.0.7.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/beanshell/bsh/2.0b4/bsh-2.0b4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jgrapht/jgrapht/0.6.0/jgrapht-0.6.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/sf/jwordnet/jwnl/1.4_rc3/jwnl-1.4_rc3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/sf/trove4j/trove4j/2.0.2/trove4j-2.0.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/googlecode/matrix-toolkits-java/mtj/0.9.14/mtj-0.9.14.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/googlecode/netlib-java/netlib-java/0.9.3/netlib-java-0.9.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/sourceforge/f2j/arpack_combined_all/0.1/arpack_combined_all-0.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jdom/jdom/1.1/jdom-1.1.jar"/>
 </classpath>
