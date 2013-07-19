@@ -1,0 +1,89 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cc.mallet.topic</groupId>
+	<artifactId>gui</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>mallet topic modeling gui</name>
+	<url></url>
+	<properties>
+		<maven-assembly-plugin.version>2.3</maven-assembly-plugin.version>
+	</properties>
+	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>cc.mallet</groupId>
+			<artifactId>mallet</artifactId>
+			<version>2.0.7</version>
+		</dependency>
+		<!-- TODO: Logging -->
+	</dependencies>
+	<build>
+
+		<directory>target</directory>
+		<outputDirectory>target/classes</outputDirectory>
+		<finalName>${artifactId}-${version}</finalName>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<!-- set the source directory to src/ folder XXX: this might cause problems -->
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<scriptSourceDirectory>src</scriptSourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<!-- include images for the GUI and CSS file for HTML generation in the 
+					class path -->
+				<includes>
+					<include>**/*.png</include>
+					<include>**/*.jpg</include>
+					<include>**/*.gif</include>
+					<include>**/*.css</include>
+				</includes>
+				<!-- <excludes> <exclude>log4.xml</exclude> </excludes> -->
+			</resource>
+			<!-- <resource> <directory>src/main/resources</directory> <includes> <include>**/*.xml 
+				</include> </includes> </resource> <resource> <directory>src/main/test</directory> 
+				<excludes> <exclude>log4.xml</exclude> </excludes> </resource> -->
+		</resources>
+		<!-- <testResources> <testResource> <directory>src/test/resources</directory> 
+			</testResource> </testResources> -->
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${maven-assembly-plugin.version}</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>cc.mallet.topics.gui.TopicModelingTool</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<!-- this is used for inheritance merges -->
+						<phase>package</phase>
+						<!-- append to the packaging phase. -->
+						<goals>
+							<goal>single</goal>
+							<!-- goals == mojos -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
