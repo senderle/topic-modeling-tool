@@ -1,6 +1,16 @@
 package cc.mallet.topics.gui;
-import java.io.*;
-import java.util.*;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import static cc.mallet.topics.gui.TopicModelingTool.CSV_DEL;
 
 public class CsvBuilder {
 
@@ -19,14 +29,14 @@ public class CsvBuilder {
             BufferedReader in = new BufferedReader(fread);
             FileWriter fwrite = new FileWriter(outputCsv);  
         	BufferedWriter out = new BufferedWriter(fwrite);
-        	String header = "topicId,words..";
+        	String header = "topicId"+CSV_DEL+"words..";
         	out.write(header+"\n");
         	String line;
         	
         	while ((line = in.readLine()) != null)
 			{  
             	String[] strArr = line.split("\\t| ");
-            	line = strArr[0]+","+strArr[2];            	
+            	line = strArr[0]+CSV_DEL+strArr[2];            	
             	for(int i=3;i<strArr.length;i++)
             	{
             		line = line+" "+strArr[i];
@@ -54,11 +64,12 @@ public class CsvBuilder {
             in.readLine();in.readLine();in.readLine();      //header lines            	
             String curDocId = START_DOC_ID;	//MAY BREAK
             int curDocIndex = 0;
-           
             while ((line = in.readLine()) != null){
-            	//System.out.println(line);
+//            	System.out.println("line :: " + line);
             	String[] strArr= line.split(" ");
-            	
+//            	System.out.println("strArr");
+//            	for(String str: strArr)
+//            		System.out.println("--- " + str);
             	if(!strArr[0].equals(curDocId)){
             		curDocIndex++;
             		curDocId = strArr[0];
@@ -70,9 +81,9 @@ public class CsvBuilder {
             in.close();  
             return Ntd;
             
-        }catch (Exception e){
-		System.err.println(e);
-		return	null;
+        } catch (Exception e){
+        	e.printStackTrace();
+        	return null;
 		}	       
 	}
 	
@@ -96,75 +107,73 @@ public class CsvBuilder {
 	public void buildCsv3(String stateFile, int numDocsShown, String outputCsv)		//docs in topic
 	{
 		Ntd =  buildNtd(numTopics, numDocs,stateFile);
-    	try{
-		FileWriter fwrite = new FileWriter(outputCsv);  
-    	BufferedWriter out = new BufferedWriter(fwrite);
-    	String header = "topicId,rank,docId,filename";
-    	out.write(header+"\n");
-    	String line;
-		for(int i=0;i<numTopics;i++){
-			Integer[] idx = sortTopicIdx(Ntd[i]);
-			for (int j=0;j<numDocsShown;j++){									//FIXME doc id and number are the same
-				int k = idx[numDocs-j-1];										//Descending
-				line = i+","+j+","+k+","+docNames.get(k)+"\n";
-				out.write(line);
-				//System.out.println(line);
-			}
+		if(Ntd != null) {
+			try {
+				FileWriter fwrite = new FileWriter(outputCsv);  
+		    	BufferedWriter out = new BufferedWriter(fwrite);
+		    	String header = "topicId"+CSV_DEL+"rank"+CSV_DEL+"docId"+CSV_DEL+"filename";
+		    	out.write(header+"\n");
+		    	String line;
+				for(int i=0;i<numTopics;i++){
+					Integer[] idx = sortTopicIdx(Ntd[i]);
+					for (int j=0;j<numDocsShown;j++){									//FIXME doc id and number are the same
+						int k = idx[numDocs-j-1];										//Descending
+//						System.out.println("docNames.size(): " + docNames.size());
+						line = i+CSV_DEL+j+CSV_DEL+k+CSV_DEL+docNames.get(k)+"\n";
+						out.write(line);
+//						System.out.println("line@buildCsv3() :: " + line);
+					}
+				}
+				out.flush();
+				out.close();
+	    	} catch(Exception e) {
+	    		e.printStackTrace();
+	    	}
+		} else{
+			System.out.println("NTB is NULL!!!");
 		}
-		out.flush();
-		
-    	}catch(Exception e)
-    	{
-    		e.printStackTrace();
-    	}
 	}
 	
 	
-	public String extractFileSubstring(String[] strArr,int startIndex){
+	public String extractFileSubstring(String[] strArr,int startIndex) throws URISyntaxException {
 		String filename=strArr[startIndex];
-		for(int i = startIndex+1;i<strArr.length;i++){			
-			if(new File(filename).exists()){
-				filename = filename+","+i;				//FIXME change to object if possible
+		for(int i = startIndex+1; i <strArr.length; i++){			
+			if(new File(new URI(filename)).exists()){
+				filename = filename + CSV_DEL + i;				//FIXME change to object if possible
 				break;
 			}
-			filename = filename + " " + strArr[i];
-		}		
+//			filename = filename + " " + strArr[i];
+			filename = filename + CSV_DEL + strArr[i]; 
+		}
 		return filename;
 	}
 	
 	public String dtLine2Csv(String line)
 	{
-		
-		try{
-		int start;
-		String[] str = line.split(" ");
-		
-		if(str.length>=2){	
-		String csvLine = str[0];
-		if(str[1].equals("null-source")){
-			csvLine  = csvLine + ","+str[1];
-			start = 2;
-			docNames.add("null-source");
-		}
-		
-		else{			
-			String augfile = extractFileSubstring(str,1);
-			String[] filewnum = augfile.split(",");
-			docNames.add(filewnum[0]);
-			csvLine  = csvLine + ","+filewnum[0];
-			start = Integer.parseInt(filewnum[1]);
-		}	
-		for(int i=start;i<str.length-1;i=i+2)
-		{
-			csvLine = csvLine + "," + str[i]+","+str[i+1];
-			
-		}				
-		return csvLine;
-		}
-		else 
-			return line; 
-		}
-		catch (Exception e){
+		try {
+			int start;
+			String[] str = line.split("\\t"); // tab as split 
+			if(str.length>=2) {	
+				String csvLine = str[0];
+				if(str[1].equals("null-source")){
+					csvLine  = csvLine + CSV_DEL+str[1];
+					start = 2;
+					docNames.add("null-source");
+				} else {			
+					String augfile = extractFileSubstring(str,1);
+					String[] filewnum = augfile.split(CSV_DEL); // has been ','
+					docNames.add(filewnum[0]);
+					csvLine  = csvLine + CSV_DEL+filewnum[0];
+					start = Integer.parseInt(filewnum[1]);
+				}	
+				for(int i=start;i<str.length-1;i=i+2)  {
+					csvLine = csvLine + CSV_DEL + str[i] + CSV_DEL + str[i+1];
+				}				
+				return csvLine;
+			} else {
+				return line;				
+			} 
+ 		} catch (Exception e ) {
 			e.printStackTrace();
 			return	null;
 		}		
@@ -185,7 +194,7 @@ public class CsvBuilder {
             {
             	FileWriter fwrite = new FileWriter(outputCsv);  
             	BufferedWriter out = new BufferedWriter(fwrite);
-            	String header = "docId,filename,top topics...";			//variable number of topics for each doc
+            	String header = "docId"+CSV_DEL+"filename"+CSV_DEL+"toptopics...";			//variable number of topics for each doc
 /*            	for(int i=0;i<numTopics;i++){
             		header = header+",top-"+i;
             	}*/
@@ -193,7 +202,7 @@ public class CsvBuilder {
 	            while ((line = in.readLine()) != null)
 				{   nd++;
 	            	String csvLine = dtLine2Csv(line);
-	            	//System.out.println(csvLine);
+//	            	System.out.println(csvLine);
 	            	out.write(csvLine+"\n");
 				}
 	            out.flush();
@@ -204,7 +213,7 @@ public class CsvBuilder {
 		} 
         catch (Exception e)
 		{
-			System.err.println("File input error");
+			e.printStackTrace();
 		}
 	}
 	

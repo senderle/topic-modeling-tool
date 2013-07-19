@@ -1,9 +1,18 @@
 package cc.mallet.topics.gui;
 
 
-import java.io.*;
-
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
 import java.util.ArrayList;
+import static cc.mallet.topics.gui.TopicModelingTool.CSV_DEL;
 
 public class HtmlBuilder {
 	ArrayList<String> docNames = new ArrayList<String>();
@@ -135,8 +144,7 @@ public class HtmlBuilder {
 		out.write("<table style=\" text-align: left;\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\"><tbody>");
         while ((line = in.readLine()) != null)
         {
-        	st = line.split(",");
-        	
+        	st = line.split(CSV_DEL);
         	out.write(String.format("<tr><td>%d. </td><td>%s</td></tr>",n,makeUrl("Topics/Topic"+st[0]+".html",st[1])));
 
         	topics.add(st[1]);
@@ -169,7 +177,11 @@ public class HtmlBuilder {
 	
 		    while ((line = in.readLine()) != null)
 	        {
-	        	st = line.split(",");
+	        	st = line.split(CSV_DEL);
+	        	// values always have to be arranged pairwise -> if mod 2 not 0 this indicates prolems 
+	        	if (st.length % 2 != 0) {
+	        		System.out.println(line);
+	        	}
 	        	String FILE_NAME = "Doc"+st[0]+".html";
 				FileWriter fwrite = new FileWriter(new File(outputDir,FILE_NAME)); 
 		    	BufferedWriter out = new BufferedWriter(fwrite);	
@@ -180,8 +192,10 @@ public class HtmlBuilder {
 				out.write("<table style=\" text-align: left;\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\"><tbody>");
 				String tdocname = st[1];
 	        	if(input.isDirectory()){
-					out.write("<body><h4><u>DOC</u> :"+new File(st[1]).getName()+"</h4><br>"); 
-					writeFileExcerpt(new File(st[1]),out);
+	        		URI furi = new URI(st[1]);
+	        		File df = new File(furi);
+					out.write("<body><h4><u>DOC</u> :"+df.getName()+"</h4><br>"); 
+					try{writeFileExcerpt(df,out);} catch (Exception e){}
 				}
 	        	else{
 					out.write("<body><h4><u>DOC</u> : "+"doc "+st[0]+"</h4><br>");
@@ -190,8 +204,13 @@ public class HtmlBuilder {
 				}
 				out.write("<br><br>Top topics in this doc (% words in doc assigned to this topic) <br>");
 				for(int i =2;i<st.length-1;i=i+2){	
-	        		out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>(%.0f%%)</td><td>",new Float(st[i+1])*100));
-	        		out.write(makeUrl("../Topics/Topic"+st[i]+".html",topics.get(Integer.parseInt(st[i]))));
+					try{out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>(%.0f%%)</td><td>",new Float(st[i+1])*100));}catch(Exception e){}
+	        		try{
+	        			// create <a href=""> based on the values in the st array 
+	        			out.write(makeUrl("../Topics/Topic"+st[i]+".html",topics.get(Integer.parseInt(st[i]))));
+        			}catch(Exception e){
+        				System.out.println();
+        			}
 	        		out.write(" ...</td></tr>");
 	        	}
 				out.write("</tbody></table>");
@@ -222,7 +241,7 @@ public class HtmlBuilder {
 			
 		    while ((line = in.readLine()) != null)
 	        {
-	        	st = line.split(",");
+	        	st = line.split(CSV_DEL);
 	        	
 	        	if(!st[0].equals(prevId))
 	        	{	if(!prevId.equals("-1"))
@@ -249,8 +268,9 @@ public class HtmlBuilder {
 	        	}
 	        	
 	        	String doc_name = makeUrl("../Docs/Doc"+st[st.length-2]+".html ",tdocname);	        	
+	        	try{
 	        	out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>%d.</td><td>%s</td><td>%s</td></tr>",Integer.parseInt(st[1])+1,"("+Ntd[Integer.parseInt(st[0])][Integer.parseInt(st[st.length-2])]+")",doc_name));
-
+	        	} catch (Exception e){}
 	        	//String temStr = String.format("        %d. %6s    ","("+Ntd[Integer.parseInt(st[0])][Integer.parseInt(st[st.length-2])]+")");	        	
 	        	//out.write(temStr.replace(" ", "&nbsp;"));        	
         		//out.write(makeUrl("../Docs/Doc"+st[st.length-2]+".html ",new File(st[st.length-1]).getName()));

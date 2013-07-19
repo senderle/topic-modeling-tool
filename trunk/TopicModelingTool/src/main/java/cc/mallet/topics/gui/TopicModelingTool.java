@@ -18,8 +18,11 @@ import java.util.*;
 /**
  * The Class TopicModelingGUI.
  */
-public class TopicModelingTool{
-
+public class TopicModelingTool {
+	/** the delimiter for csv files */
+	public static final String CSV_DEL = ";"; 
+	/** used for testing to set a input dir on startup */
+	public static String DEFAULT_INPUT_DIR = null; 
 	  private static final long serialVersionUID = 1L;
 
 	  static private final String newline = "\n";
@@ -57,8 +60,8 @@ public class TopicModelingTool{
             log.setCaretPosition(log.getDocument().getLength());
           }  
         });  
-      }  
-        
+      }
+
     /**
   	 * Redirect system streams.
   	 */
@@ -642,20 +645,7 @@ public class TopicModelingTool{
  			Boolean b = new File(outputDir,f).delete();
  			
  		}
- 		
- 		
- 		
- 		
- 		
- 		
- 		
- 		
- 		
- 		
- 		
- 		
  	}
-
   }
 
  /**
@@ -942,6 +932,10 @@ public class TopicModelingTool{
 		    trainButton.addActionListener(new TrainButtonListener());
 		    inputDirTfield.setColumns(20);
 		    inputDirTfield.setEnabled(false);
+		    // set our default data input DIR
+		    if(DEFAULT_INPUT_DIR != null){
+			    inputDirTfield.setText(DEFAULT_INPUT_DIR);		    	
+		    }
 		    advancedButton = new JButton("Advanced...");
 		    advancedButton.addActionListener(new AdvancedButtonListener());
 		    clearButton = new JButton("Clear Console");
@@ -1024,7 +1018,10 @@ public class TopicModelingTool{
    */
   public static void main(String[] args) {
 
-	  
+	  if(args.length>0)
+	  {
+		  DEFAULT_INPUT_DIR = args[0];
+	  }
 	  new TopicModelingTool().go();
 	  
   }
