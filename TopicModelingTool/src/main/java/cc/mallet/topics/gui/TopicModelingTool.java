@@ -701,7 +701,6 @@ public class TopicModelingTool {
       
       checkBoxOptionMap.put("--remove-stopwords", new String[]{"Remove stopwords", "TRUE", "import"});
       checkBoxOptionMap.put("--preserve-case", new String[]{"Case sensitive", "FALSE", "import"});
-      checkBoxOptionMap.put("", new String[]{"Case sensitive", "FALSE", "import"});
       fieldOptionMap.put("--num-iterations", new String[]{"No. of iterations", "200", "train"});
       fieldOptionMap.put("--num-top-words", new String[]{"No. of topic words printed", "10", "train"});
       fieldOptionMap.put("--doc-topics-threshold", new String[]{"Topic proportion threshold", "0.05", "train"});
