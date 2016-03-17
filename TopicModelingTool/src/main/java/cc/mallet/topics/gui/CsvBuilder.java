@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import static cc.mallet.topics.gui.TopicModelingTool.CSV_DEL;
+import static cc.mallet.topics.gui.TopicModelingTool.TOPIC_WORDS;
+import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS;
+import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS_VECTORS;
+import static cc.mallet.topics.gui.TopicModelingTool.DOCS_IN_TOPICS;
 
 public class CsvBuilder {
 
@@ -296,10 +300,10 @@ public class CsvBuilder {
 	 	csvDir.mkdir();
 		setNumTopics(numTopics);		
 		String csvDirPath = csvDir.getPath();
-		buildCsv1(outputDir+File.separator+"output_topic_keys",csvDirPath+File.separator+"TopicWords.csv");
-		buildCsv2(outputDir+File.separator+"output_doc_topics.txt",csvDirPath+File.separator+"TopicsInDocs.csv");
-		buildCsv3(outputDir+File.separator+"output_doc_topics.txt",csvDirPath+File.separator+"TopicsInDocsVectors.csv");
-		buildCsv4(outputDir+File.separator+"output_state", Math.min(500, numDocs),csvDirPath+File.separator+"DocsInTopics.csv");
+		buildCsv1(outputDir+File.separator+"output_topic_keys",csvDirPath+File.separator + TOPIC_WORDS);
+		buildCsv2(outputDir+File.separator+"output_doc_topics.txt",csvDirPath+File.separator + TOPICS_IN_DOCS);
+		buildCsv3(outputDir+File.separator+"output_doc_topics.txt",csvDirPath+File.separator + TOPICS_IN_DOCS_VECTORS);
+		buildCsv4(outputDir+File.separator+"output_state", Math.min(500, numDocs),csvDirPath+File.separator + DOCS_IN_TOPICS);
 	}
 	
 	public int[][] getNtd(){

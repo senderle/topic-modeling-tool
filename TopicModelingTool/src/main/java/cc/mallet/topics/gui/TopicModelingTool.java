@@ -21,6 +21,11 @@ import java.util.*;
 public class TopicModelingTool {
     /** the delimiter for csv files */
     public static final String CSV_DEL = ","; 
+    public static final String TOPIC_WORDS = "TopicWords.csv"; 
+    public static final String DOCS_IN_TOPICS = "DocsInTopics.csv";
+    public static final String TOPICS_IN_DOCS_VECTORS = "TopicsInDocsVectors.csv";
+    public static final String TOPICS_IN_DOCS = "TopicsInDocs.csv"; 
+
     /** used for testing to set a input dir on startup */
     public static String DEFAULT_INPUT_DIR = null; 
       private static final long serialVersionUID = 1L;

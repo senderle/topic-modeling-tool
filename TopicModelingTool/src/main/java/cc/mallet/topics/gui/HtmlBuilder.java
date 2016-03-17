@@ -13,8 +13,13 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import static cc.mallet.topics.gui.TopicModelingTool.CSV_DEL;
+import static cc.mallet.topics.gui.TopicModelingTool.TOPIC_WORDS;
+import static cc.mallet.topics.gui.TopicModelingTool.DOCS_IN_TOPICS;
+import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS;
 
 public class HtmlBuilder {
+    public static final String GUI_CSS = "malletgui.css"; 
+
 	ArrayList<String> docNames = new ArrayList<String>();
 	ArrayList<String> topics = new ArrayList<String>();
 	int[][] Ntd;
@@ -27,9 +32,9 @@ public class HtmlBuilder {
 		input = f;
 	}
 	
-	void createCss(File htmlDir,InputStream cssResource) throws IOException{
+	void createCss(File htmlDir, InputStream cssResource) throws IOException{
 	    
-	    OutputStream out = new FileOutputStream(new File(htmlDir,"malletgui.css"));
+	    OutputStream out = new FileOutputStream(new File(htmlDir, GUI_CSS));
 
 	    // Transfer bytes from in to out
 	    byte[] buf = new byte[1024];
@@ -43,7 +48,7 @@ public class HtmlBuilder {
 
 	
 	
-	void writeHtmlHeader(BufferedWriter b,String title,String cssPath){
+	void writeHtmlHeader(BufferedWriter b, String title, String cssPath){
 		String str = "<html><head><meta content=\"text/html; charset=ISO-8859-1\"http-equiv=\"Content-Type\"><head><link rel=\"stylesheet\" type=\"text/css\" href=\""+cssPath+"\" />";
 		try {
 			b.write(str);
@@ -89,10 +94,10 @@ public class HtmlBuilder {
 	String makeUrl(String url, String text)
 	{	
 		
-		return(String.format("<a href=%s>%s</a>", url,text));
+		return(String.format("<a href=%s>%s</a>", url, text));
 	}
 	
-	void writeFileExcerpt(File f,BufferedWriter out) throws IOException{
+	void writeFileExcerpt(File f, BufferedWriter out) throws IOException{
 		
 
 		String line;
@@ -104,7 +109,7 @@ public class HtmlBuilder {
 			while ((line = in.readLine()) != null){
 				if(charsPrinted+line.length()>PRINTCHARS)
 				{
-					out.write(line.substring(0,PRINTCHARS - charsPrinted));
+					out.write(line.substring(0, PRINTCHARS - charsPrinted));
 					break;
 				}
 				else{
@@ -116,11 +121,11 @@ public class HtmlBuilder {
 
 	}
 	
-	void writeLineExcerpt(String str,BufferedWriter out) throws IOException{
+	void writeLineExcerpt(String str, BufferedWriter out) throws IOException{
 		
 		int PRINTCHARS = 500;
         out.write("<textarea style=\"width: 50%; height: 150px;\">");
-        out.write(str.substring(0,Math.min(str.length(), PRINTCHARS)));				
+        out.write(str.substring(0, Math.min(str.length(), PRINTCHARS)));				
 		out.write("...</textarea>");
 	}
 	
@@ -128,11 +133,11 @@ public class HtmlBuilder {
 	{	
 		try{
 		String FILE_NAME = "all_topics.html";
-		FileWriter fwrite = new FileWriter(new File(outputDir,FILE_NAME));  
+		FileWriter fwrite = new FileWriter(new File(outputDir, FILE_NAME));  
     	BufferedWriter out = new BufferedWriter(fwrite);			
         FileReader fread = new FileReader(inputCsv);
         BufferedReader in = new BufferedReader(fread);
-		writeHtmlHeader(out,"Topic Index","malletgui.css");
+		writeHtmlHeader(out, "Topic Index", GUI_CSS);
 		
 		out.write("<body><h4>List of Topics </h4>");
         
@@ -145,7 +150,7 @@ public class HtmlBuilder {
         while ((line = in.readLine()) != null)
         {
         	st = line.split(CSV_DEL);
-        	out.write(String.format("<tr><td>%d. </td><td>%s</td></tr>",n,makeUrl("Topics/Topic"+st[0]+".html",st[1])));
+        	out.write(String.format("<tr><td>%d. </td><td>%s</td></tr>", n, makeUrl("Topics/Topic"+st[0]+".html", st[1])));
 
         	topics.add(st[1]);
         	n++;
@@ -183,9 +188,9 @@ public class HtmlBuilder {
 	        		System.out.println(line);
 	        	}
 	        	String FILE_NAME = "Doc"+st[0]+".html";
-				FileWriter fwrite = new FileWriter(new File(outputDir,FILE_NAME)); 
+				FileWriter fwrite = new FileWriter(new File(outputDir, FILE_NAME)); 
 		    	BufferedWriter out = new BufferedWriter(fwrite);	
-				writeHtmlHeader(out,FILE_NAME,"../malletgui.css");
+				writeHtmlHeader(out, FILE_NAME, "../" + GUI_CSS);
 				
 				docNames.add(st[1]);
 				
@@ -195,7 +200,7 @@ public class HtmlBuilder {
 	        		URI furi = new URI(st[1]);
 	        		File df = new File(furi);
 					out.write("<body><h4><u>DOC</u> :"+df.getName()+"</h4><br>"); 
-					try{writeFileExcerpt(df,out);} catch (Exception e){}
+					try{writeFileExcerpt(df, out);} catch (Exception e){}
 				}
 	        	else{
 					out.write("<body><h4><u>DOC</u> : "+"doc "+st[0]+"</h4><br>");
@@ -204,10 +209,10 @@ public class HtmlBuilder {
 				}
 				out.write("<br><br>Top topics in this doc (% words in doc assigned to this topic) <br>");
 				for(int i =2;i<st.length-1;i=i+2){	
-					try{out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>(%.0f%%)</td><td>",new Float(st[i+1])*100));}catch(Exception e){}
+					try{out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>(%.0f%%)</td><td>", new Float(st[i+1])*100));}catch(Exception e){}
 	        		try{
 	        			// create <a href=""> based on the values in the st array 
-	        			out.write(makeUrl("../Topics/Topic"+st[i]+".html",topics.get(Integer.parseInt(st[i]))));
+	        			out.write(makeUrl("../Topics/Topic"+st[i]+".html", topics.get(Integer.parseInt(st[i]))));
         			}catch(Exception e){
         				System.out.println();
         			}
@@ -252,9 +257,9 @@ public class HtmlBuilder {
 			        	out.close();
 		        	}
 	        	String FILE_NAME = "Topic"+st[0]+".html";
-				FileWriter fwrite = new FileWriter(new File(outputDir,FILE_NAME)); 
+				FileWriter fwrite = new FileWriter(new File(outputDir, FILE_NAME)); 
 			   	out = new BufferedWriter(fwrite);	
-				writeHtmlHeader(out,FILE_NAME,"../malletgui.css");   //FIXME change to constant
+				writeHtmlHeader(out, FILE_NAME, "../" + GUI_CSS);
 	
 				out.write("<body><h4><u>TOPIC</u> : "+topics.get(Integer.parseInt(st[0]))+" ...</h4>");
 				prevId = st[0];
@@ -267,13 +272,13 @@ public class HtmlBuilder {
 	        		tdocname = "doc "+st[st.length-2];
 	        	}
 	        	
-	        	String doc_name = makeUrl("../Docs/Doc"+st[st.length-2]+".html ",tdocname);	        	
+	        	String doc_name = makeUrl("../Docs/Doc"+st[st.length-2]+".html ", tdocname);	        	
 	        	try{
-	        	out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>%d.</td><td>%s</td><td>%s</td></tr>",Integer.parseInt(st[1])+1,"("+Ntd[Integer.parseInt(st[0])][Integer.parseInt(st[st.length-2])]+")",doc_name));
+	        	out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>%d.</td><td>%s</td><td>%s</td></tr>", Integer.parseInt(st[1])+1, "("+Ntd[Integer.parseInt(st[0])][Integer.parseInt(st[st.length-2])]+")", doc_name));
 	        	} catch (Exception e){}
-	        	//String temStr = String.format("        %d. %6s    ","("+Ntd[Integer.parseInt(st[0])][Integer.parseInt(st[st.length-2])]+")");	        	
+	        	//String temStr = String.format("        %d. %6s    ", "("+Ntd[Integer.parseInt(st[0])][Integer.parseInt(st[st.length-2])]+")");	        	
 	        	//out.write(temStr.replace(" ", "&nbsp;"));        	
-        		//out.write(makeUrl("../Docs/Doc"+st[st.length-2]+".html ",new File(st[st.length-1]).getName()));
+        		//out.write(makeUrl("../Docs/Doc"+st[st.length-2]+".html ", new File(st[st.length-1]).getName()));
         		//out.write(" <br>");
         	
 	        }	
@@ -295,23 +300,23 @@ public class HtmlBuilder {
 	public void createHtmlFiles(File outputDir)
 	{ 
 		
-		File htmlDir = new File(outputDir,"output_html");
+		File htmlDir = new File(outputDir, "output_html");
 		htmlDir.mkdir();							//FIXME case when folder already exists
 		try {
-			createCss(htmlDir, TopicModelingTool.class.getResourceAsStream("/css/malletgui.css"));
+			createCss(htmlDir, TopicModelingTool.class.getResourceAsStream("/css/" + GUI_CSS));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		File topicsHtmlDir = new File(htmlDir,"Topics");
+		File topicsHtmlDir = new File(htmlDir, "Topics");
 		topicsHtmlDir.mkdir();
-		File docsHtmlDir = new File(htmlDir,"Docs");
+		File docsHtmlDir = new File(htmlDir, "Docs");
 		docsHtmlDir.mkdir();
-		File csvDir = new File(outputDir,"output_csv");
-		buildHtml1(new File(csvDir,"Topics_Words.csv"),htmlDir);
-		buildHtml2(new File(csvDir,"TopicsInDocs.csv"), docsHtmlDir);
-		buildHtml3(new File(csvDir,"DocsInTopics.csv"), topicsHtmlDir);
+		File csvDir = new File(outputDir, "output_csv");
+		buildHtml1(new File(csvDir, TOPIC_WORDS), htmlDir);
+		buildHtml2(new File(csvDir, TOPICS_IN_DOCS), docsHtmlDir);
+		buildHtml3(new File(csvDir, DOCS_IN_TOPICS), topicsHtmlDir);
 		
 	}
 	
