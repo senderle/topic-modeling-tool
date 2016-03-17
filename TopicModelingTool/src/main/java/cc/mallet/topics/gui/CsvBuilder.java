@@ -104,7 +104,7 @@ public class CsvBuilder {
 		return idx;
 	}
 	
-	public void buildCsv3(String stateFile, int numDocsShown, String outputCsv)		//docs in topic
+	public void buildCsv4(String stateFile, int numDocsShown, String outputCsv)		//docs in topic
 	{
 		Ntd =  buildNtd(numTopics, numDocs,stateFile);
 		if(Ntd != null) {
@@ -147,7 +147,7 @@ public class CsvBuilder {
 		}
 		return filename;
 	}
-	
+
 	public String dtLine2Csv(String line)
 	{
 		try {
@@ -178,8 +178,65 @@ public class CsvBuilder {
 			return	null;
 		}		
 	}
-	
-	public void buildCsv2(String docTopicsFile, String outputCsv)  //topics in doc
+
+	public String dtLine2dtVec(String line)
+	{
+		try {
+			int start, topic;
+            float topicprop;
+
+            ArrayList topics = new ArrayList<String>();
+            StringBuilder csvLine = new StringBuilder();
+
+			String[] str = line.split("\\t"); // tab as split 
+			if (str.length>=2) {	
+				csvLine.append(str[0]);
+				if(str[1].equals("null-source")){
+					csvLine.append(CSV_DEL);
+                    csvLine.append(str[1]);
+					start = 2;
+					docNames.add("null-source");
+				} else {			
+					String augfile = extractFileSubstring(str,1);
+					String[] filewnum = augfile.split(CSV_DEL); // has been ','
+					docNames.add(filewnum[0]);
+                    csvLine.append(CSV_DEL);
+                    csvLine.append(filewnum[0]);
+					start = Integer.parseInt(filewnum[1]);
+				}
+                for (int i = start; i < str.length - 1; i = i + 2) {
+                    topic = Integer.parseInt(str[i]);
+                    while (topic >= topics.size()) {
+                        topics.add(0.0);
+                    }
+                    topics.set(topic, str[i + 1]);
+                }
+				for(int i = 0; i < topics.size(); i = i + 1)  {
+                    csvLine.append(CSV_DEL);
+                    csvLine.append(topics.get(i));
+				}
+				return csvLine.toString();
+			} else {
+				return line;				
+			} 
+ 		} catch (Exception e ) {
+			e.printStackTrace();
+			return	null;
+		}		
+	}
+
+
+	public void buildCsv2(String docTopicsFile, String outputCsv)  //topics in doc, as sorted pairs
+    {
+        buildCsvTopicDoc(docTopicsFile, outputCsv, false);
+    }
+
+	public void buildCsv3(String docTopicsFile, String outputCsv)  //topics in doc, as vectors
+    {
+        buildCsvTopicDoc(docTopicsFile, outputCsv, true);
+    }
+
+	public void buildCsvTopicDoc(String docTopicsFile, String outputCsv, Boolean makevec)
 	{
 		try
 		{
@@ -201,8 +258,13 @@ public class CsvBuilder {
             	out.write(header+"\n");
 	            while ((line = in.readLine()) != null)
 				{   nd++;
-	            	String csvLine = dtLine2Csv(line);
-//	            	System.out.println(csvLine);
+                    String csvLine;
+                    if (makevec) {
+	            	    csvLine = dtLine2dtVec(line);
+                    } else {
+                        csvLine = dtLine2Csv(line);
+                    }
+                    //System.out.println(csvLine);
 	            	out.write(csvLine+"\n");
 				}
 	            out.flush();
@@ -234,9 +296,10 @@ public class CsvBuilder {
 	 	csvDir.mkdir();
 		setNumTopics(numTopics);		
 		String csvDirPath = csvDir.getPath();
-		buildCsv1(outputDir+File.separator+"output_topic_keys",csvDirPath+File.separator+"Topics_Words.csv");
+		buildCsv1(outputDir+File.separator+"output_topic_keys",csvDirPath+File.separator+"TopicWords.csv");
 		buildCsv2(outputDir+File.separator+"output_doc_topics.txt",csvDirPath+File.separator+"TopicsInDocs.csv");
-		buildCsv3(outputDir+File.separator+"output_state", Math.min(500, numDocs),csvDirPath+File.separator+"DocsInTopics.csv");
+		buildCsv3(outputDir+File.separator+"output_doc_topics.txt",csvDirPath+File.separator+"TopicsInDocsVectors.csv");
+		buildCsv4(outputDir+File.separator+"output_state", Math.min(500, numDocs),csvDirPath+File.separator+"DocsInTopics.csv");
 	}
 	
 	public int[][] getNtd(){

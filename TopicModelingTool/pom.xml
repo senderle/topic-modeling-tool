@@ -9,7 +9,8 @@
 	<url>https://code.google.com/p/topic-modeling-tool/</url>
 	<properties>
 		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
-		<output.jar.name>TopicModelingTool</output.jar.name>
+        <output.jar.name>TopicModelingTool</output.jar.name>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
 
@@ -31,7 +32,7 @@
 
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
-		<finalName>${artifactId}-${version}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<!-- setting the source directory to a none maven default might cause problems -->
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -64,9 +65,10 @@
 				<version>${maven-assembly-plugin.version}</version>
 				<configuration>
 					<!-- avoid the assembly id in the output name default  -->
-					<appendAssemblyId>false</appendAssemblyId>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <attach>false</attach>
 					<!-- set custom jar output names as defined by 'output.jar.name' including the version number  -->
-					<finalName>${output.jar.name}-${version}</finalName>
+					<finalName>${output.jar.name}-${project.version}</finalName>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
