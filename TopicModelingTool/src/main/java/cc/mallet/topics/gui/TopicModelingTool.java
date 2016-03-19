@@ -20,6 +20,8 @@ import java.util.*;
 public class TopicModelingTool {
     /** the delimiter for csv files */
     public static final String CSV_DEL = ",";
+
+    /** filename constants */
     public static final String TOPIC_WORDS = "TopicWords.csv";
     public static final String DOCS_IN_TOPICS = "DocsInTopics.csv";
     public static final String TOPICS_IN_DOCS_VECTORS = "TopicsInDocsVectors.csv";
@@ -32,11 +34,10 @@ public class TopicModelingTool {
     static private final String newline = "\n";
 
     JFrame rootframe, advancedFrame;
-    JButton openButton, trainButton, advancedButton,
+    JButton inputDataButton, trainButton, advancedButton,
             stopChooseButton, outputDirButton, clearButton;
     JTextArea log;
-    JFileChooser fc, outfc, stopChooser = new JFileChooser();
-    JPanel panel, advPanel;
+    JPanel mainPanel, advPanel;
     JTextField inputDirTfield = new JTextField();
     JTextField outputDirTfield = new JTextField();
     JTextField numTopics = new JTextField(2);
@@ -285,43 +286,46 @@ public class TopicModelingTool {
      *
      */
     public class OpenButtonListener implements ActionListener {
+        JFileChooser filechooser;
+        JTextField filefield; 
+        String filedescription;
+
+        public OpenButtonListener(
+                JFileChooser filech, 
+                JTextField filef, 
+                String filed) {
+            filechooser = filech;
+            filefield = filef;
+            filedescription = filed;
+        }
    
         /* (non-Javadoc)
         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
         */
         public void actionPerformed(ActionEvent e) {
-            JButton sourceButton = (JButton)e.getSource();
-            JFileChooser sourcefc = new JFileChooser();
-            if(sourceButton.equals(openButton))       //FIXME Change later to only one if
-            {
-                sourcefc = fc;
-            } else if(sourceButton.equals(outputDirButton)) {
-                sourcefc = outfc;
-            }
-            int returnVal = sourcefc.showOpenDialog(panel);
+            int returnVal = filechooser.showOpenDialog(mainPanel);
    
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = sourcefc.getSelectedFile();
+                File file = filechooser.getSelectedFile();
                 String inputDir = file.getPath();
-                if (sourcefc.equals(fc))
-                {  
-                    if (file.isDirectory()) {
-                        log.append("Chose Input Directory: " + inputDir + newline);
-                    } else {
-                        log.append("Chose Input File: " + inputDir + newline);
-                    }
-                    inputDirTfield.setText(inputDir);
-                } else if(sourcefc.equals(outfc)) {
-                    log.append("Chose Output Directory: " + inputDir + newline);
-                    outputDirTfield.setText(inputDir);
+                String inputType = "";
+                
+                if (file.isDirectory()) {
+                    inputType = " Directory: ";
+                } else {
+                    inputType = " File: ";
                 }
+
+                log.append("Chose " + filedescription + inputType + inputDir + newline);
+               
+                filefield.setText(inputDir);
             } else {
                 log.append("Open command cancelled by user." + newline);
             }
             log.setCaretPosition(log.getDocument().getLength());
         }
     }
-   
+  
     /**
      * The listener interface for receiving stopBox events.
      *
@@ -341,34 +345,6 @@ public class TopicModelingTool {
             }
         }
     }
-   
-    /**
-     * The listener interface for receiving stopChooser events.
-     * Shows the file chooser dialog for setting a stopword list file.
-     */
-    public class StopChooserListener implements ActionListener{
-   
-        /* (non-Javadoc)
-        * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-        */
-       public void actionPerformed(ActionEvent e) {
-            int returnVal = stopChooser.showOpenDialog(panel);
-   
-             if (returnVal == JFileChooser.APPROVE_OPTION) {
-               File file = stopChooser.getSelectedFile();
-               String inputDir = file.getPath();
-               log.append("Chose Stopword File: " + inputDir + newline);
-               stopFileField.setText(inputDir);
-             }
-             else {
-               log.append("Open command cancelled by user." + newline);
-             }
-             log.setCaretPosition(log.getDocument().getLength());
-           }
-    }
-   
-   
-   
    
     /**
      * The listener interface for receiving frameFocus events.
@@ -442,7 +418,7 @@ public class TopicModelingTool {
         public void runMallet() {
             long start = System.currentTimeMillis();
             if (inputDirTfield.getText().equals("")) {
-                JOptionPane.showMessageDialog(panel, "Please select an input file or directory", "Invalid input", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainPanel, "Please select an input file or directory", "Invalid input", JOptionPane.ERROR_MESSAGE);
             } else {
                 clearButton.setEnabled(false);
                 trainButton.setEnabled(false);
@@ -459,7 +435,7 @@ public class TopicModelingTool {
                 ////////////////
                 try {
         
-                    Class malletImportClass, malletTrainingClass;
+                    Class<?> malletImportClass, malletTrainingClass;
         
                     if(file.isDirectory())
                         malletImportClass = Class.forName("cc.mallet.classify.tui.Text2Vectors");
@@ -469,7 +445,7 @@ public class TopicModelingTool {
                     String[] advArgs = getAdvArgs();
                     ArrayList<String> imp = new ArrayList<String>();
                     ArrayList<String> trn = new ArrayList<String>();
-                    for(int i = 0; i<advArgs.length; i = i + 2) {
+                    for(int i = 0; i < advArgs.length; i = i + 2) {
                         if(fieldOptionMap.containsKey(advArgs[i])) {
                             if(fieldOptionMap.get(advArgs[i])[2].equals("import")) {
                                 imp.add(advArgs[i]);
@@ -508,7 +484,7 @@ public class TopicModelingTool {
                     String[] fullImportArgs = imp.toArray(new String[imp.size()]);
         
                     // Now invoke the method.
-                    Class[] argTypes =  {fullImportArgs.getClass(), }; // array is Object!
+                    Class<?>[] argTypes =  {fullImportArgs.getClass(), }; // array is Object!
                     Method malletImportMain = malletImportClass.getMethod("main", argTypes);
                     Object[] passedArgs =  {fullImportArgs};
                     System.out.println(Arrays.toString(fullImportArgs));
@@ -534,7 +510,7 @@ public class TopicModelingTool {
                     Collections.addAll(trn, temp2);
                     String[] fullTrainArgs = trn.toArray(new String[trn.size()]);
                     // Now invoke the method.
-                    argTypes = new Class[]{fullTrainArgs.getClass(), }; // array is Object!
+                    argTypes = new Class<?>[] {fullTrainArgs.getClass(), }; // array is Object!
         
                     Method malletTrainingMain = malletTrainingClass.getMethod("main", argTypes);
                     passedArgs =  new  Object[]{fullTrainArgs};
@@ -661,11 +637,12 @@ public class TopicModelingTool {
      */
     public void setDefaultOptions() 
     {
-        checkBoxOptionMap.put("--remove-stopwords", new String[]{"Remove stopwords", "TRUE", "import"});
-        checkBoxOptionMap.put("--preserve-case", new String[]{"Case sensitive", "FALSE", "import"});
-        fieldOptionMap.put("--num-iterations", new String[]{"No. of iterations", "200", "train"});
-        fieldOptionMap.put("--num-top-words", new String[]{"No. of topic words printed", "10", "train"});
-        fieldOptionMap.put("--doc-topics-threshold", new String[]{"Topic proportion threshold", "0.05", "train"});
+        checkBoxOptionMap.put("--remove-stopwords", new String[]{"Remove stopwords ", "TRUE", "import"});
+        checkBoxOptionMap.put("--preserve-case", new String[]{"Case sensitive ", "FALSE", "import"});
+        fieldOptionMap.put("--num-iterations", new String[]{"No. of iterations ", "400", "train"});
+        fieldOptionMap.put("--num-top-words", new String[]{"No. of topic words printed ", "10", "train"});
+        fieldOptionMap.put("--doc-topics-threshold", new String[]{"Topic proportion threshold ", "0.05", "train"});
+        fieldOptionMap.put("--optimize-interval", new String[]{"Prior optimization interval ", "0", "train"});
         otherOptionsMap.put("--stoplist-file", new String("import"));
     }
   
@@ -797,17 +774,21 @@ public class TopicModelingTool {
   
         advPanel.add(advBox, BorderLayout.CENTER);
   
-        JPanel fcPanel = new JPanel(new GridLayout(1, 3));
+        
         stopFileField.setEnabled(false);
-        fcPanel.add(stopFileField);
-  
+
+        JFileChooser stopChooser = new JFileChooser();
         stopChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         stopChooser.setCurrentDirectory(new File("."));
         FileFilter filter = null;
         stopChooser.setFileFilter(filter);
         stopChooseButton = new JButton("Stopword File...",
                 createImageIcon("/images/Open16.gif"));
-        stopChooseButton.addActionListener(new StopChooserListener());
+        stopChooseButton.addActionListener(
+                new OpenButtonListener(stopChooser, stopFileField, "Stopword"));
+
+        JPanel fcPanel = new JPanel(new GridLayout(1, 3));
+        fcPanel.add(stopFileField);
         fcPanel.add(stopChooseButton);
         fcPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
   
@@ -835,7 +816,7 @@ public class TopicModelingTool {
         advancedFrame.setResizable(false);
         advancedFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
-  
+ 
     /**
      * Go.
      */
@@ -843,87 +824,108 @@ public class TopicModelingTool {
         log = new JTextArea(20, 20);
         log.setMargin(new Insets(5, 5, 5, 5));
         log.setEditable(false);
-        ////
+        
         redirectSystemStreams();
-        /////////
+
         JScrollPane logScrollPane = new JScrollPane(log);
         setDefaultOptions();
         initAdvControls();
         buildAdvPanel();
-  
-        fc = new JFileChooser();
-        fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fc.setCurrentDirectory(new File("."));
-  
-        openButton = new JButton("Select Input File or Dir",
-            createImageIcon("/images/Open16.gif"));
-        openButton.addActionListener(new OpenButtonListener());
-  
-        trainButton = new JButton("<html><b>Learn Topics</b><html>", createImageIcon("/images/gears.png"));
-        trainButton.addActionListener(new TrainButtonListener());
+ 
+        //// Input File Chooser ////
+
+        JFileChooser inputfc = new JFileChooser();
+        inputfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        inputfc.setCurrentDirectory(new File("."));
+
         inputDirTfield.setColumns(20);
         inputDirTfield.setEnabled(false);
-        // set our default data input DIR
         if (DEFAULT_INPUT_DIR != null) {
             inputDirTfield.setText(DEFAULT_INPUT_DIR);
         }
 
-        advancedButton = new JButton("Advanced...");
-        advancedButton.addActionListener(new AdvancedButtonListener());
-        clearButton = new JButton("Clear Console");
-        clearButton.addActionListener(new ClearButtonListener());
-        //For layout purposes, put the buttons in a separate panel
-        JPanel p1 = new JPanel();
-        p1.add(inputDirTfield);
-        p1.add(openButton);
-  
+        inputDataButton = new JButton("Select Input File or Dir",
+                                      createImageIcon("/images/Open16.gif"));
+        inputDataButton.addActionListener(
+                new OpenButtonListener(inputfc, inputDirTfield, "Input"));
+
+        JPanel inputPanel = new JPanel();
+        inputPanel.add(inputDirTfield);
+        inputPanel.add(inputDataButton);
+
+        //// Output File Chooser ////
+
+        JFileChooser outputfc = new JFileChooser();
+        outputfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        outputfc.setCurrentDirectory(new File("."));
+
+        outputDirTfield.setText(outputfc.getCurrentDirectory().getPath());
+        outputDirTfield.setEnabled(false);
+
         outputDirButton = new JButton("Select Output Dir",
                 createImageIcon("/images/Open16.gif"));
-        outputDirButton.addActionListener(new OpenButtonListener());
-        outfc = new JFileChooser();
-        outfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        outfc.setCurrentDirectory(new File("."));
-        outputDirTfield.setText(outfc.getCurrentDirectory().getPath());
-        outputDirTfield.setEnabled(false);
-        JPanel p2 = new JPanel();
-        p2.add(outputDirTfield);
-        p2.add(outputDirButton);
+        outputDirButton.addActionListener(
+                new OpenButtonListener(outputfc, outputDirTfield, "Output"));
+
+        JPanel outputPanel = new JPanel();
+        outputPanel.add(outputDirTfield);
+        outputPanel.add(outputDirButton);
   
-  
-        JPanel p3 = new JPanel();
-        p3.add(new Label("Number of topics:"));
+        //// Advanced Button and Number of Topics ////
+
+        advancedButton = new JButton("Advanced...");
+        advancedButton.addActionListener(new AdvancedButtonListener());
+
+        JPanel advancedPanel = new JPanel();
+        advancedPanel.add(new Label("Number of topics:"));
         numTopics.setText("10");
-        p3.add(numTopics);
-        p3.add(advancedButton);
-  
-        JPanel p4 = new JPanel();
-        p4.add(trainButton);
-  
-        Box buttonBox = new Box(BoxLayout.Y_AXIS);
-        buttonBox.add(p1);
-        buttonBox.add(p2);
-        buttonBox.add(p3);
-        buttonBox.add(p4);
+        advancedPanel.add(numTopics);
+        advancedPanel.add(advancedButton);
+
+        //// Train Button ////
+
+        trainButton = new JButton("<html><b>Learn Topics</b><html>", createImageIcon("/images/gears.png"));
+        trainButton.addActionListener(new TrainButtonListener());
+
+        JPanel trainPanel = new JPanel();
+        trainPanel.add(trainButton);
+ 
+        //// Button Box //// 
+
         JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+        Box buttonBox = new Box(BoxLayout.Y_AXIS);
+        buttonBox.add(inputPanel);
+        buttonBox.add(outputPanel);
+        buttonBox.add(advancedPanel);
+        buttonBox.add(trainPanel);
         buttonBox.add(sep);
-  
+ 
+        //// Console ////
+
         Label cons = new Label("Console");
         cons.setAlignment(Label.CENTER);
         buttonBox.add(new JPanel().add(cons));
-        panel = new JPanel(new BorderLayout());
+       
+        //// Main Panel ////
+
+        JPanel mainPanel = new JPanel(new BorderLayout());
         //Add the buttons and the log to this panel.
-        panel.add(buttonBox, BorderLayout.NORTH);
+        mainPanel.add(buttonBox, BorderLayout.NORTH);
   
-  
-        panel.add(logScrollPane, BorderLayout.CENTER);
-        panel.add(clearButton, BorderLayout.SOUTH);
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-  
+        clearButton = new JButton("Clear Console");
+        clearButton.addActionListener(new ClearButtonListener());
+
+        mainPanel.add(logScrollPane, BorderLayout.CENTER);
+        mainPanel.add(clearButton, BorderLayout.SOUTH);
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+ 
+        //// Root Window ////
+
         rootframe = new JFrame("TopicModelingTool");
         rootframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         rootframe.addFocusListener(new FrameFocusListener());
   
-        JComponent newContentPane = (JComponent)panel;
+        JComponent newContentPane = (JComponent) mainPanel;
         newContentPane.setOpaque(true); //content panes must be opaque
         rootframe.setContentPane(newContentPane);
         rootframe.setLocation(500, 100);
