@@ -18,8 +18,9 @@ import java.util.*;
  * The Class TopicModelingGUI.
  */
 public class TopicModelingTool {
-    /** the delimiter for csv files */
+    /** delimiter constants */
     public static final String CSV_DEL = ",";
+    static private final String NEWLINE = "\n";
 
     /** filename constants */
     public static final String TOPIC_WORDS = "TopicWords.csv";
@@ -31,27 +32,31 @@ public class TopicModelingTool {
     public static String DEFAULT_INPUT_DIR = null;
     private static final long serialVersionUID = 1L;
 
-    static private final String newline = "\n";
 
     JFrame rootframe, advancedFrame;
-    JButton inputDataButton, trainButton, advancedButton,
-            stopChooseButton, outputDirButton, clearButton;
-    JTextArea log;
     JPanel mainPanel, advPanel;
-    JTextField inputDirTfield = new JTextField();
-    JTextField outputDirTfield = new JTextField();
+    
+    JDialog helpPane1, helpPane2;
+    JTextArea log;
+
+    JButton inputDataButton, outputDirButton, trainButton, clearButton,
+            advancedButton, stopChooseButton, metadataChooseButton;
+    JCheckBox stopBox;
+
     JTextField numTopics = new JTextField(2);
 
+    JTextField inputDirTfield = new JTextField();
+    JTextField outputDirTfield = new JTextField();
     JTextField stopFileField = new JTextField("Mallet Default");
+    JTextField metadataFileField = new JTextField("None");
+
     LinkedHashMap<String, String[]> checkBoxOptionMap = new LinkedHashMap<String, String[]>();
     LinkedHashMap<String, String[]> fieldOptionMap = new LinkedHashMap<String, String[]>();
-    HashMap<String, String> otherOptionsMap = new HashMap<String, String>();
-    JCheckBox stopBox;
+
     ArrayList<JCheckBox> advCheckBoxList = new  ArrayList<JCheckBox>();
     ArrayList<JTextField> advFieldList = new ArrayList<JTextField>();
-    JDialog helpPane1, helpPane2;
+    
     Boolean frameBusy = false;
-
 
     /**
      * Update text area.
@@ -65,6 +70,27 @@ public class TopicModelingTool {
                 log.setCaretPosition(log.getDocument().getLength());
             }
         });
+    }
+
+    private void appendLog(String... lines) {
+        for (String ln : lines) {
+            log.append(ln);
+            log.append(NEWLINE);
+        }
+        log.setCaretPosition(log.getDocument().getLength());
+    }
+   
+    private String formatMalletCommand(String cmd, String[] args) {
+        StringBuilder cmdstr = new StringBuilder();
+        cmdstr.append("mallet ");
+        cmdstr.append(cmd);
+        cmdstr.append(" ");
+        for (String arg : args) {
+            cmdstr.append(arg);
+            cmdstr.append(" ");
+        }
+
+        return cmdstr.toString().replaceAll("--", " \\\\" + NEWLINE + "\t--");
     }
 
     /**
@@ -213,13 +239,12 @@ public class TopicModelingTool {
                     inputType = " File: ";
                 }
 
-                log.append("Chose " + filedescription + inputType + inputDir + newline);
+                appendLog("Chose " + filedescription + inputType + inputDir);
                
                 filefield.setText(inputDir);
             } else {
-                log.append("Open command cancelled by user." + newline);
+                appendLog("Open command cancelled by user.");
             }
-            log.setCaretPosition(log.getDocument().getLength());
         }
     }
   
@@ -258,7 +283,6 @@ public class TopicModelingTool {
                Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
                rootframe.setCursor(hourglassCursor);
            }
-   
        }
    
        /* (non-Javadoc)
@@ -266,10 +290,7 @@ public class TopicModelingTool {
         */
        @Override
        public void focusLost(FocusEvent arg0) {
-   
-   
        }
-   
     }
    
     /**
@@ -308,6 +329,13 @@ public class TopicModelingTool {
             t.start();
         }
 
+        public void updateStatusCursor(String statusMessage) {
+            Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
+            rootframe.setCursor(hourglassCursor);
+            frameBusy = true;
+            trainButton.setText(statusMessage);
+        }
+
         /**
          * Method that assembles all the options given by the user through the GUI
          * and runs Mallet's importing and topic modeling methods.
@@ -319,105 +347,108 @@ public class TopicModelingTool {
             } else {
                 clearButton.setEnabled(false);
                 trainButton.setEnabled(false);
-        
-                String outputDir = outputDirTfield.getText();
-                String collectionPath = new File(outputDir, "topic-input.mallet").getPath();  //FIXME
-                String inputDir = inputDirTfield.getText();
-                File file = new File(inputDir);
-                log.append("Importing and Training...this may take a few minutes depending on collection size.");
-        
-                log.append("Importing from: " + inputDir + "." + newline);
-                log.setCaretPosition(log.getDocument().getLength());
-        
-                ////////////////
-                try {
-        
-                    Class<?> malletImportClass, malletTrainingClass;
-        
-                    if(file.isDirectory())
-                        malletImportClass = Class.forName("cc.mallet.classify.tui.Text2Vectors");
-                    else
-                        malletImportClass = Class.forName("cc.mallet.classify.tui.Csv2Vectors");
-        
-                    String[] advArgs = getAdvArgs();
-                    ArrayList<String> imp = new ArrayList<String>();
-                    ArrayList<String> trn = new ArrayList<String>();
-                    for(int i = 0; i < advArgs.length; i = i + 2) {
-                        if(fieldOptionMap.containsKey(advArgs[i])) {
-                            if(fieldOptionMap.get(advArgs[i])[2].equals("import")) {
-                                imp.add(advArgs[i]);
-                                imp.add(advArgs[i + 1]);
-                            } else if(fieldOptionMap.get(advArgs[i])[2].equals("train")) {
-                                trn.add(advArgs[i]);
-                                trn.add(advArgs[i + 1]);
-                            }
-                        } else if(checkBoxOptionMap.containsKey(advArgs[i])) {
-                            if(checkBoxOptionMap.get(advArgs[i])[2].equals("import")) {
-                                imp.add(advArgs[i]);
-                                imp.add(advArgs[i + 1]);
-                            } else if(checkBoxOptionMap.get(advArgs[i])[2].equals("train")) {
-                                trn.add(advArgs[i]);
-                                trn.add(advArgs[i + 1]);
-                            }
-                        } else if(otherOptionsMap.containsKey(advArgs[i])) {
-                            if(otherOptionsMap.get(advArgs[i]).equals("import")) {
-                                imp.add(advArgs[i]);
-                                imp.add(advArgs[i + 1]);
-                            } else if(otherOptionsMap.get(advArgs[i]).equals("train")) {
-                                trn.add(advArgs[i]);
-                                trn.add(advArgs[i + 1]);
-                            }
+
+                //////////////////////////////////////////////////////////
+                // BUILD IMPORT (imp) AND TRAINING (trn) ARGUMENT LISTS //
+                //////////////////////////////////////////////////////////
+
+                // TODO: Find a better way to do this nonsense.
+
+                ArrayList<String> imp = new ArrayList<String>();
+                ArrayList<String> trn = new ArrayList<String>();
+                HashMap<String, ArrayList<String>> arglists = 
+                    new HashMap<String, ArrayList<String>>();
+
+                arglists.put("import", imp);
+                arglists.put("train", trn);
+
+                java.util.List<LinkedHashMap<String, String[]>> optionMaps = 
+                    Arrays.asList(fieldOptionMap, checkBoxOptionMap);
+
+                String[] advArgs = getAdvArgs();
+                for (int i = 0; i < advArgs.length; i = i + 2) {
+                    String argSelectString = "";
+                    for (LinkedHashMap<String, String[]> selectedMap : optionMaps) {
+                        if (selectedMap.containsKey(advArgs[i])) {
+                            argSelectString = selectedMap.get(advArgs[i])[2];
+                            break;
                         }
                     }
+                   
+                    if (arglists.containsKey(argSelectString)) {
+                        arglists.get(argSelectString).add(advArgs[i]);
+                        arglists.get(argSelectString).add(advArgs[i + 1]);
+                    }
+                }
+
+                try {
         
-                    // TODO: Replace dumb comment-headed blocks with actual functions.
-        
-                    //////////////////////
-                    // IMPORTING FILES: //
-                    //////////////////////
-        
-                    String[] temp1 = {"--input", inputDir, "--output", collectionPath, "--keep-sequence"};
-                    Collections.addAll(imp, temp1);
-                    String[] fullImportArgs = imp.toArray(new String[imp.size()]);
-        
-                    // Now invoke the method.
-                    Class<?>[] argTypes =  {fullImportArgs.getClass(), }; // array is Object!
-                    Method malletImportMain = malletImportClass.getMethod("main", argTypes);
-                    Object[] passedArgs =  {fullImportArgs};
-                    System.out.println(Arrays.toString(fullImportArgs));
-        
-                    Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
-                    rootframe.setCursor(hourglassCursor);
-                    frameBusy = true;
-        
-                    trainButton.setText("Importing...");
-                    malletImportMain.invoke(null, passedArgs);
-        
+                    // TODO: Replace comment-headed blocks with actual functions.
+                   
+                    String inputDir = inputDirTfield.getText();
+                    String outputDir = outputDirTfield.getText();
+                    String collectionPath = new File(outputDir, "topic-input.mallet").getPath();  // FIXME: How?
+
+                    String stateFile = outputDir + File.separator + "output_state.gz";
+                    String outputDocTopicsFile = outputDir + File.separator + "output_doc_topics.txt";
+                    String topicKeysFile = outputDir + File.separator + "output_topic_keys";
+
+                    String malletImportCmd = "";
+                    Class<?> malletClass;
+                    String[] fullArgs;
+                    Class<?>[] argTypes = new Class<?>[1];
+                    Object[] passedArgs = new Object[1];
+
+                    //////////////////
+                    // IMPORT FILES //
+                    //////////////////
+                    
+                    if ((new File(inputDir)).isDirectory()) {
+                        malletClass = Class.forName("cc.mallet.classify.tui.Text2Vectors");
+                        malletImportCmd = "import-dir";
+                    } else {
+                        malletClass = Class.forName("cc.mallet.classify.tui.Csv2Vectors");
+                        malletImportCmd = "import-file";
+                    }
+
+                    imp.addAll(Arrays.asList(
+                            "--input", inputDir, 
+                            "--output", collectionPath, 
+                            "--keep-sequence"));
+                    fullArgs = imp.toArray(new String[imp.size()]);
+
+                    appendLog("Importing and Training...this may take a few minutes depending on collection size.");
+                    appendLog("Importing from: " + inputDir + ".");
+                    appendLog(formatMalletCommand(malletImportCmd, fullArgs));
+                    updateStatusCursor("Importing...");
+                   
+                    argTypes[0] = fullArgs.getClass();
+                    passedArgs[0] = fullArgs;
+                    malletClass.getMethod("main", argTypes).invoke(null, passedArgs);
+            
                     /////////////////////
                     // TRAINING MODEL: //
                     /////////////////////
         
-                    String stateFile = outputDir + File.separator + "output_state.gz";
-                    String outputDocTopicsFile = outputDir + File.separator + "output_doc_topics.txt";
-                    String topicKeysFile = outputDir + File.separator + "output_topic_keys";
-                    malletTrainingClass = Class.forName("cc.mallet.topics.tui.Vectors2Topics");
-        
-                    String[] temp2 = {"--input", collectionPath, "--num-topics", numTopics.getText(),
-                            "--output-state", stateFile, "--output-topic-keys", topicKeysFile, "--output-doc-topics", outputDocTopicsFile};
-                    Collections.addAll(trn, temp2);
-                    String[] fullTrainArgs = trn.toArray(new String[trn.size()]);
-                    // Now invoke the method.
-                    argTypes = new Class<?>[] {fullTrainArgs.getClass(), }; // array is Object!
-        
-                    Method malletTrainingMain = malletTrainingClass.getMethod("main", argTypes);
-                    passedArgs =  new  Object[]{fullTrainArgs};
-                    System.out.println(Arrays.toString(fullTrainArgs));
-                    System.out.println("STOP!");
-        
-                    trainButton.setText("Training...");
-        
-                    malletTrainingMain.invoke(null, passedArgs);
-        
+                    malletClass = Class.forName("cc.mallet.topics.tui.Vectors2Topics");
+       
+
+                    trn.addAll(Arrays.asList(
+                            "--input", collectionPath, 
+                            "--num-topics", numTopics.getText(),
+                            "--output-state", stateFile, 
+                            "--output-topic-keys", topicKeysFile, 
+                            "--output-doc-topics", outputDocTopicsFile));
+                    fullArgs = trn.toArray(new String[trn.size()]);
+
+                    appendLog("Import Successful. Now Training.");
+                    appendLog(formatMalletCommand("train-topics", fullArgs));
+                    updateStatusCursor("Training...");
+
+                    argTypes[0] = fullArgs.getClass();
+                    passedArgs[0] = fullArgs;
+                    malletClass.getMethod("main", argTypes).invoke(null, passedArgs);
+ 
                     ////////////////////////
                     // GENERATING OUTPUT: //
                     ////////////////////////
@@ -427,10 +458,10 @@ public class TopicModelingTool {
         
                     outputCsvFiles(outputDir, true);
         
-                    System.out.println("Mallet Output files written in " + outputDir + " ---> " + stateFile + " , " +
-                            topicKeysFile + newline);
-                    System.out.println("Csv Output files written in " + outputDir + File.separator+ "output_csv");
-                    System.out.println("Html Output files written in " + outputDir + File.separator+ "output_html");
+                    appendLog("Mallet Output files written in " + outputDir + 
+                            " ---> " + stateFile + " , " + topicKeysFile);
+                    appendLog("Csv Output files written in " + outputDir + File.separator+ "output_csv");
+                    appendLog("Html Output files written in " + outputDir + File.separator+ "output_html");
 
                 } catch (Throwable e1) {
                     e1.printStackTrace();
@@ -439,11 +470,11 @@ public class TopicModelingTool {
                 log.setCaretPosition(log.getDocument().getLength());
                 clearButton.setEnabled(true);
         
-                long elapsedTimeMillis = System.currentTimeMillis()-start;
+                long elapsedTimeMillis = System.currentTimeMillis() - start;
         
                 // Get elapsed time in seconds
                 float elapsedTimeSec = elapsedTimeMillis/1000F;
-                System.out.println("Time :" + elapsedTimeSec);
+                appendLog("Time :" + elapsedTimeSec);
         
                 Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
         
@@ -466,7 +497,13 @@ public class TopicModelingTool {
         {
 
             CsvBuilder cb = new CsvBuilder();
-            cb.createCsvFiles(Integer.parseInt(numTopics.getText()), outputDir);
+
+            if (metadataFileField.getText().equals("None")) {
+                cb.createCsvFiles(Integer.parseInt(numTopics.getText()), outputDir);
+            } else {
+                cb.createCsvFiles(Integer.parseInt(numTopics.getText()), outputDir, metadataFileField.getText());
+            }
+
             if (htmlOutputFlag) {
                 HtmlBuilder hb = new HtmlBuilder(cb.getNtd(), new File(inputDirTfield.getText()));
                 hb.createHtmlFiles(new File(outputDir));
@@ -480,7 +517,8 @@ public class TopicModelingTool {
                                     "output_doc_topics.txt", "output_state"};
             for (String f:fileNames) {
                 if (!(new File(outputDir, f).canWrite())) {
-                    System.out.println(f);
+                    appendLog("clearExtrafiles failed on ");
+                    appendLog(f);
                 }
                 Boolean b = new File(outputDir, f).delete();
             }
@@ -532,15 +570,24 @@ public class TopicModelingTool {
      *
      * Set corresponding special string, default value, description and associated command for the options
      */
-    public void setDefaultOptions() 
-    {
-        checkBoxOptionMap.put("--remove-stopwords", new String[]{"Remove stopwords ", "TRUE", "import"});
-        checkBoxOptionMap.put("--preserve-case", new String[]{"Case sensitive ", "FALSE", "import"});
-        fieldOptionMap.put("--num-iterations", new String[]{"No. of iterations ", "400", "train"});
-        fieldOptionMap.put("--num-top-words", new String[]{"No. of topic words printed ", "10", "train"});
-        fieldOptionMap.put("--doc-topics-threshold", new String[]{"Topic proportion threshold ", "0.05", "train"});
-        fieldOptionMap.put("--optimize-interval", new String[]{"Prior optimization interval ", "0", "train"});
-        otherOptionsMap.put("--stoplist-file", new String("import"));
+    public void setDefaultOptions() {
+        // Field Meanings: Widget Label, Default Value, Mallet Argtype, Autogenerate UI Widget
+        checkBoxOptionMap.put("--remove-stopwords", new String[]
+                {"Remove stopwords ", "TRUE", "import", "TRUE"});
+        checkBoxOptionMap.put("--preserve-case", new String[]
+                {"Case sensitive ", "FALSE", "import", "TRUE"});
+        fieldOptionMap.put("--num-iterations", new String[]
+                {"No. of iterations ", "400", "train", "TRUE"});
+        fieldOptionMap.put("--num-top-words", new String[]
+                {"No. of topic words printed ", "10", "train", "TRUE"});
+        fieldOptionMap.put("--doc-topics-threshold", new String[]
+                {"Topic proportion threshold ", "0.05", "train", "TRUE"});
+        fieldOptionMap.put("--optimize-interval", new String[]
+                {"Prior optimization interval ", "0", "train", "TRUE"});
+        fieldOptionMap.put("--stoplist-file", new String[]
+                {"Stoplist File", "Mallet Default", "import", "FALSE"});
+        fieldOptionMap.put("io-metadata", new String[]
+                {"Metadata File", "None", "io", "FALSE"});
     }
   
     /**
@@ -571,8 +618,7 @@ public class TopicModelingTool {
     /**
      * Reset advanced controls to default values.
      */
-    public void resetAdvControls() 
-    {
+    public void resetAdvControls() {
         Iterator<JTextField> itr1 = advFieldList.iterator();
         for(String[] k:fieldOptionMap.values()) {
             itr1.next().setText(k[1]);
@@ -588,6 +634,7 @@ public class TopicModelingTool {
             }
         }
   
+        metadataFileField.setText("None");
         stopFileField.setText("Mallet Default");
         stopChooseButton.setEnabled(stopBox.isSelected());        // Not sure why this doesn't happen automatically
     }
@@ -599,38 +646,36 @@ public class TopicModelingTool {
      */
     public String[] getAdvArgs(){
   
-        String[] advArgs = new String[(checkBoxOptionMap.size() + fieldOptionMap.size() + 1) * 2];  // + 1 for stopword list
+        String[] advArgs = new String[(checkBoxOptionMap.size() + fieldOptionMap.size()) * 2];
         int index = 0;
   
-        Iterator<JCheckBox> itr1 = advCheckBoxList.iterator();
+        Iterator<JCheckBox> cbIter = advCheckBoxList.iterator();
         for(String k:checkBoxOptionMap.keySet()) {
             advArgs[index] = k;
-            boolean b =  itr1.next().isSelected();
+            boolean b =  cbIter.next().isSelected();
             advArgs[index + 1] = new Boolean(b).toString();
             index = index + 2;
         }
   
-        Iterator<JTextField> itr2 = advFieldList.iterator();
+        Iterator<JTextField> fIter = advFieldList.iterator();
         for(String k:fieldOptionMap.keySet()) {
-            advArgs[index] = k;
+            String v = fIter.next().getText();
+
+            // MALLET displays one less word than specified. (?)
             if (k.equals("--num-top-words")) {
-                int topwords =  Integer.parseInt(itr2.next().getText()) + 1;     //spl case - potential mallet bug
-                advArgs[index + 1] = new Integer(topwords).toString();
+                v = Integer.toString(Integer.parseInt(v) + 1);
             }
-            else {
-                advArgs[index + 1] =  itr2.next().getText();
+
+            // Skip --stoplist-file if set to default.
+            if (v.equals("Mallet Default")) {
+                continue;
             }
+            
+            advArgs[index] = k;
+            advArgs[index + 1] = v;
             index = index + 2;
         }
-  
-        //
-        if (stopFileField.getText().equals("Mallet Default")) {
-            advArgs[index] = "";
-            advArgs[index + 1] = "";
-        } else {
-            advArgs[index] = "--stoplist-file";
-            advArgs[index + 1] = stopFileField.getText();
-        }
+
         return advArgs;
     }
   
@@ -653,16 +698,20 @@ public class TopicModelingTool {
             advCheckBoxPanel.add(tempCheckBox);
             tempCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
         }
-  
+ 
+        // TODO: Count the number of fields to autogenerate instead of using
+        //       fieldOptionMap.size()
         JPanel advFieldPanel = new JPanel(new GridLayout(fieldOptionMap.size(), 2));
         advFieldPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        Collection<String[]> c = fieldOptionMap.values();
-        Iterator<String[]> itr = c.iterator();
         advFieldPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        for (JTextField tempField:advFieldList) {
-            advFieldPanel.add(new Label(itr.next()[0]));
-            advFieldPanel.add(tempField);
+        Iterator<JTextField> fieldIter = advFieldList.iterator();
+        for (String[] opts : fieldOptionMap.values()) {
+            JTextField field = fieldIter.next();
+            if (opts[3].equals("TRUE")) {
+                advFieldPanel.add(new Label(opts[0]));
+                advFieldPanel.add(field);
+            }
         }
   
         Box advBox = new Box(BoxLayout.Y_AXIS);
@@ -671,22 +720,29 @@ public class TopicModelingTool {
   
         advPanel.add(advBox, BorderLayout.CENTER);
   
-        
-        stopFileField.setEnabled(false);
-
         JFileChooser stopChooser = new JFileChooser();
         stopChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         stopChooser.setCurrentDirectory(new File("."));
-        FileFilter filter = null;
-        stopChooser.setFileFilter(filter);
         stopChooseButton = new JButton("Stopword File...",
                 createImageIcon("/images/Open16.gif"));
         stopChooseButton.addActionListener(
                 new OpenButtonListener(stopChooser, stopFileField, "Stopword"));
+        stopFileField.setEnabled(false);
 
-        JPanel fcPanel = new JPanel(new GridLayout(1, 3));
+        JFileChooser metadataChooser = new JFileChooser();
+        metadataChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        metadataChooser.setCurrentDirectory(new File("."));
+        metadataChooseButton = new JButton("Metadata File...",
+                createImageIcon("/images/Open16.gif"));
+        metadataChooseButton.addActionListener(
+                new OpenButtonListener(metadataChooser, metadataFileField, "Metadata"));
+        metadataFileField.setEnabled(false);
+
+        JPanel fcPanel = new JPanel(new GridLayout(2, 3));
         fcPanel.add(stopFileField);
         fcPanel.add(stopChooseButton);
+        fcPanel.add(metadataFileField);
+        fcPanel.add(metadataChooseButton);
         fcPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
   
         advPanel.add(fcPanel, BorderLayout.NORTH);
