@@ -786,9 +786,13 @@ public class TopicModelingTool {
         buildAdvPanel();
  
         //// Input File Chooser ////
+        
+        // TEMPORARILY, single input files have been disabled. There are
+        // some bugs that make single input files hard to use; better 
+        // for now to just disable until support is solid.
 
         JFileChooser inputfc = new JFileChooser();
-        inputfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        inputfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         inputfc.setCurrentDirectory(new File("."));
 
         inputDirTfield.setColumns(20);
