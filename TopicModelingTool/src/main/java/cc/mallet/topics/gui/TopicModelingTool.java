@@ -493,7 +493,7 @@ public class TopicModelingTool {
         * @param outputDir the output directory
         * @param htmlOutputFlag print html output or not
         */
-        private void outputCsvFiles(String outputDir, Boolean htmlOutputFlag)
+        private void outputCsvFiles(String outputDir, Boolean htmlOutputFlag) throws java.io.IOException
         {
 
             CsvBuilder cb = new CsvBuilder();
@@ -571,23 +571,40 @@ public class TopicModelingTool {
      * Set corresponding special string, default value, description and associated command for the options
      */
     public void setDefaultOptions() {
-        // Field Meanings: Widget Label, Default Value, Mallet Argtype, Autogenerate UI Widget
+        // Field Format: 
+        // widgetMap.put("--MALLET-OPTION-or-io-key", new String[]
+        //      {"Widget Label", "Default Value", "Widget Category", "Autogenerate Widget?"}); 
+        
+        // Nonstandard options (these are manually generated and appear at the
+        // top of the advanced window).
+        fieldOptionMap.put("io-metadata", new String[]
+                {"Metadata File", "None", "io", "FALSE"});
+        fieldOptionMap.put("--stoplist-file", new String[]
+                {"Stoplist File", "Mallet Default", "import", "FALSE"});
+
+        // Checkboxes
         checkBoxOptionMap.put("--remove-stopwords", new String[]
                 {"Remove stopwords ", "TRUE", "import", "TRUE"});
         checkBoxOptionMap.put("--preserve-case", new String[]
                 {"Case sensitive ", "FALSE", "import", "TRUE"});
+
+        // Importing field options
+        //      This regex accepts all unicode characters.
+        fieldOptionMap.put("--token-regex", new String[]
+                {"Regex for tokenization", "[\\p{L}\\p{N}_]+", "import", "TRUE"});
+
+        // Training field options
         fieldOptionMap.put("--num-iterations", new String[]
-                {"No. of iterations ", "400", "train", "TRUE"});
+                {"Number of iterations ", "400", "train", "TRUE"});
         fieldOptionMap.put("--num-top-words", new String[]
-                {"No. of topic words printed ", "10", "train", "TRUE"});
+                {"Number of topic words printed ", "20", "train", "TRUE"});
+        fieldOptionMap.put("--show-topics-interval", new String[] 
+                {"Topic preview interval", "100", "train", "TRUE"});
         fieldOptionMap.put("--doc-topics-threshold", new String[]
-                {"Topic proportion threshold ", "0.05", "train", "TRUE"});
+                {"Topic proportion threshold ", "0.0", "train", "TRUE"});
         fieldOptionMap.put("--optimize-interval", new String[]
-                {"Prior optimization interval ", "0", "train", "TRUE"});
-        fieldOptionMap.put("--stoplist-file", new String[]
-                {"Stoplist File", "Mallet Default", "import", "FALSE"});
-        fieldOptionMap.put("io-metadata", new String[]
-                {"Metadata File", "None", "io", "FALSE"});
+                {"Prior optimization interval ", "10", "train", "TRUE"});
+
     }
   
     /**
@@ -661,7 +678,7 @@ public class TopicModelingTool {
         for(String k:fieldOptionMap.keySet()) {
             String v = fIter.next().getText();
 
-            // MALLET displays one less word than specified. (?)
+            // MALLET displays one less word than specified. (Why?)
             if (k.equals("--num-top-words")) {
                 v = Integer.toString(Integer.parseInt(v) + 1);
             }
