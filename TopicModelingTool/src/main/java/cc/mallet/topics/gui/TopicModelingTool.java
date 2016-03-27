@@ -25,7 +25,7 @@ public class TopicModelingTool {
     /** filename constants */
     public static final String TOPIC_WORDS = "TopicWords.csv";
     public static final String DOCS_IN_TOPICS = "DocsInTopics.csv";
-    public static final String TOPICS_IN_DOCS_VECTORS = "TopicsInDocsVectors.csv";
+    public static final String TOPICS_IN_DOCS_VECTORS = "TopicsMetadata.csv";
     public static final String TOPICS_IN_DOCS = "TopicsInDocs.csv";
 
     /** used for testing to set a input dir on startup */
@@ -575,33 +575,38 @@ public class TopicModelingTool {
         // widgetMap.put("--MALLET-OPTION-or-io-key", new String[]
         //      {"Widget Label", "Default Value", "Widget Category", "Autogenerate Widget?"}); 
         
-        // Nonstandard options (these are manually generated and appear at the
-        // top of the advanced window).
+        //// Nonstandard options ////  
+        // (These are manually generated and appear at the top of the 
+        // advanced window).
         fieldOptionMap.put("io-metadata", new String[]
                 {"Metadata File", "None", "io", "FALSE"});
         fieldOptionMap.put("--stoplist-file", new String[]
                 {"Stoplist File", "Mallet Default", "import", "FALSE"});
 
-        // Checkboxes
+        //// Checkboxes ////
         checkBoxOptionMap.put("--remove-stopwords", new String[]
                 {"Remove stopwords ", "TRUE", "import", "TRUE"});
         checkBoxOptionMap.put("--preserve-case", new String[]
                 {"Case sensitive ", "FALSE", "import", "TRUE"});
 
-        // Importing field options
-        //      This regex accepts all unicode characters.
+        //// Importing field options ////
+        // This regex accepts all unicode characters.
         fieldOptionMap.put("--token-regex", new String[]
                 {"Regex for tokenization", "[\\p{L}\\p{N}_]+", "import", "TRUE"});
 
-        // Training field options
+        //// Training field options ////
         fieldOptionMap.put("--num-iterations", new String[]
                 {"Number of iterations ", "400", "train", "TRUE"});
         fieldOptionMap.put("--num-top-words", new String[]
                 {"Number of topic words printed ", "20", "train", "TRUE"});
+        
+        // These two are disabled right now because I don't think they're 
+        // especially useful, and they're adding complexity to the interface.
         fieldOptionMap.put("--show-topics-interval", new String[] 
                 {"Topic preview interval", "100", "train", "TRUE"});
         fieldOptionMap.put("--doc-topics-threshold", new String[]
-                {"Topic proportion threshold ", "0.0", "train", "TRUE"});
+                {"Topic proportion threshold ", "0.0", "train", "FALSE"});
+
         fieldOptionMap.put("--optimize-interval", new String[]
                 {"Prior optimization interval ", "10", "train", "TRUE"});
 
@@ -818,7 +823,7 @@ public class TopicModelingTool {
             inputDirTfield.setText(DEFAULT_INPUT_DIR);
         }
 
-        inputDataButton = new JButton("Select Input File or Dir",
+        inputDataButton = new JButton("Select Input Dir",
                                       createImageIcon("/images/Open16.gif"));
         inputDataButton.addActionListener(
                 new OpenButtonListener(inputfc, inputDirTfield, "Input"));
@@ -847,7 +852,9 @@ public class TopicModelingTool {
   
         //// Advanced Button and Number of Topics ////
 
-        advancedButton = new JButton("Advanced...");
+        // It just occurred to me that calling these settings 
+        // "Advanced..." could be a form of microagression. 
+        advancedButton = new JButton("Optional Settings...");
         advancedButton.addActionListener(new AdvancedButtonListener());
 
         JPanel advancedPanel = new JPanel();
