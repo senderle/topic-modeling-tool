@@ -13,7 +13,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Comparator;
 import java.util.logging.Logger;
-import static cc.mallet.topics.gui.TopicModelingTool.CSV_DEL;
+import static cc.mallet.topics.gui.TopicModelingTool.MALLET_CSV_DEL;
+import static cc.mallet.topics.gui.TopicModelingTool.NEWLINE;
 import static cc.mallet.topics.gui.TopicModelingTool.TOPIC_WORDS;
 import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS;
 import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS_VECTORS;
@@ -24,8 +25,9 @@ public class CsvBuilder {
 
     private final static Logger log = 
         Logger.getLogger(CsvBuilder.class.getName());
-    public static final String META_CSV_DEL = ",";
-
+   
+    String META_CSV_DEL = ",";
+    String CSV_DEL = ",";
     int numDocs;
     int numTopics;
     String START_DOC_ID = "0";
@@ -33,6 +35,20 @@ public class CsvBuilder {
     int[][] Ntd;
 
     ArrayList<String[]> topicHeaderWords;
+
+    public CsvBuilder(int numTopics) {
+        this(numTopics, ",", ",");
+    }
+
+    public CsvBuilder(int numTopics, String metaDelim) {
+        this(numTopics, metaDelim, ",");
+    }
+
+    public CsvBuilder(int topics, String metaDelim, String csvDelim) {
+        numTopics = topics;
+        META_CSV_DEL = metaDelim;
+        CSV_DEL = csvDelim;
+    }
 
     public int[][] buildNtd(int T, int D, String stateFile) throws java.io.IOException {
         int[][] Ntd = new int[T][D];
@@ -93,7 +109,7 @@ public class CsvBuilder {
             BufferedWriter out = 
                 new BufferedWriter(new FileWriter(outputCsv))
         ) {
-            out.write("Topic Id" + CSV_DEL + "Top Words..." + "\n");
+            out.write("Topic Id" + CSV_DEL + "Top Words..." + NEWLINE);
            
             topicHeaderWords = new ArrayList<String[]>();
             String[] fields;
@@ -103,7 +119,7 @@ public class CsvBuilder {
             StringBuilder outrow;
 
             while ((line = in.readLine()) != null) {
-                fields = line.split("\\t");
+                fields = line.split(MALLET_CSV_DEL);
                 words = fields[2].split(" ");
                
                 // Just 3 headwords for now, hardcoded.
@@ -113,14 +129,14 @@ public class CsvBuilder {
                 outrow.append(fields[0]);
                 outrow.append(CSV_DEL);
                 outrow.append(join(" ", words));
-                outrow.append("\n");
+                outrow.append(NEWLINE);
                 out.write(outrow.toString());
             }
         }
     }
 
     public String dtLine2Csv(String line) {
-        String[] str = line.split("\\t"); // tab as split
+        String[] str = line.split(MALLET_CSV_DEL); // tab as split
         if (str.length >= 2) {
             docNames.add(str[1]);
             return join(CSV_DEL, str);
@@ -135,7 +151,7 @@ public class CsvBuilder {
 
     public String dtLine2dtMeta(String line, String metaLine) {
         String filename;
-        String[] inCells = line.split("\\t");
+        String[] inCells = line.split(MALLET_CSV_DEL);
         String[] outCells = new String[numTopics + 1];
         Arrays.fill(outCells, "0.0");
 
@@ -183,7 +199,6 @@ public class CsvBuilder {
                 log.warning("csvMap: keyColumn out of bounds. Bad line:");
                 log.warning(csvLine);
             } else {
-                System.out.println(csvCells[keyColumn]);
                 map.put(csvCells[keyColumn], csvCells);
             }
         }
@@ -220,10 +235,10 @@ public class CsvBuilder {
             line = in.readLine();      //skip mallet header line
 
             String header = join(CSV_DEL, "docId", "filename", "toptopics...");
-            out.write(header + "\n");
+            out.write(header + NEWLINE);
             while ((line = in.readLine()) != null) {
                 nd++;
-                out.write(dtLine2Csv(line) + "\n");
+                out.write(dtLine2Csv(line) + NEWLINE);
             }
             out.flush();
             setNumDocs(nd);
@@ -244,10 +259,10 @@ public class CsvBuilder {
             line = in.readLine();  // skip mallet header line
 
             String header = join(CSV_DEL, "docId", "filename", topicHeader());
-            out.write(header + "\n");
+            out.write(header + NEWLINE);
             while ((line = in.readLine()) != null) {
                 nd++;
-                out.write(dtLine2dtMeta(line) + "\n");
+                out.write(dtLine2dtMeta(line) + NEWLINE);
             }
             out.flush();
             setNumDocs(nd);
@@ -277,7 +292,7 @@ public class CsvBuilder {
             metaLine = join(CSV_DEL, metaHeader);
             metaLine = join(CSV_DEL, "docId", "filename", 
                     metaLine, topicHeader());
-            out.write(metaLine + "\n");
+            out.write(metaLine + NEWLINE);
            
             metaEmpty = new String[metaHeader.length];
             Arrays.fill(metaEmpty, "[data-missing]");
@@ -289,16 +304,15 @@ public class CsvBuilder {
                 // filename, looks it up in the HashMap, and returns the 
                 // metaLine
 
-                filename = line.split("\t")[1];
+                filename = line.split(MALLET_CSV_DEL)[1];
                 filename = Paths.get(filename).getFileName().toString();
-                System.out.println(filename);
 
                 if (metaMap.containsKey(filename)) {
                     metaLine = join(CSV_DEL, metaMap.get(filename));
                 } else {
                     metaLine = join(CSV_DEL, metaEmpty);
                 }
-                out.write(dtLine2dtMeta(line, metaLine) + CSV_DEL + "\n");
+                out.write(dtLine2dtMeta(line, metaLine) + CSV_DEL + NEWLINE);
             }
             out.flush();
             setNumDocs(nd);
@@ -312,13 +326,13 @@ public class CsvBuilder {
                     new BufferedWriter(new FileWriter(outputCsv))) {
                 String header = join(CSV_DEL, "topicId", "rank", 
                         "docId", "filename");
-                out.write(header + "\n");
+                out.write(header + NEWLINE);
                 String line;
                 for (int i = 0; i < numTopics; i++){
                     Integer[] idx = sortTopicIdx(Ntd[i]);
                     for (int j = 0; j < numDocsShown; j++) {
                         int k = idx[numDocs - j - 1];
-                        line = i + CSV_DEL + j + CSV_DEL + k + CSV_DEL + docNames.get(k) + "\n";
+                        line = i + CSV_DEL + j + CSV_DEL + k + CSV_DEL + docNames.get(k) + NEWLINE;
                         out.write(line);
                     }
                 }
@@ -337,14 +351,13 @@ public class CsvBuilder {
         numTopics = value;
     }
 
-    public void createCsvFiles(int numTopics, String outputDir) throws java.io.IOException {
-        createCsvFiles(numTopics, outputDir, "");
+    public void createCsvFiles(String outputDir) throws java.io.IOException {
+        createCsvFiles(outputDir, "");
     }
 
-    public void createCsvFiles(int numTopics, String outputDir, String metadataFile) throws java.io.IOException {
+    public void createCsvFiles(String outputDir, String metadataFile) throws java.io.IOException {
         File csvDir = new File(outputDir + File.separator + "output_csv");    // TODO: replace all strings with constants
         csvDir.mkdir();
-        setNumTopics(numTopics);
         String csvDirPath = csvDir.getPath();
 
         topicWords(outputDir + File.separator + "output_topic_keys", 
@@ -368,8 +381,4 @@ public class CsvBuilder {
         return Ntd;
     }
 
-    public static void main(String[] args) {
-        // TODO: Auto-generated method stub
-        CsvBuilder o = new CsvBuilder();
-    }
 }
