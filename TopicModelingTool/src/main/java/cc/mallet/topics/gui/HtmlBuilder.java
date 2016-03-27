@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
-import static cc.mallet.topics.gui.TopicModelingTool.CSV_DEL;
 import static cc.mallet.topics.gui.TopicModelingTool.TOPIC_WORDS;
 import static cc.mallet.topics.gui.TopicModelingTool.DOCS_IN_TOPICS;
 import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS;
@@ -20,16 +19,18 @@ import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS;
 public class HtmlBuilder {
     public static final String GUI_CSS = "malletgui.css"; 
 
+    String CSV_DEL = ",";
 	ArrayList<String> docNames = new ArrayList<String>();
 	ArrayList<String> topics = new ArrayList<String>();
 	int[][] Ntd;
 	File input;
 	
 	
-	public HtmlBuilder(int[][] value, File f)
+	public HtmlBuilder(int[][] value, File f, String csvDelim)
 	{
 		Ntd = value;
 		input = f;
+        CSV_DEL = csvDelim;
 	}
 	
 	void createCss(File htmlDir, InputStream cssResource) throws IOException{
