@@ -594,22 +594,22 @@ public class TopicModelingTool {
         checkBoxOptionMap.put("--remove-stopwords", new String[]
                 {"Remove stopwords ", "TRUE", "import", "TRUE"});
         checkBoxOptionMap.put("--preserve-case", new String[]
-                {"Case sensitive ", "FALSE", "import", "TRUE"});
+                {"Preserve case ", "FALSE", "import", "TRUE"});
 
         //// Importing field options ////
 
         // This regex accepts all unicode characters.
         fieldOptionMap.put("--token-regex", new String[]
-                {"Regex for tokenization", "[\\p{L}\\p{N}_]+", "import", "TRUE"});
+                {"Regular expression tokenizer", "[\\p{L}\\p{N}_]+", "import", "TRUE"});
 
         //// Training field options ////
 
         fieldOptionMap.put("--num-iterations", new String[]
                 {"Number of iterations ", "400", "train", "TRUE"});
         fieldOptionMap.put("--num-top-words", new String[]
-                {"Number of topic words printed ", "20", "train", "TRUE"});
+                {"Number of topic words to print ", "20", "train", "TRUE"});
         fieldOptionMap.put("--optimize-interval", new String[]
-                {"Prior optimization interval ", "10", "train", "TRUE"});
+                {"Interval between hyperprior optimizations ", "10", "train", "TRUE"});
         fieldOptionMap.put("--num-threads", new String[]
                 {"Number of training threads ", "4", "train", "TRUE"});
 
