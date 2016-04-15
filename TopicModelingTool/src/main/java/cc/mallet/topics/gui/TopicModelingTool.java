@@ -610,6 +610,8 @@ public class TopicModelingTool {
                 {"Number of topic words printed ", "20", "train", "TRUE"});
         fieldOptionMap.put("--optimize-interval", new String[]
                 {"Prior optimization interval ", "10", "train", "TRUE"});
+        fieldOptionMap.put("--num-threads", new String[]
+                {"Number of training threads ", "4", "train", "TRUE"});
 
         //// Input and Output Options ////
 
