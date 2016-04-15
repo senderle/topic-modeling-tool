@@ -1,98 +1,122 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>cc.mallet.topic</groupId>
-	<artifactId>gui</artifactId>
-	<packaging>jar</packaging>
-	<version>0.1-SNAPSHOT</version>
-	<name>Mallet Topic-Modeling-Tool GUI</name>
-	<url>https://code.google.com/p/topic-modeling-tool/</url>
-	<properties>
-		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cc.mallet.topic</groupId>
+    <artifactId>gui</artifactId>
+    <packaging>jar</packaging>
+    <version>0.1-SNAPSHOT</version>
+    <name>Mallet Topic-Modeling-Tool GUI</name>
+    <url>https://code.google.com/p/topic-modeling-tool/</url>
+    <properties>
+        <maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
         <output.jar.name>TopicModelingTool</output.jar.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>7</maven.compiler.source>
         <maven.compiler.target>7</maven.compiler.target>
-	</properties>
-	<dependencies>
+    </properties>
+    <dependencies>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>cc.mallet</groupId>
-			<artifactId>mallet</artifactId>
-			<version>2.0.7</version>
-		</dependency>
-		<!-- TODO: Logging -->
-	</dependencies>
-	<build>
+        <dependency>
+            <groupId>cc.mallet</groupId>
+            <artifactId>mallet</artifactId>
+            <version>2.0.7</version>
+        </dependency>
+        <!-- TODO: Logging -->
+    </dependencies>
+    <build>
 
-		<directory>target</directory>
-		<outputDirectory>target/classes</outputDirectory>
-		<finalName>${project.artifactId}-${project.version}</finalName>
-		<testOutputDirectory>target/test-classes</testOutputDirectory>
-		<!-- setting the source directory to a none maven default might cause problems -->
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<scriptSourceDirectory>src</scriptSourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
+        <directory>target</directory>
+        <outputDirectory>target/classes</outputDirectory>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <testOutputDirectory>target/test-classes</testOutputDirectory>
+        <!-- setting the source directory to a none maven default might cause problems -->
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <scriptSourceDirectory>src</scriptSourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
 
 
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<!-- include images for the GUI and CSS file for HTML generation in the 
-					class path -->
-				<includes>
-					<include>**/*.png</include>
-					<include>**/*.jpg</include>
-					<include>**/*.gif</include>
-					<include>**/*.css</include>
-				</includes>
-				<!-- <excludes> <exclude>log4.xml</exclude> </excludes> -->
-			</resource>
-			<!-- <resource> <directory>src/main/resources</directory> <includes> <include>**/*.xml 
-				</include> </includes> </resource> <resource> <directory>src/main/test</directory> 
-				<excludes> <exclude>log4.xml</exclude> </excludes> </resource> -->
-		</resources>
-		<!-- <testResources> <testResource> <directory>src/test/resources</directory> 
-			</testResource> </testResources> -->
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${maven-assembly-plugin.version}</version>
-				<configuration>
-					<!-- avoid the assembly id in the output name default  -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!-- include images for the GUI and CSS file for HTML generation in the 
+                    class path -->
+                <includes>
+                    <include>**/*.png</include>
+                    <include>**/*.jpg</include>
+                    <include>**/*.gif</include>
+                    <include>**/*.css</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!--As described here: http://stackoverflow.com/a/25374048/577088 ... Thanks Dave, whoever you are! -->
+            <!--Mallet logging is horrifically verbose, and has not easy to configure-->
+            <!--We have to use this complicated process to copy the logging.properties file to the right location -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${basedir}/target/classes/cc/mallet/util/resources
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/mallet-resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven-assembly-plugin.version}</version>
+                <configuration>
+                    <!-- avoid the assembly id in the output name default  -->
                     <appendAssemblyId>false</appendAssemblyId>
                     <attach>false</attach>
-					<!-- set custom jar output names as defined by 'output.jar.name' including the version number  -->
-					<finalName>${output.jar.name}-${project.version}</finalName>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<mainClass>cc.mallet.topics.gui.TopicModelingTool</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<!-- this is used for inheritance merges -->
-						<phase>package</phase>
-						<!-- append to the packaging phase. -->
-						<goals>
-							<goal>single</goal>
-							<!-- goals == mojos -->
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+                    <!-- set custom jar output names as defined by 'output.jar.name' including the version number  -->
+                    <finalName>${output.jar.name}-${project.version}</finalName>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>cc.mallet.topics.gui.TopicModelingTool</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <!-- this is used for inheritance merges -->
+                        <phase>package</phase>
+                        <!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>single</goal>
+                            <!-- goals == mojos -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
