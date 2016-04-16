@@ -1,7 +1,9 @@
-## Topic Modeling Tool
-#### A GUI for MALLET's implementation of LDA Topic modeling.
+
+### Topic Modeling Tool
+###### A GUI for MALLET's implementation of LDA.
+
 --
-### New features:
+#### New features:
 
 * **Metadata integration**
 * **Customizable CSV delimiters**
