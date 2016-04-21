@@ -31,7 +31,7 @@ public class TopicModelingTool {
 
     /** used for testing to set a input dir on startup */
     public static String DEFAULT_INPUT_DIR = "";
-    public static String DEFAULT_OUTPUT_DIR = new File(".").getAbsolutePath();
+    public static String DEFAULT_OUTPUT_DIR = "";
     public static String DEFAULT_METADATA_FILE = "";
     private static final long serialVersionUID = 1L;
 
@@ -233,7 +233,14 @@ public class TopicModelingTool {
    
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = filechooser.getSelectedFile();
-                String inputDir = file.getPath();
+                String inputDir = "";
+                
+                try {
+                    inputDir = file.getCanonicalPath();
+                } catch (IOException ioe) {
+                    inputDir = file.getAbsolutePath();
+                }
+
                 String inputType = "";
                 
                 if (file.isDirectory()) {
@@ -392,7 +399,7 @@ public class TopicModelingTool {
                
                 String inputDir = inputDirTfield.getText();
                 String outputDir = outputDirTfield.getText();
-                String collectionPath = new File(outputDir, "topic-input.mallet").getPath();  // FIXME: How?
+                String collectionPath = new File(outputDir, "topic-input.mallet").getCanonicalPath();  // FIXME: How?
 
                 String stateFile = outputDir + File.separator + "output_state.gz";
                 String outputDocTopicsFile = outputDir + File.separator + "output_doc_topics.txt";
@@ -948,6 +955,12 @@ public class TopicModelingTool {
 
         if (args.length > 1) {
             DEFAULT_OUTPUT_DIR = args[1];
+        } else {
+            try {
+                DEFAULT_OUTPUT_DIR = new File(".").getCanonicalPath();
+            } catch (IOException ioe) {
+                DEFAULT_OUTPUT_DIR = new File(".").getAbsolutePath();
+            }
         }
 
         if (args.length > 2) {
