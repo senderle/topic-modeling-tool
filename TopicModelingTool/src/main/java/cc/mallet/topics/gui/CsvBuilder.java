@@ -358,7 +358,7 @@ public class CsvBuilder {
     public void createCsvFiles(String outputDir, String metadataFile) throws java.io.IOException {
         File csvDir = new File(outputDir + File.separator + "output_csv");    // TODO: replace all strings with constants
         csvDir.mkdir();
-        String csvDirPath = csvDir.getPath();
+        String csvDirPath = csvDir.getAbsolutePath();
 
         topicWords(outputDir + File.separator + "output_topic_keys", 
                 csvDirPath + File.separator + TOPIC_WORDS);
