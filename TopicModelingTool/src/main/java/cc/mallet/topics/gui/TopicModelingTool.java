@@ -82,7 +82,11 @@ public class TopicModelingTool {
         }
         log.setCaretPosition(log.getDocument().getLength());
     }
-   
+  
+    private static String escapeTab(String in) {
+        return in.replace("\\t", "\t");
+    }
+
     private String formatMalletCommand(String cmd, String[] args) {
         StringBuilder cmdstr = new StringBuilder();
         cmdstr.append("mallet ");
@@ -508,8 +512,8 @@ public class TopicModelingTool {
     {
         CsvBuilder cb = new CsvBuilder(
             Integer.parseInt(numTopics.getText()),
-            advFieldMap.get("io-metadata-delimiter").getText(),
-            advFieldMap.get("io-output-delimiter").getText()
+            escapeTab(advFieldMap.get("io-metadata-delimiter").getText()),
+            escapeTab(advFieldMap.get("io-output-delimiter").getText())
         );
         cb.createCsvFiles(outputDir, metadataFileField.getText());
 
