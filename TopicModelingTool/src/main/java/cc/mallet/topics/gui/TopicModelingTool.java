@@ -29,7 +29,7 @@ public class TopicModelingTool {
     public static final String TOPICS_IN_DOCS_VECTORS = "TopicsMetadata.csv";
     public static final String TOPICS_IN_DOCS = "TopicsInDocs.csv";
 
-    /** used for testing to set a input dir on startup */
+    /** used for testing to set an input dir on startup */
     public static String DEFAULT_INPUT_DIR = "";
     public static String DEFAULT_OUTPUT_DIR = "";
     public static String DEFAULT_METADATA_FILE = "";
@@ -510,16 +510,16 @@ public class TopicModelingTool {
     */
     private void outputCsvFiles(String outputDir, Boolean htmlOutputFlag) throws java.io.IOException
     {
-        CsvBuilder cb = new CsvBuilder(
+        CsvBuilder makecsv = new CsvBuilder(
             Integer.parseInt(numTopics.getText()),
             escapeTab(advFieldMap.get("io-metadata-delimiter").getText()),
             escapeTab(advFieldMap.get("io-output-delimiter").getText())
         );
-        cb.createCsvFiles(outputDir, metadataFileField.getText());
+        makecsv.createCsvFiles(outputDir, metadataFileField.getText());
 
         if (htmlOutputFlag) {
             HtmlBuilder hb = new HtmlBuilder(
-                    cb.getNtd(), 
+                    makecsv.getNtd(), 
                     new File(inputDirTfield.getText()),
                     advFieldMap.get("io-output-delimiter").getText()
             );
@@ -701,17 +701,17 @@ public class TopicModelingTool {
         String[] advArgs = new String[(checkBoxOptionMap.size() + fieldOptionMap.size()) * 2];
         int index = 0;
   
-        Iterator<JCheckBox> cbIter = advCheckBoxList.iterator();
+        Iterator<JCheckBox> boxIter = advCheckBoxList.iterator();
         for(String k:checkBoxOptionMap.keySet()) {
             advArgs[index] = k;
-            boolean b =  cbIter.next().isSelected();
+            boolean b =  boxIter.next().isSelected();
             advArgs[index + 1] = new Boolean(b).toString();
             index = index + 2;
         }
   
-        Iterator<JTextField> fIter = advFieldMap.values().iterator();
+        Iterator<JTextField> fieldIter = advFieldMap.values().iterator();
         for(String k:fieldOptionMap.keySet()) {
-            String v = fIter.next().getText();
+            String v = fieldIter.next().getText();
 
             // MALLET displays one less word than specified. (Why?)
             if (k.equals("--num-top-words")) {

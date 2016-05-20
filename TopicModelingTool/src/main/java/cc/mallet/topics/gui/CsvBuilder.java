@@ -19,6 +19,7 @@ import static cc.mallet.topics.gui.TopicModelingTool.TOPIC_WORDS;
 import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS;
 import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS_VECTORS;
 import static cc.mallet.topics.gui.TopicModelingTool.DOCS_IN_TOPICS;
+import cc.mallet.topics.gui.util.Util;
 
 
 public class CsvBuilder {
@@ -88,20 +89,6 @@ public class CsvBuilder {
         return idx;
     }
 
-    public String join(String delim, String... cells) {
-        StringBuilder row = new StringBuilder();
-
-        for (int i = 0; i < cells.length - 1; i += 1) {
-            row.append(cells[i]);
-            row.append(delim);
-        }
-
-        if (cells.length > 0) {
-            row.append(cells[cells.length - 1]);
-        }
-        return row.toString();
-    }
-
     public void topicWords(String topicKeysFile, String outputCsv) throws java.io.IOException {
         try (
             BufferedReader in =
@@ -128,7 +115,7 @@ public class CsvBuilder {
                 outrow = new StringBuilder();
                 outrow.append(fields[0]);
                 outrow.append(CSV_DEL);
-                outrow.append(join(" ", words));
+                outrow.append(Util.join(" ", words));
                 outrow.append(NEWLINE);
                 out.write(outrow.toString());
             }
@@ -139,7 +126,7 @@ public class CsvBuilder {
         String[] str = line.split(MALLET_CSV_DEL); // tab as split
         if (str.length >= 2) {
             docNames.add(str[1]);
-            return join(CSV_DEL, str);
+            return Util.join(CSV_DEL, str);
         } else {
             return line;
         }
@@ -162,9 +149,9 @@ public class CsvBuilder {
             filename = Paths.get(inCells[1]).getFileName().toString();
 
             if (metaLine.equals("")) {
-                outCells[0] = join(CSV_DEL, inCells[0], filename);
+                outCells[0] = Util.join(CSV_DEL, inCells[0], filename);
             } else {
-                outCells[0] = join(CSV_DEL, inCells[0], filename, metaLine);
+                outCells[0] = Util.join(CSV_DEL, inCells[0], filename, metaLine);
             }
             
             for (int i = 2; i < inCells.length - 1; i = i + 2) {
@@ -172,7 +159,7 @@ public class CsvBuilder {
                 outCells[topic + 1] = inCells[i + 1];
             }
 
-            return join(CSV_DEL, outCells);
+            return Util.join(CSV_DEL, outCells);
         } else {
             return line;
         }
@@ -210,12 +197,12 @@ public class CsvBuilder {
 
         header.append(0);
         header.append(" ");
-        header.append(join(" ", topicHeaderWords.get(0)));
+        header.append(Util.join(" ", topicHeaderWords.get(0)));
         for (int i = 1; i < topicHeaderWords.size(); i += 1) {
             header.append(CSV_DEL);
             header.append(i);
             header.append(" ");
-            header.append(join(" ", topicHeaderWords.get(i)));
+            header.append(Util.join(" ", topicHeaderWords.get(i)));
         }
 
         return header.toString();
@@ -234,7 +221,7 @@ public class CsvBuilder {
 
             line = in.readLine();      //skip mallet header line
 
-            String header = join(CSV_DEL, "docId", "filename", "toptopics...");
+            String header = Util.join(CSV_DEL, "docId", "filename", "toptopics...");
             out.write(header + NEWLINE);
             while ((line = in.readLine()) != null) {
                 nd++;
@@ -258,7 +245,7 @@ public class CsvBuilder {
 
             line = in.readLine();  // skip mallet header line
 
-            String header = join(CSV_DEL, "docId", "filename", topicHeader());
+            String header = Util.join(CSV_DEL, "docId", "filename", topicHeader());
             out.write(header + NEWLINE);
             while ((line = in.readLine()) != null) {
                 nd++;
@@ -289,8 +276,8 @@ public class CsvBuilder {
 
             line = in.readLine();      //skip MALLET header line
             metaHeader = meta.readLine().split(META_CSV_DEL);
-            metaLine = join(CSV_DEL, metaHeader);
-            metaLine = join(CSV_DEL, "docId", "filename", 
+            metaLine = Util.join(CSV_DEL, metaHeader);
+            metaLine = Util.join(CSV_DEL, "docId", "filename", 
                     metaLine, topicHeader());
             out.write(metaLine + NEWLINE);
            
@@ -308,9 +295,9 @@ public class CsvBuilder {
                 filename = Paths.get(filename).getFileName().toString();
 
                 if (metaMap.containsKey(filename)) {
-                    metaLine = join(CSV_DEL, metaMap.get(filename));
+                    metaLine = Util.join(CSV_DEL, metaMap.get(filename));
                 } else {
-                    metaLine = join(CSV_DEL, metaEmpty);
+                    metaLine = Util.join(CSV_DEL, metaEmpty);
                 }
                 out.write(dtLine2dtMeta(line, metaLine) + CSV_DEL + NEWLINE);
             }
@@ -324,7 +311,7 @@ public class CsvBuilder {
         if (Ntd != null) {
             try (BufferedWriter out = 
                     new BufferedWriter(new FileWriter(outputCsv))) {
-                String header = join(CSV_DEL, "topicId", "rank", 
+                String header = Util.join(CSV_DEL, "topicId", "rank", 
                         "docId", "filename");
                 out.write(header + NEWLINE);
                 String line;
