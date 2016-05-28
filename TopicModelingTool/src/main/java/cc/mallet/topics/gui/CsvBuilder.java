@@ -282,7 +282,7 @@ public class CsvBuilder {
             out.write(metaLine + NEWLINE);
            
             metaEmpty = new String[metaHeader.length];
-            Arrays.fill(metaEmpty, "[data-missing]");
+            Arrays.fill(metaEmpty, "[filename-not-in-metadata]");
 
             metaMap = csvMap(meta, META_CSV_DEL);
             while ((line = in.readLine()) != null) {
