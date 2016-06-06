@@ -440,7 +440,7 @@ public class TopicModelingTool {
 
         // This regex accepts all unicode characters.
         fieldOptionMap.put("--token-regex", new String[]
-                {"Regular expression tokenizer", "[\\p{L}\\p{N}_]+", "import", "TRUE"});
+                {"Tokenize with regular expression", "[\\p{L}\\p{N}_]+", "import", "TRUE"});
 
         //// Training field options ////
 
@@ -456,11 +456,11 @@ public class TopicModelingTool {
         //// Input and Output Options ////
 
         fieldOptionMap.put("io-segment-files", new String[]
-                {"Autosegment Input Files", "0", "io", "TRUE"});
+                {"Divide input into n-word chunks", "0", "io", "TRUE"});
         fieldOptionMap.put("io-metadata-delimiter", new String[]
-                {"Metadata CSV Delimiter", ",", "io", "TRUE"});
+                {"Metadata CSV delimiter", ",", "io", "TRUE"});
         fieldOptionMap.put("io-output-delimiter", new String[]
-                {"Output CSV Delimiter", ",", "io", "TRUE"});
+                {"Output CSV delimiter", ",", "io", "TRUE"});
 
         //// Disabled options ////
 
