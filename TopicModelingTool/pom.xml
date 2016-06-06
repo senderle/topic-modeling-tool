@@ -57,9 +57,9 @@
         </resources>
 
         <plugins>
-            <!--As described here: http://stackoverflow.com/a/25374048/577088 ... Thanks Dave, whoever you are! -->
-            <!--Mallet logging is horrifically verbose, and has not easy to configure-->
-            <!--We have to use this complicated process to copy the logging.properties file to the right location -->
+            <!-- As described here: http://stackoverflow.com/a/25374048/577088 ... Thanks Dave, whoever you are! -->
+            <!-- Mallet logging is horrifically verbose, and is not easy to configure -->
+            <!-- We have to use this complicated process to copy the logging.properties file to the right location -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
