@@ -8,7 +8,7 @@ public class FileSplitterTest extends TestCase {
     public void testFileSplitter() throws Exception {
         String[] args = new String[2];
         args[0] = "5";
-        args[1] = new File("src/test/resources/data/words").getAbsolutePath();
+        args[1] = new File("src/test/resources/data/words.txt").getAbsolutePath();
         FileSplitter.main(args);
     }
 }

@@ -1,4 +1,5 @@
-here, are, some, values
-"here, are, some, values"
-"here, are", "some, values"
-" Here ",    "are"    ,"some", "v,a,l,u,e,s"
+here,are,some,values
+and, some, spaced, values
+"and, some, values, quoted"
+"or, split", "and, quoted"
+" or ",    "spaced"    ,"quite", "w,e,i,r,d,l,y "

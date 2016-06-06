@@ -12,6 +12,7 @@ public class FileSplitter implements Closeable {
     private Path inputPath = null;
     private BufferedReader inputReader = null;
     private int wordsRead = 0;
+    private int segmentsRead = 0;
     private String currentLine = null;
  
     public FileSplitter(Path path) {
@@ -65,12 +66,12 @@ public class FileSplitter implements Closeable {
         if (out.length() < 1) { 
             return null;
         } else {
+            segmentsRead += 1;
             return out.toString();
         }
 	}
 
     public String getSegment(int nwords) {
-
         try {
             return readSegment(nwords);
         } catch (IOException exc) {
@@ -80,6 +81,10 @@ public class FileSplitter implements Closeable {
 
     public int getWordsRead() {
         return wordsRead;
+    }
+
+    public int getSegmentsRead() {
+        return segmentsRead;
     }
 
     public void close() throws IOException {

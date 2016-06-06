@@ -1,6 +1,5 @@
 package cc.mallet.topics.gui.util;
 
-import cc.mallet.topics.gui.util.CsvReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
@@ -8,74 +7,123 @@ import java.io.IOException;
 import java.io.File;
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BatchSegmenter {
-    private String inputDir = null;
-    private String outSuffix = null;
-    private String[] oldHeader = null;
+    private Path inputDir = null;
+    private Path segmentDir = null;
     private CsvReader oldMetadata = null;
     private ArrayList<String[]> newMetadata = null;
 
-    public BatchSegmenter(String inputDir, String metadata, 
-            String metadataDelim, String outSuffix) {
-        this.inputDir = inputDir;
-        this.outSuffix = outSuffix;
+    public BatchSegmenter(String metadata, String inputDir,
+            String segmentDir, String metadataDelim) {
+        this.inputDir = Paths.get(inputDir);
+        this.segmentDir = Paths.get(segmentDir);
         this.oldMetadata = new CsvReader(metadata, metadataDelim);
+        this.newMetadata = new ArrayList<String[]>();
     }
 
-    public BatchSegmenter(String inputDir, String metadata, 
-            String metadataDelim) {
-        this(inputDir, metadata, metadataDelim, "_chunks");
+    public BatchSegmenter(String metadata, String inputDir, String segmentDir) {
+        this(metadata, inputDir, segmentDir, ",");
     }
 
-    public BatchSegmenter(String inputDir, String metadata) {
-        this(inputDir, metadata, ",", "_chunks");
-    }
-
-    public String[] segment() {
+    public ArrayList<String[]> segment(int nsegs) throws IOException {
         String filename;
-        String[] res = {"foo", "bar"};
+        ArrayList<String[]> res = null;
         for (String[] row : oldMetadata) {
             if (row.length > 0) {
-                filename = row[0];
-                System.out.println(Files.exists(Paths.get(filename)));
+                res = metaSegment(row, nsegs);
             }
-
-            res = row;
+            newMetadata.addAll(res);
         }
-        return res;
+        return newMetadata;
     }
 
-    // Constructor takes input directory, output directory suffix, metadata
+    /**
+     * Append the given segment number onto the given filename, using
+     * a `'-'` as the joining character. When the filename ends with
+     * an extension (i.e. a suffix beginning with a `'.'` character),
+     * this inserts the segment number between the base name and the
+     * extension. This is a purely aesthetic convenience, since there 
+     * is no well defined notion of "file extension". To be precise, 
+     * there's no way to distinguish between `"filenames.with.many.dots"`
+     * and `"filenames_with_multidot_extensions.tar.gz"`. So `".tar.gz"`
+     * will become `".tar-1.gz"`, and that's just the way the cookie 
+     * crumbles.
+     *
+     * If somebody in the Java language dev world were to take the 
+     * trouble, I'm sure some sensible defaults could handle common 
+     * special cases, like `".tar.gz"`. That would be great! But
+     * the people in charge would have to actually do it; there's no
+     * point in writing something like that if it's not incorporated
+     * into the language. And incorporating such a thing into the
+     * language would involve a tremendous amount of bickering and
+     * "stakeholder" consultation. This is why languages designed 
+     * by committees have such terrible standard libraries.
+     *
+     * The upshot of all this is that there is no built-in way
+     * to split an extension, and now you have to read a weird
+     * DIY regex if you want to know exactly how this works.
+     *
+     * Sorry. /rant
+     */
+    private String genSegmentName(String name, int segnum) {
+        if (name.matches("^.*\\.[^\\.]+$")) {
+            // "{filename}.{ext}" -> "{filename}-{segNum}.{ext}"
+            name = name.replaceAll("(^.*)(\\.[^\\.]*$)", 
+                                   "$1-" + 
+                                   Integer.toString(segnum) + 
+                                   "$2");
+        } else {
+            // "{filename}" -> "{filename}-{segnum}"
+            name = name + "-" + Integer.toString(segnum);
+        }
 
-    // A method that takes a metadata row with a filename, 
-    // creates a FileSplitter, grabs chunks and word counts, saves the chunks 
-    // in new files based on a filename-n pattern in a folder using a 
-    // predefined suffix constant ("_chunks"), and for each saved file, 
-    // creates a new metadata row with the new filename and an extra row
-    // containing the file wordcount, and appends it to an accumulator
-    // attribute. 
-    // 
-    // A method that takes a list of metadata rows and does the above for
-    // each. (STRING[][] -> null (with side effects))
-    //
-    // A method that creates new filenames based on dir-suffix, 
-    // original-filename arguments (DIRSUFFIX, FILENAME, FILE_N) -> FILENAME
-    //
-    // a method that transforms an old metadata row into a new metadata
-    // row, where metadata rows are lists of lists of strings, and the first
-    // value in each list is assumed to be the filename. possibly make this
-    // accept some more canonical form based on what I used in the CSV class;
-    // I don't remember right now. The filename is transformed by the above
-    // method and replaces the old filename; the list is extended by one
-    // with the word count information. (METADATA_ROW, WORD_COUNT, 
-    // FILE_N) -> METADATA_ROW
-    //
-    //
-    //
+        return name;
+    }
+
+    private ArrayList<String[]> metaSegment(String[] metarow, int nsegs) throws IOException {
+        String metaFilename = metarow[0];
+        Path inputFile = inputDir.resolve(Paths.get(metaFilename));
+        
+        ArrayList<String[]> newrows = new ArrayList<String[]>();
+        
+        if ( ! Files.exists(inputFile)) {
+            return newrows;
+        }
+
+        try (FileSplitter sp = new FileSplitter(inputFile)) {
+            int wordsRead = 0;
+            for (String seg = sp.getSegment(nsegs); 
+                    seg != null; 
+                    seg = sp.getSegment(nsegs)) {
+
+                String[] newrow = Arrays.copyOf(metarow, metarow.length + 1);
+                String segmentFilename = 
+                    genSegmentName(newrow[0], sp.getSegmentsRead());
+
+                newrow[0] = segmentFilename;
+                newrow[newrow.length - 1] = 
+                    Integer.toString(sp.getWordsRead() - wordsRead);
+                wordsRead = sp.getWordsRead();
+                newrows.add(newrow);
+
+                Path outputFile = segmentDir.resolve(segmentFilename);
+                System.out.println(outputFile.toString());
+
+                ArrayList<String> outLine = new ArrayList<String>();
+                outLine.add(seg);
+                Files.write(outputFile, outLine);
+            }
+        }
+
+        return newrows;
+    }
 
     public static void main(String[] args) throws IOException {
-        BatchSegmenter bs = new BatchSegmenter(args[0], args[1]);
-        bs.segment();
+        BatchSegmenter bs = new BatchSegmenter(args[0], args[1], args[2]);
+        for (String[] row : bs.segment(5)) {
+            System.out.println(Arrays.toString(row));
+        }
     }
 }
