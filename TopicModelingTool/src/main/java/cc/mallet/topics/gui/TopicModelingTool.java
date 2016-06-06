@@ -3,6 +3,10 @@ package cc.mallet.topics.gui;
 import java.awt.*;
 import java.awt.event.*;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -780,6 +784,22 @@ public class TopicModelingTool {
     // SECTION THREE: Actual Work //
     // ////////////////////////// //
 
+    public void segmentInput(String inputDirName, String outputDirName, 
+            String metadataFileName, String delim, int nsegments) 
+            throws IOException {
+        Path inputDirPath = Paths.get(inputDirName);
+        Path outputDirPath = Paths.get(outputDirName);
+        Path segmentPath = Paths.get(outputDirName, "segments");
+        Path metadataPath = Paths.get(metadataFileName);
+       
+       
+        Files.createDirectories(segmentPath);
+        //new BatchSegmenter(inputDirPath, segmentPath, metadataPath, delim)
+        //    .segment(nsegments);
+
+        // STILL NEED TO SAVE THE METADATA FILE
+    }
+
     /**
      * Method that assembles all the options given by the user through the GUI
      * and runs Mallet's importing and topic modeling methods.
@@ -796,6 +816,26 @@ public class TopicModelingTool {
         // Disable user input during training
         clearButton.setEnabled(false);
         trainButton.setEnabled(false);
+
+        int nsegments = 
+            Integer.parseInt(advFieldMap.get("io-segment-files").getText());
+        if (nsegments > 0 && !metadataFileField.getText().equals("")) {
+            String delim = advFieldMap.get("io-metadata-delimiter").getText();
+            delim = escapeTab(delim);
+
+            try {
+                segmentInput(
+                        inputDirTfield.getText(), 
+                        outputDirTfield.getText(),
+                        metadataFileField.getText(), 
+                        delim, 
+                        nsegments
+                );
+            } catch (IOException exc) {
+                exc.printStackTrace();
+                return;
+            }
+        }
 
         // ////////////////////////////////////////////////////////////////////////////////////
         // TODO: THIS IS WHERE THE SEGMENTATION CODE GOES......................................
