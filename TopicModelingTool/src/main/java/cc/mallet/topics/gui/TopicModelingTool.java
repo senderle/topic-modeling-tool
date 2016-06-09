@@ -1,5 +1,8 @@
 package cc.mallet.topics.gui;
 
+import cc.mallet.topics.gui.util.BatchSegmenter;
+import cc.mallet.topics.gui.util.CsvWriter;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -354,7 +357,6 @@ public class TopicModelingTool {
             // Get current time
             t = new Thread() {
                 public void run() {
-                    inputDirTfield.setText("");
                     if (inputDirTfield.getText().equals("")) {
                         JOptionPane.showMessageDialog(mainPanel, "Please select an input file or directory", "Invalid input", JOptionPane.ERROR_MESSAGE);
                     } else {
@@ -784,20 +786,33 @@ public class TopicModelingTool {
     // SECTION THREE: Actual Work //
     // ////////////////////////// //
 
-    public void segmentInput(String inputDirName, String outputDirName, 
-            String metadataFileName, String delim, int nsegments) 
+
+        //       1) Create segment directory inside output dir
+        //       2) Segment files
+        //       3) Save new metadata file to output dir
+
+    public void segmentInput(JTextField input, JTextField output, 
+            JTextField metadata, String delim, int nsegments) 
             throws IOException {
-        Path inputDirPath = Paths.get(inputDirName);
-        Path outputDirPath = Paths.get(outputDirName);
-        Path segmentPath = Paths.get(outputDirName, "segments");
-        Path metadataPath = Paths.get(metadataFileName);
-       
+        Path inputDirPath = Paths.get(input.getText());
+        Path outputDirPath = Paths.get(output.getText());
+        Path segmentPath = Paths.get(output.getText(), "segments");
+        Path newMetadataPath = Paths.get(output.getText(), "segments-metadata.csv");
+        Path metadataPath = Paths.get(metadata.getText());
        
         Files.createDirectories(segmentPath);
-        //new BatchSegmenter(inputDirPath, segmentPath, metadataPath, delim)
-        //    .segment(nsegments);
+        BatchSegmenter bs = new BatchSegmenter(inputDirPath, 
+                segmentPath, metadataPath, delim);
 
-        // STILL NEED TO SAVE THE METADATA FILE
+        ArrayList<String[]> metadataRows = bs.segment(nsegments);
+
+        try (CsvWriter csv = new CsvWriter(newMetadataPath, delim)) {
+            csv.writeRows(metadataRows);
+        }
+    
+        // Modify input and metadata config to point to the correct output:
+        input.setText(segmentPath.toString());
+        metadata.setText(newMetadataPath.toString());
     }
 
     /**
@@ -825,9 +840,9 @@ public class TopicModelingTool {
 
             try {
                 segmentInput(
-                        inputDirTfield.getText(), 
-                        outputDirTfield.getText(),
-                        metadataFileField.getText(), 
+                        inputDirTfield, 
+                        outputDirTfield,
+                        metadataFileField, 
                         delim, 
                         nsegments
                 );
@@ -837,13 +852,8 @@ public class TopicModelingTool {
             }
         }
 
-        // ////////////////////////////////////////////////////////////////////////////////////
-        // TODO: THIS IS WHERE THE SEGMENTATION CODE GOES......................................
-        //       1) Create segment directory inside output dir
-        //       2) Segment files
-        //       3) Save new metadata file to output dir
-        //       4) Modify input to segment dir
-        //       5) Modify metadata to new metadata dir
+       
+
         // ////////////////////////////////////////////////////////////////////////////////////
 
         // //////////////////// //

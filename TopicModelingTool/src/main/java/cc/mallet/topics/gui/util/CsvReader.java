@@ -1,38 +1,66 @@
 package cc.mallet.topics.gui.util;
 
 import cc.mallet.topics.gui.util.Util;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.nio.charset.MalformedInputException;
+
 import java.io.IOException;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.Closeable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+
 import java.lang.Iterable;
+
+// The way this class handles exceptions is not right. But I don't yet know
+// what the right way to handle them is. So I'm leaving well enough 
+// alone for now. 
+
+// TODO: Figure out how to correctly handle different character sets.
 
 public class CsvReader implements Iterable<String[]> {
     private Path inputPath = null;
     private String delim = ",";
+    private int headerLines = 0;
+    private ArrayList<String[]> headers = new ArrayList<String[]>();
 
-    public CsvReader(Path path, String csvDelim) {
-        inputPath = path;
-        delim = csvDelim;
+    public CsvReader(Path inputPath, String delim, int headerLines) {
+        this.inputPath = inputPath;
+        this.delim = delim;
+        this.headerLines = headerLines;
+        readHeaders();
     }
 
-    public CsvReader(String path, String csvDelim) {
-        this(Paths.get(path), csvDelim);
+    public CsvReader(String inputPath, String delim, int headerLines) {
+        this(Paths.get(inputPath), delim, headerLines);
     }
 
-    public CsvReader(File path, String csvDelim) {
-        this(path.toPath(), csvDelim);
+    public CsvReader(File inputPath, String delim, int headerLines) {
+        this(inputPath.toPath(), delim, headerLines);
     }
 
     public Iterator<String[]> iterator() {
         return new CsvRowIterator();
+    }
+
+    // Read the header lines and store them; this means the headers are
+    // available separately from the row iterator below. (Should this 
+    // return an ArrayList<String> instead of modifying `headers` directly?)
+    private void readHeaders() {
+        String[] headerRow = null;
+        Iterator <String[]> csvRows = new CsvRowIterator(false);
+        for (int i = 0; i < headerLines; i++) {
+            headerRow = csvRows.next();
+            if (headerRow != null) {
+                headers.add(headerRow);
+            }
+        }
     }
 
     private class CsvRowIterator implements Iterator<String[]> {
@@ -41,7 +69,7 @@ public class CsvReader implements Iterable<String[]> {
         private int rowcount = 0;
         private boolean fileOpen = false;
         private String[] nextRow = null;
-        public CsvRowIterator() {
+        public CsvRowIterator(boolean discardHeaders) {
             try {
                 inputReader = Files.newBufferedReader(inputPath);
                 fileOpen = true;
@@ -50,7 +78,19 @@ public class CsvReader implements Iterable<String[]> {
                 throw new RuntimeException(exc);
             }
 
-            nextRow = readRow();
+            if (discardHeaders) {
+                String[] headerRow = null;
+                for (int i = 0; i < headerLines; i++) {
+                    headerRow = readRow();
+                }
+                nextRow = readRow();
+            }
+        }
+
+        public CsvRowIterator() {
+            // Discard headers by default; it will be stored when the
+            // CsvReader constructor is first called.
+            this(true);
         }
 
         public boolean hasNext() {
@@ -118,7 +158,7 @@ public class CsvReader implements Iterable<String[]> {
             // even number of quote characters iff the row is complete.
             // If the `quoteCount` is odd, the line is incomplete, so
             // read another line, append, count quote characters, and
-            // add to total `quoteCount` until `quoteCount` is even.
+            // add to total `quoteCount`. Repeat until `quoteCount` is even.
             while ((line = inputReader.readLine()) != null) {
                 linecount += 1;
                 acc.append(line);
@@ -177,7 +217,7 @@ public class CsvReader implements Iterable<String[]> {
     }
 
     public static void main (String[] args) throws IOException {
-        CsvReader csv = new CsvReader(args[0], ",");
+        CsvReader csv = new CsvReader(args[0], ",", 1);
         for (String[] row : csv) {
             for (String cell : row) {
                 System.out.print(cell);

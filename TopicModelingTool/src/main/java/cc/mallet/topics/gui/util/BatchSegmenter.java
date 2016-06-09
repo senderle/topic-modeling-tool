@@ -3,6 +3,7 @@ package cc.mallet.topics.gui.util;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
+
 import java.io.IOException;
 import java.io.File;
 import java.io.BufferedReader;
@@ -15,16 +16,38 @@ public class BatchSegmenter {
     private CsvReader oldMetadata = null;
     private ArrayList<String[]> newMetadata = null;
 
-    public BatchSegmenter(String metadata, String inputDir,
-            String segmentDir, String metadataDelim) {
+    public BatchSegmenter(String inputDir, String segmentDir, String metadata, 
+            String metadataDelim, int headerRows) {
         this.inputDir = Paths.get(inputDir);
         this.segmentDir = Paths.get(segmentDir);
-        this.oldMetadata = new CsvReader(metadata, metadataDelim);
+        this.oldMetadata = new CsvReader(metadata, metadataDelim, headerRows);
         this.newMetadata = new ArrayList<String[]>();
     }
 
-    public BatchSegmenter(String metadata, String inputDir, String segmentDir) {
-        this(metadata, inputDir, segmentDir, ",");
+    public BatchSegmenter(String inputDir, String segmentDir, String metadata,
+            String metadataDelim) {
+        this(inputDir, segmentDir, metadata, metadataDelim, 1);
+    }
+
+    public BatchSegmenter(String inputDir, String segmentDir, String metadata) {
+        this(inputDir, segmentDir, metadata, ",", 1);
+    }
+
+    public BatchSegmenter(Path inputDir, Path segmentDir, Path metadata, 
+            String metadataDelim, int headerRows) {
+        this.inputDir = inputDir;
+        this.segmentDir = segmentDir;
+        this.oldMetadata = new CsvReader(metadata, metadataDelim, headerRows);
+        this.newMetadata = new ArrayList<String[]>();
+    }
+
+    public BatchSegmenter(Path inputDir, Path segmentDir, Path metadata, 
+            String metadataDelim) {
+        this(inputDir, segmentDir, metadata, metadataDelim, 1);
+    }
+
+    public BatchSegmenter(Path inputDir, Path segmentDir, Path metadata) {
+        this(inputDir, segmentDir, metadata, ",", 1);
     }
 
     public ArrayList<String[]> segment(int nsegs) throws IOException {
@@ -109,7 +132,6 @@ public class BatchSegmenter {
                 newrows.add(newrow);
 
                 Path outputFile = segmentDir.resolve(segmentFilename);
-                System.out.println(outputFile.toString());
 
                 ArrayList<String> outLine = new ArrayList<String>();
                 outLine.add(seg);
