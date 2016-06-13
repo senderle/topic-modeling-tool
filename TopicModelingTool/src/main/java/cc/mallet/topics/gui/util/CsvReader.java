@@ -49,18 +49,17 @@ public class CsvReader implements Iterable<String[]> {
         return new CsvRowIterator();
     }
 
+    public ArrayList<String[]> getHeaders() {
+        return headers;
+    }
+
     // Read the header lines and store them; this means the headers are
     // available separately from the row iterator below. (Should this 
     // return an ArrayList<String> instead of modifying `headers` directly?)
     private void readHeaders() {
         String[] headerRow = null;
-        Iterator <String[]> csvRows = new CsvRowIterator(false);
-        for (int i = 0; i < headerLines; i++) {
-            headerRow = csvRows.next();
-            if (headerRow != null) {
-                headers.add(headerRow);
-            }
-        }
+        CsvRowIterator csvRows = new CsvRowIterator();
+        headers = csvRows.getHeaders();
     }
 
     private class CsvRowIterator implements Iterator<String[]> {
@@ -69,7 +68,9 @@ public class CsvReader implements Iterable<String[]> {
         private int rowcount = 0;
         private boolean fileOpen = false;
         private String[] nextRow = null;
-        public CsvRowIterator(boolean discardHeaders) {
+        private ArrayList<String[]> iterHeaders = new ArrayList<String[]>();
+
+        public CsvRowIterator() {
             try {
                 inputReader = Files.newBufferedReader(inputPath);
                 fileOpen = true;
@@ -78,19 +79,21 @@ public class CsvReader implements Iterable<String[]> {
                 throw new RuntimeException(exc);
             }
 
-            if (discardHeaders) {
-                String[] headerRow = null;
-                for (int i = 0; i < headerLines; i++) {
-                    headerRow = readRow();
+            nextRow = readRow();
+
+            for (int i = 0; i < headerLines; i++) {
+                String[] headerRow = next();
+                if (headerRow != null) {
+                    iterHeaders.add(headerRow);
+                } else {
+                    String[] missing = {"[header-missing]"};
+                    iterHeaders.add(missing);
                 }
-                nextRow = readRow();
             }
         }
 
-        public CsvRowIterator() {
-            // Discard headers by default; it will be stored when the
-            // CsvReader constructor is first called.
-            this(true);
+        public ArrayList<String[]> getHeaders() {
+            return iterHeaders;
         }
 
         public boolean hasNext() {

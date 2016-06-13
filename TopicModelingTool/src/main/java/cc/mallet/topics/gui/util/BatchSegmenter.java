@@ -29,10 +29,6 @@ public class BatchSegmenter {
         this(inputDir, segmentDir, metadata, metadataDelim, 1);
     }
 
-    public BatchSegmenter(String inputDir, String segmentDir, String metadata) {
-        this(inputDir, segmentDir, metadata, ",", 1);
-    }
-
     public BatchSegmenter(Path inputDir, Path segmentDir, Path metadata, 
             String metadataDelim, int headerRows) {
         this.inputDir = inputDir;
@@ -46,19 +42,21 @@ public class BatchSegmenter {
         this(inputDir, segmentDir, metadata, metadataDelim, 1);
     }
 
-    public BatchSegmenter(Path inputDir, Path segmentDir, Path metadata) {
-        this(inputDir, segmentDir, metadata, ",", 1);
-    }
-
     public ArrayList<String[]> segment(int nsegs) throws IOException {
         String filename;
-        ArrayList<String[]> res = null;
+        ArrayList<String[]> res = new ArrayList<String[]>();
+
+        for (String[] header: oldMetadata.getHeaders()) {
+            res.add(metaSegmentHeader(header));
+        }
+
         for (String[] row : oldMetadata) {
             if (row.length > 0) {
-                res = metaSegment(row, nsegs);
+                res.addAll(metaSegment(row, nsegs));
             }
-            newMetadata.addAll(res);
         }
+
+        newMetadata.addAll(res);
         return newMetadata;
     }
 
@@ -142,8 +140,15 @@ public class BatchSegmenter {
         return newrows;
     }
 
+    // Add the Word Count column.
+    private String[] metaSegmentHeader(String[] header) {
+        String[] newheader = Arrays.copyOf(header, header.length + 1);
+        newheader[newheader.length - 1] = "Word Count";
+        return newheader;
+    }
+
     public static void main(String[] args) throws IOException {
-        BatchSegmenter bs = new BatchSegmenter(args[0], args[1], args[2]);
+        BatchSegmenter bs = new BatchSegmenter(args[0], args[1], args[2], ",");
         for (String[] row : bs.segment(5)) {
             System.out.println(Arrays.toString(row));
         }

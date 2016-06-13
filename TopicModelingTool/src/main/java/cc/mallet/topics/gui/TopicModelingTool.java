@@ -60,6 +60,9 @@ public class TopicModelingTool {
     JTextField stopFileField = new JTextField();
     JTextField metadataFileField = new JTextField();
 
+    String inputDirAlternate = null;
+    String metadataFileAlternate = null;
+
     LinkedHashMap<String, String[]> checkBoxOptionMap = new LinkedHashMap<String, String[]>();
     LinkedHashMap<String, String[]> fieldOptionMap = new LinkedHashMap<String, String[]>();
 
@@ -74,9 +77,49 @@ public class TopicModelingTool {
     // going through and creating section headers, etc., to show the
     // internal structure more clearly.
 
-    // //////////////////////////////////// //
-    // SECTION ONE: Small Utility Functions //
-    // //////////////////////////////////// //
+    // ////////////////////////////////////////////////// //
+    // SECTION ONE: Small Utility Functions and Accessors //
+    // ////////////////////////////////////////////////// //
+
+    public String getInputDirName() {
+        if (inputDirAlternate == null) {
+            return inputDirTfield.getText();
+        } else {
+            return inputDirAlternate;
+        }
+    }
+
+    private void setInputDirAlternate(String in) {
+        inputDirAlternate = in;
+    }
+
+    private void setInputDirAlternate() {
+        inputDirAlternate = null;
+    }
+
+    public String getMetadataFileName() {
+        if (metadataFileAlternate == null) {
+            return metadataFileField.getText();
+        } else {
+            return metadataFileAlternate;
+        }
+    }
+
+    private void setMetadataFileAlternate(String meta) {
+        metadataFileAlternate = meta;
+    }
+
+    private void setMetadataFileAlternate() {
+        metadataFileAlternate = null;
+    }
+
+    public String getOutputDirName() {
+        return outputDirTfield.getText();
+    }
+
+    public String getStopFileName() {
+        return stopFileField.getText();
+    }
 
     /**
      * Update text area.
@@ -357,7 +400,7 @@ public class TopicModelingTool {
             // Get current time
             t = new Thread() {
                 public void run() {
-                    if (inputDirTfield.getText().equals("")) {
+                    if (getInputDirName().equals("")) {
                         JOptionPane.showMessageDialog(mainPanel, "Please select an input file or directory", "Invalid input", JOptionPane.ERROR_MESSAGE);
                     } else {
                         runMallet();
@@ -787,18 +830,17 @@ public class TopicModelingTool {
     // ////////////////////////// //
 
 
-        //       1) Create segment directory inside output dir
-        //       2) Segment files
-        //       3) Save new metadata file to output dir
+    // 1) Create segment directory inside output dir
+    // 2) Segment files
+    // 3) Save new metadata file to output dir
 
-    public void segmentInput(JTextField input, JTextField output, 
-            JTextField metadata, String delim, int nsegments) 
+    public void segmentInput(String delim, int nsegments) 
             throws IOException {
-        Path inputDirPath = Paths.get(input.getText());
-        Path outputDirPath = Paths.get(output.getText());
-        Path segmentPath = Paths.get(output.getText(), "segments");
-        Path newMetadataPath = Paths.get(output.getText(), "segments-metadata.csv");
-        Path metadataPath = Paths.get(metadata.getText());
+        Path inputDirPath = Paths.get(getInputDirName());
+        Path outputDirPath = Paths.get(getOutputDirName());
+        Path segmentPath = Paths.get(getOutputDirName(), "segments");
+        Path newMetadataPath = Paths.get(getOutputDirName(), "segments-metadata.csv");
+        Path metadataPath = Paths.get(getMetadataFileName());
        
         Files.createDirectories(segmentPath);
         BatchSegmenter bs = new BatchSegmenter(inputDirPath, 
@@ -811,8 +853,9 @@ public class TopicModelingTool {
         }
     
         // Modify input and metadata config to point to the correct output:
-        input.setText(segmentPath.toString());
-        metadata.setText(newMetadataPath.toString());
+
+        setInputDirAlternate(segmentPath.toString());
+        setMetadataFileAlternate(newMetadataPath.toString());
     }
 
     /**
@@ -834,27 +877,19 @@ public class TopicModelingTool {
 
         int nsegments = 
             Integer.parseInt(advFieldMap.get("io-segment-files").getText());
-        if (nsegments > 0 && !metadataFileField.getText().equals("")) {
+        if (nsegments > 0 && !getMetadataFileName().equals("")) {
             String delim = advFieldMap.get("io-metadata-delimiter").getText();
             delim = escapeTab(delim);
 
+            appendLog("Automatically segmenting files...");
+
             try {
-                segmentInput(
-                        inputDirTfield, 
-                        outputDirTfield,
-                        metadataFileField, 
-                        delim, 
-                        nsegments
-                );
+                segmentInput(delim, nsegments);
             } catch (IOException exc) {
                 exc.printStackTrace();
                 return;
             }
         }
-
-       
-
-        // ////////////////////////////////////////////////////////////////////////////////////
 
         // //////////////////// //
         // Build Argument Lists //
@@ -906,8 +941,8 @@ public class TopicModelingTool {
         // OUTPUT: collectionPath, inputDir, outputDir -- all can be factored
         //         out!
 
-        String inputDir = inputDirTfield.getText();
-        String outputDir = outputDirTfield.getText();
+        String inputDir = getInputDirName();
+        String outputDir = getOutputDirName();
         String collectionPath = null;
 
         try {
@@ -919,7 +954,10 @@ public class TopicModelingTool {
             return;
         }
 
-        appendLog("Importing and Training...this may take a few minutes depending on collection size.");
+        appendLog("");
+        appendLog("Importing and Training...");
+        appendLog("(This may take a few minutes depending on collection size.)");
+        appendLog("");
 
         String malletImportCmd = "";
         Class<?> importClass = null;
@@ -974,7 +1012,7 @@ public class TopicModelingTool {
         // INPUT: outputDir, collectionPath (derivable from outputDir + hard-coded thing above), numTopics, 
         // OUTPUT, none, effectively, I think? 
 
-        outputDir = outputDirTfield.getText();
+        outputDir = getOutputDirName();
         String stateFile = outputDir + File.separator + "output_state.gz";
         String outputDocTopicsFile = outputDir + File.separator + "output_doc_topics.txt";
         String topicKeysFile = outputDir + File.separator + "output_topic_keys";
@@ -1049,9 +1087,21 @@ public class TopicModelingTool {
         appendLog("Time :" + elapsedTimeSec);
     
         Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
-    
+   
+        // Renable the "Learn Topics" button -- this should happen even 
+        // on unexpected exits, actually. All this reset code probably 
+        // should...  case for a global `try... finally`? Yes! But only
+        // once these are broken out into individual methods; it can 
+        // wrap them. 
         trainButton.setText("Learn Topics");
         trainButton.setEnabled(true);
+
+        // Idempotently reset any temporary assignments to the input and
+        // metadata fields. This allows us to temporarily override
+        // those values if necessary. If we have overriden them, these 
+        // reset the values; otherwise, these operations have no effect.
+        setInputDirAlternate();
+        setMetadataFileAlternate();
     
         rootframe.setCursor(normalCursor);
         frameBusy = false;
@@ -1070,12 +1120,12 @@ public class TopicModelingTool {
             escapeTab(advFieldMap.get("io-metadata-delimiter").getText()),
             escapeTab(advFieldMap.get("io-output-delimiter").getText())
         );
-        makecsv.createCsvFiles(outputDir, metadataFileField.getText());
+        makecsv.createCsvFiles(outputDir, getMetadataFileName());
 
         if (htmlOutputFlag) {
             HtmlBuilder hb = new HtmlBuilder(
                     makecsv.getNtd(), 
-                    new File(inputDirTfield.getText()),
+                    new File(getInputDirName()),
                     advFieldMap.get("io-output-delimiter").getText()
             );
             hb.createHtmlFiles(new File(outputDir));
