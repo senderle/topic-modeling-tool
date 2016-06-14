@@ -310,7 +310,8 @@ public class CsvBuilder {
             cells.addAll(topicHeaderCells());
             out.writeCellRow(cells);
 
-            // Everything else... (to be broken out into a separate method) 
+            // Everything else...
+            writeTopicsVectorsRows(in, meta, out);
         }
     }
 
