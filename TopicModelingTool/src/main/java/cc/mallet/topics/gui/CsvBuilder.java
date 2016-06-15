@@ -61,6 +61,21 @@ public class CsvBuilder {
         CSV_DEL = csvDelim;
     }
 
+    private Integer[] sortTopicIdx(final int[] docScores) {
+        final Integer[] idx = new Integer[numDocs];
+        for(int i = 0; i < numDocs; i++){
+            idx[i] = i;
+        }
+
+        Arrays.sort(idx, new Comparator<Integer>() {
+            @Override public int compare(final Integer o1, final Integer o2) {
+                return docScores[o1] - docScores[o2];
+            }
+        });
+
+        return idx;
+    }
+
     public int[][] buildNtd(int T, int D, String stateFile) throws IOException {
         int[][] Ntd = new int[T][D];
         try (BufferedReader in = 
@@ -84,19 +99,28 @@ public class CsvBuilder {
         }
     }
 
-    private Integer[] sortTopicIdx(final int[] docScores) {
-        final Integer[] idx = new Integer[numDocs];
-        for(int i = 0; i < numDocs; i++){
-            idx[i] = i;
-        }
-
-        Arrays.sort(idx, new Comparator<Integer>() {
-            @Override public int compare(final Integer o1, final Integer o2) {
-                return docScores[o1] - docScores[o2];
+    public void docsTopics(String stateFile, int numDocsShown, String outputCsv) throws IOException {
+        Ntd =  buildNtd(numTopics, numDocs, stateFile);
+        if (Ntd != null) {
+            try (BufferedWriter out = 
+                    new BufferedWriter(new FileWriter(outputCsv))) {
+                String header = Util.join(CSV_DEL, "topicId", "rank", 
+                        "docId", "filename");
+                out.write(header + NEWLINE);
+                String line;
+                for (int i = 0; i < numTopics; i++){
+                    Integer[] idx = sortTopicIdx(Ntd[i]);
+                    for (int j = 0; j < numDocsShown; j++) {
+                        int k = idx[numDocs - j - 1];
+                        line = i + CSV_DEL + j + CSV_DEL + k + CSV_DEL + docNames.get(k) + NEWLINE;
+                        out.write(line);
+                    }
+                }
+                out.flush();
             }
-        });
-
-        return idx;
+        } else {
+            System.out.println("NTB is NULL!!!");
+        }
     }
 
     public void topicWords(String topicKeysFile, String outputCsv) throws IOException {
@@ -132,113 +156,6 @@ public class CsvBuilder {
         }
     }
 
-    public String dtLine2Csv(String line) {
-        String[] str = line.split(MALLET_CSV_DEL); // tab as split
-        if (str.length >= 2) {
-            docNames.add(str[1]);
-            return Util.join(CSV_DEL, str);
-        } else {
-            return line;
-        }
-    }
-
-    public String dtLine2dtMeta(String line) {
-        return dtLine2dtMeta(line, "");
-    }
-
-    public String dtLine2dtMeta(String line, String metaLine) {
-        String filename;
-        String[] inCells = line.split(MALLET_CSV_DEL);
-        String[] outCells = new String[numTopics + 1];
-        Arrays.fill(outCells, "0.0");
-
-        int topic;
-
-        if (inCells.length >= 2) {
-            docNames.add(inCells[1]);
-            filename = Paths.get(inCells[1]).getFileName().toString();
-
-            if (metaLine.equals("")) {
-                outCells[0] = Util.join(CSV_DEL, inCells[0], filename);
-            } else {
-                outCells[0] = Util.join(CSV_DEL, inCells[0], filename, metaLine);
-            }
-            
-            for (int i = 2; i < inCells.length - 1; i = i + 2) {
-                topic = Integer.parseInt(inCells[i]);
-                outCells[topic + 1] = inCells[i + 1];
-            }
-
-            return Util.join(CSV_DEL, outCells);
-        } else {
-            return line;
-        }
-    }
-
-    public ArrayList<String> docTopicVectorsRow(String[] inCells) {
-        ArrayList<String> outCells = 
-            new ArrayList<String>(Collections.nCopies(numTopics, "0.0"));
-        int topic;
-        for (int i = 2; i < inCells.length - 1; i = i + 2) {
-            topic = Integer.parseInt(inCells[i]);
-            outCells.set(topic, inCells[i + 1]);
-        }
-        return outCells;
-    }
-
-    public HashMap<String, String[]> csvMap(Iterator<String[]> csvIterator)
-    throws IOException {
-        return csvMap(csvIterator, 0);
-    }
-
-    public HashMap<String, String[]> csvMap(
-            Iterator<String[]> csvIterator, 
-            int keyColumn
-    ) throws IOException {
-        String[] csvCells;
-        HashMap<String, String[]> map = new HashMap<String, String[]>();
-        while ((csvCells = csvIterator.next()) != null) {
-            if (csvCells.length <= keyColumn) {
-                log.warning("csvMap: keyColumn out of bounds. Bad line:");
-                log.warning(Util.join(META_CSV_DEL, csvCells));
-            } else {
-                map.put(csvCells[keyColumn], csvCells);
-            }
-        }
-        return map;
-    }
-
-    public String topicHeader() {
-        StringBuilder header = new StringBuilder();
-
-        header.append(0);
-        header.append(" ");
-        header.append(Util.join(" ", topicHeaderWords.get(0)));
-        for (int i = 1; i < topicHeaderWords.size(); i += 1) {
-            header.append(CSV_DEL);
-            header.append(i);
-            header.append(" ");
-            header.append(Util.join(" ", topicHeaderWords.get(i)));
-        }
-
-        return header.toString();
-    }
-
-    public ArrayList<String> topicHeaderCells() {
-        ArrayList<String> header = new ArrayList<String>();
-        StringBuilder headerCell = new StringBuilder();
-
-        for (int i = 0; i < topicHeaderWords.size(); i += 1) {
-            headerCell.append(i);
-            headerCell.append(" ");
-            headerCell.append(Util.join(" ", topicHeaderWords.get(i)));
-            header.add(headerCell.toString());
-            headerCell.setLength(0);
-        }
-
-        return header;
-    }
-
     public void topicsDocs(String docTopicsFile, String outputCsv) throws IOException {
         try (
             BufferedReader in = 
@@ -247,102 +164,80 @@ public class CsvBuilder {
                 new BufferedWriter(new FileWriter(outputCsv))
         ) {
             String line = null;
+            String[] row = null;
             int nd = 0;
             docNames = new ArrayList<String>();
+            String header = Util.join(CSV_DEL, "docId", "filename", "toptopics...");
 
             line = in.readLine();      //skip mallet header line
 
-            String header = Util.join(CSV_DEL, "docId", "filename", "toptopics...");
             out.write(header + NEWLINE);
             while ((line = in.readLine()) != null) {
                 nd++;
-                out.write(dtLine2Csv(line) + NEWLINE);
+                row = line.split(MALLET_CSV_DEL);
+                if (row.length >= 2) {
+                    docNames.add(row[1]);
+                    line = Util.join(CSV_DEL, row);
+                }
+                out.write(line + NEWLINE);
             }
             out.flush();
             setNumDocs(nd);
         }
     }
 
-    public void topicsVectors(String docTopicsFile, String outputCsv) throws IOException {  //topics in doc, as vectors
-        try (
-            BufferedReader in = 
-                new BufferedReader(new FileReader(docTopicsFile));
-            BufferedWriter out =
-                new BufferedWriter(new FileWriter(outputCsv))
-        ) {
-            String line = null;
-            int nd = 0;
-            docNames = new ArrayList<String>();
-
-            line = in.readLine();  // skip mallet header line
-
-            String header = Util.join(CSV_DEL, "docId", "filename", topicHeader());
-            out.write(header + NEWLINE);
-            while ((line = in.readLine()) != null) {
-                nd++;
-                out.write(dtLine2dtMeta(line) + NEWLINE);
-            }
-            out.flush();
-            setNumDocs(nd);
-        }
+    public void topicsVectors(String docTopicsFile, 
+            String outputCsv) throws IOException {
+        topicsVectors(docTopicsFile, outputCsv, null);
     }
 
-    public void topicsVectors(String docTopicsFile, String outputCsv, String metadataFile) throws IOException {  //topics in doc, as vectors
+    public void topicsVectors(String docTopicsFile, String outputCsv, 
+            String metadataFile) throws IOException {
         try (
             BufferedReader in = 
                 new BufferedReader(new FileReader(docTopicsFile));
             CsvWriter out = new CsvWriter(outputCsv);
         ) {
-            CsvReader meta = new CsvReader(metadataFile, META_CSV_DEL, 1);
-            ArrayList<String> cells;
+            CsvReader meta = null;
+            if (metadataFile != null) {
+                meta = new CsvReader(metadataFile, META_CSV_DEL, 1);
+            }
 
-            // Create new headers...
-            //
-            // skip MALLET header line
+            // Skip MALLET header line.
             in.readLine();      
-            // Construct new metadata header.
-            cells = new ArrayList<String>();
-            // Start with MALLET headers
+
+            // Concatenate MALLET, Metadata, and Topic headers:
+            ArrayList<String> cells = new ArrayList<String>();
             cells.addAll(Arrays.asList("docId", "filename"));
-            // Add headers from metadata.
-            cells.addAll(Arrays.asList(meta.getHeaders().get(0)));
-            // Add headers for topics (using headwords)
+            cells.addAll(metadataHeaderCells(meta));
             cells.addAll(topicHeaderCells());
             out.writeCellRow(cells);
 
-            // Everything else...
             writeTopicsVectorsRows(in, meta, out);
         }
     }
 
-    private ArrayList<String> getEmptyMetaCells(int len) {
-        ArrayList<String> emptyMetaCells = new ArrayList<String>(
-            Collections.nCopies(len, "[empty]")
-        );
-
-        if (emptyMetaCells.size() > 0) {
-            emptyMetaCells.set(0, "[filename-not-found-in-metadata]");
-        }
-        return emptyMetaCells;
-    }
-
-
-    public void writeTopicsVectorsRows(BufferedReader in, CsvReader meta, 
+    private void writeTopicsVectorsRows(BufferedReader in, CsvReader meta, 
             CsvWriter out) 
     throws IOException {
         int nd = 0;
+        int nheaders = 0;
         String line, filename, malletId = null;
         HashMap<String, String[]> metaMap = null;
         List<String> cells, emptyMetaCells;
 
         // Create placeholder data of same length as metadata headers.
-        emptyMetaCells = getEmptyMetaCells(meta.getHeaders().get(0).length);
+        if (meta != null) {
+            nheaders = meta.getHeaders().get(0).length;
+        }
+
+        emptyMetaCells = new ArrayList<String>();
 
         // Initialize document name storage to be filled below.
         docNames = new ArrayList<String>();
 
         // Create map from filenames to correct metadata.
-        metaMap = csvMap(meta.iterator());
+        metaMap = csvMap(meta);
 
         // Use cells as a row accumulator.
         cells = new ArrayList<String>();
@@ -362,39 +257,94 @@ public class CsvBuilder {
 
             cells.clear();
             cells.addAll(Arrays.asList(malletId, filename));
-            if (metaMap.containsKey(filename)) {
-                cells.addAll(Arrays.asList(metaMap.get(filename))); 
-            } else {
-                cells.addAll(emptyMetaCells);
-            }
-            cells.addAll(docTopicVectorsRow(inLine));
+            cells.addAll(metadataRowCells(metaMap, filename, emptyMetaCells));
+            cells.addAll(topicRowCells(inLine));
             out.writeCellRow(cells);
         }
         setNumDocs(nd);
     }
 
-    public void docsTopics(String stateFile, int numDocsShown, String outputCsv) throws IOException {
-        Ntd =  buildNtd(numTopics, numDocs, stateFile);
-        if (Ntd != null) {
-            try (BufferedWriter out = 
-                    new BufferedWriter(new FileWriter(outputCsv))) {
-                String header = Util.join(CSV_DEL, "topicId", "rank", 
-                        "docId", "filename");
-                out.write(header + NEWLINE);
-                String line;
-                for (int i = 0; i < numTopics; i++){
-                    Integer[] idx = sortTopicIdx(Ntd[i]);
-                    for (int j = 0; j < numDocsShown; j++) {
-                        int k = idx[numDocs - j - 1];
-                        line = i + CSV_DEL + j + CSV_DEL + k + CSV_DEL + docNames.get(k) + NEWLINE;
-                        out.write(line);
-                    }
-                }
-                out.flush();
-            }
-        } else {
-            System.out.println("NTB is NULL!!!");
+    private ArrayList<String> topicHeaderCells() {
+        ArrayList<String> header = new ArrayList<String>();
+        StringBuilder headerCell = new StringBuilder();
+
+        for (int i = 0; i < topicHeaderWords.size(); i += 1) {
+            headerCell.append(i);
+            headerCell.append(" ");
+            headerCell.append(Util.join(" ", topicHeaderWords.get(i)));
+            header.add(headerCell.toString());
+            headerCell.setLength(0);
         }
+
+        return header;
+    }
+
+    private List<String> metadataHeaderCells(CsvReader meta) throws IOException {
+        if (meta != null) {
+            return Arrays.asList(meta.getHeaders().get(0));
+        } else {
+            return new ArrayList<String>();
+        }
+    }
+
+    private ArrayList<String> topicRowCells(String[] inCells) {
+        ArrayList<String> outCells = 
+            new ArrayList<String>(Collections.nCopies(numTopics, "0.0"));
+        int topic;
+        for (int i = 2; i < inCells.length - 1; i = i + 2) {
+            topic = Integer.parseInt(inCells[i]);
+            outCells.set(topic, inCells[i + 1]);
+        }
+        return outCells;
+    }
+
+    private List<String> metadataRowCells(HashMap<String, String[]> meta, 
+            String filename, List<String> fallback) {
+        if (meta == null) {
+            return new ArrayList<String>();
+        } else if (meta.containsKey(filename)) {
+            return Arrays.asList(meta.get(filename));
+        } else {
+            return fallback;
+        }
+    }
+
+    private HashMap<String, String[]> csvMap(Iterable<String[]> csvIterable)
+    throws IOException {
+        return csvMap(csvIterable, 0);
+    }
+
+    private HashMap<String, String[]> csvMap(Iterable<String[]> csvIterable, 
+            int keyColumn) 
+    throws IOException {
+        if (csvIterable == null) {
+            return null;
+        }
+
+        Iterator<String[]> csvIterator = csvIterable.iterator();
+
+        String[] csvCells;
+        HashMap<String, String[]> map = new HashMap<String, String[]>();
+        while ((csvCells = csvIterator.next()) != null) {
+            if (csvCells.length <= keyColumn) {
+                log.warning("csvMap: keyColumn out of bounds. Bad line:");
+                log.warning(Util.join(META_CSV_DEL, csvCells));
+            } else {
+                map.put(csvCells[keyColumn], csvCells);
+            }
+        }
+        return map;
+    }
+
+    private ArrayList<String> getEmptyMetaCells(int len) {
+        ArrayList<String> emptyMetaCells = new ArrayList<String>(
+            Collections.nCopies(len, "[empty]")
+        );
+
+        if (emptyMetaCells.size() > 0) {
+            emptyMetaCells.set(0, "[filename-not-found-in-metadata]");
+        }
+        return emptyMetaCells;
     }
 
     public void setNumDocs(int value) {

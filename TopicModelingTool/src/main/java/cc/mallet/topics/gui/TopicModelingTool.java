@@ -955,8 +955,8 @@ public class TopicModelingTool {
         }
 
         appendLog("");
-        appendLog("Importing and Training...");
-        appendLog("(This may take a few minutes depending on collection size.)");
+        appendLog("Importing and Training.");
+        appendLog("This could take minutes or days depending on settings and corpus size.");
         appendLog("");
 
         String malletImportCmd = "";
