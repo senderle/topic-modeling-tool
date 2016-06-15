@@ -1,0 +1,4 @@
+Here are some words to be split up into smaller chunks.
+The goal is to test the ability of the file splitter
+to split the file up into chunks of equal numbers
+of words. Is it working? I hope so! Take a look...
