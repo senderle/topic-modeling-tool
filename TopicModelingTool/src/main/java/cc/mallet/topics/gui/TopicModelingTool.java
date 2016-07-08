@@ -50,7 +50,7 @@ public class TopicModelingTool {
     JTextArea log;
 
     JButton inputDataButton, outputDirButton, trainButton, clearButton,
-            advancedButton, stopChooseButton, metadataChooseButton;
+            advancedButton;
     JCheckBox stopBox;
 
     JTextField numTopics = new JTextField(2);
@@ -336,11 +336,11 @@ public class TopicModelingTool {
         */
        public void actionPerformed(ActionEvent e) {
             if(stopBox.isSelected()){
-                 stopChooseButton.setEnabled(true);
+                 stopFileField.setEnabled(true);
              }
    
             else{
-                stopChooseButton.setEnabled(false);
+                stopFileField.setEnabled(false);
             }
         }
     }
@@ -567,7 +567,7 @@ public class TopicModelingTool {
 
         metadataFileField.setText(DEFAULT_METADATA_FILE);
         stopFileField.setText("Mallet Default");
-        stopChooseButton.setEnabled(stopBox.isSelected());        // Not sure why this doesn't happen automatically
+        stopFileField.setEnabled(stopBox.isSelected());        // Not sure why this doesn't happen automatically
     }
   
     /**
