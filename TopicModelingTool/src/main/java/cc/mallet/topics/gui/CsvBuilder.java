@@ -31,7 +31,6 @@ import static cc.mallet.topics.gui.TopicModelingTool.DOCS_IN_TOPICS;
 import cc.mallet.topics.gui.util.Util;
 import cc.mallet.topics.gui.util.CsvReader;
 import cc.mallet.topics.gui.util.CsvWriter;
-
 public class CsvBuilder {
 
     private final static Logger log = 
@@ -250,7 +249,7 @@ public class CsvBuilder {
                 filename = inLine[1];
                 docNames.add(filename);
                 
-                filename = Paths.get(filename).getFileName().toString();
+                filename = Paths.get(java.net.URI.create(filename)).getFileName().toString();           
             } else {
                 continue;
             }
