@@ -249,7 +249,7 @@ public class CsvBuilder {
                 filename = inLine[1];
                 docNames.add(filename);
                 
-                filename = Paths.get(java.net.URI.create(filename)).getFileName().toString();           
+                filename = Paths.get(java.net.URI.create(filename)).getFileName().toString();          
             } else {
                 continue;
             }
