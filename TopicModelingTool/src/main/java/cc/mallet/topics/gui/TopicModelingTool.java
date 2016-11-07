@@ -8,11 +8,13 @@ import java.awt.event.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.nio.file.Path;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+
 import java.io.PrintStream;
 import java.lang.reflect.*;
 
@@ -117,6 +119,17 @@ public class TopicModelingTool {
         return outputDirTfield.getText();
     }
 
+    public String createDirName(){
+    	Date date = new Date();
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss") ;
+    	String name = dateFormat.format(date);
+    	String timeStamp = name.substring(0,10);
+    	File dir = new File(getOutputDirName(), "TopicModelingResults" + timeStamp);
+    	dir.mkdir();
+    	String combinedPath = dir.toString();
+    	return combinedPath;
+    }
+    
     public String getStopFileName() {
         return stopFileField.getText();
     }
@@ -943,12 +956,13 @@ public class TopicModelingTool {
 
         String inputDir = getInputDirName();
         String outputDir = getOutputDirName();
+        String combinedDir = createDirName();
         String collectionPath = null;
 
         try {
             // TODO: Replace hard-coded value "topic-input.mallet" with var.
             collectionPath =  
-                new File(outputDir, "topic-input.mallet").getCanonicalPath();
+                new File(combinedDir, "topic-input.mallet").getCanonicalPath();
         } catch (IOException exc) {
             exc.printStackTrace();
             return;
@@ -1013,9 +1027,9 @@ public class TopicModelingTool {
         // OUTPUT, none, effectively, I think? 
 
         outputDir = getOutputDirName();
-        String stateFile = outputDir + File.separator + "output_state.gz";
-        String outputDocTopicsFile = outputDir + File.separator + "output_doc_topics.txt";
-        String topicKeysFile = outputDir + File.separator + "output_topic_keys";
+        String stateFile = combinedDir + File.separator + "output_state.gz";
+        String outputDocTopicsFile = combinedDir + File.separator + "output_doc_topics.txt";
+        String topicKeysFile = combinedDir + File.separator + "output_topic_keys";
 
         Class<?> trainClass = null;
         String[] trainArgs = null;
@@ -1062,8 +1076,8 @@ public class TopicModelingTool {
 
         try {
             GunZipper g = new GunZipper(new File(stateFile));
-            g.unzip(new File(outputDir + File.separator + "output_state"));
-            outputCsvFiles(outputDir, true);
+            g.unzip(new File(combinedDir + File.separator + "output_state"));
+            outputCsvFiles(combinedDir, true);
         } catch (Throwable exc) {
             exc.printStackTrace();
             return;
@@ -1073,9 +1087,9 @@ public class TopicModelingTool {
         // Report Results and Reset GUI //
         // //////////////////////////// //
 
-        appendLog("Mallet Output files written in " + outputDir + " ---> " + stateFile + " , " + topicKeysFile);
-        appendLog("Csv Output files written in " + outputDir + File.separator+ "output_csv");
-        appendLog("Html Output files written in " + outputDir + File.separator+ "output_html");
+        appendLog("Mallet Output files written in " + combinedDir + " ---> " + stateFile + " , " + topicKeysFile);
+        appendLog("Csv Output files written in " + combinedDir + File.separator+ "output_csv");
+        appendLog("Html Output files written in " + combinedDir + File.separator+ "output_html");
 
         log.setCaretPosition(log.getDocument().getLength());
         clearButton.setEnabled(true);
@@ -1113,14 +1127,14 @@ public class TopicModelingTool {
     * @param outputDir the output directory
     * @param htmlOutputFlag print html output or not
     */
-    private void outputCsvFiles(String outputDir, Boolean htmlOutputFlag) 
+    private void outputCsvFiles(String combinedDir, Boolean htmlOutputFlag) 
         throws IOException {
         CsvBuilder makecsv = new CsvBuilder(
             Integer.parseInt(numTopics.getText()),
             escapeTab(advFieldMap.get("io-metadata-delimiter").getText()),
             escapeTab(advFieldMap.get("io-output-delimiter").getText())
         );
-        makecsv.createCsvFiles(outputDir, getMetadataFileName());
+        makecsv.createCsvFiles(combinedDir, getMetadataFileName());
 
         if (htmlOutputFlag) {
             HtmlBuilder hb = new HtmlBuilder(
@@ -1128,20 +1142,20 @@ public class TopicModelingTool {
                     new File(getInputDirName()),
                     advFieldMap.get("io-output-delimiter").getText()
             );
-            hb.createHtmlFiles(new File(outputDir));
+            hb.createHtmlFiles(new File(combinedDir));
         }
-        clearExtrafiles(outputDir);
+        clearExtrafiles(combinedDir);
     }
 
-    private void clearExtrafiles(String outputDir) {
+    private void clearExtrafiles(String combinedDir) {
         String[] fileNames = {"topic-input.mallet", "output_topic_keys", "output_state.gz",
-                                "output_doc_topics.txt", "output_state"};
+                "output_doc_topics.txt", "output_state"};
         for (String f:fileNames) {
-            if (!(new File(outputDir, f).canWrite())) {
+            if (!(new File(combinedDir, f).canWrite())) {
                 appendLog("clearExtrafiles failed on ");
                 appendLog(f);
             }
-            Boolean b = new File(outputDir, f).delete();
+            Boolean b = new File(combinedDir, f).delete();
         }
     }
 
