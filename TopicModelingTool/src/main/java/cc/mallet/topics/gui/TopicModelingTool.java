@@ -121,10 +121,9 @@ public class TopicModelingTool {
 
     public String createDirName(){
     	Date date = new Date();
-    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss") ;
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd.HH.mm") ;
     	String name = dateFormat.format(date);
-    	String timeStamp = name.substring(0,10);
-    	File dir = new File(getOutputDirName(), "TopicModelingResults" + timeStamp);
+    	File dir = new File(getOutputDirName(), "TopicModelingResults" + name);
     	dir.mkdir();
     	String combinedPath = dir.toString();
     	return combinedPath;
