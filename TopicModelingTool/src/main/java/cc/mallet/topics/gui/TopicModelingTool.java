@@ -2,6 +2,7 @@ package cc.mallet.topics.gui;
 
 import cc.mallet.topics.gui.util.BatchSegmenter;
 import cc.mallet.topics.gui.util.CsvWriter;
+import cc.mallet.topics.gui.util.FakeMetadata;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -142,7 +143,19 @@ public class TopicModelingTool {
         }
         log.setCaretPosition(log.getDocument().getLength());
     }
-  
+
+    private void errorLog(Throwable exc) {
+        appendLog("Unexpected Error");
+        appendLog("");
+        appendLog(" -- System Message -- ");
+        appendLog("");
+        appendLog(exc.getStackTrace().toString());
+        appendLog("");
+        appendLog(" -- End System Message -- ");
+        appendLog("");
+        appendLog("Resetting Tool...");
+    }
+
     private static String escapeTab(String in) {
         return in.replace("\\t", "\t");
     }
@@ -840,7 +853,15 @@ public class TopicModelingTool {
         Path outputDirPath = Paths.get(getOutputDirName());
         Path segmentPath = Paths.get(getOutputDirName(), "segments");
         Path newMetadataPath = Paths.get(getOutputDirName(), "segments-metadata.csv");
-        Path metadataPath = Paths.get(getMetadataFileName());
+        Path metadataPath = null;
+
+        if (getMetadataFileName().equals("")) {
+            metadataPath = Paths.get(getOutputDirName(), "autogen-metadata.csv");
+            setMetadataFileAlternate(metadataPath.toString());
+            FakeMetadata.write(inputDirPath, metadataPath, delim);
+        } else {
+            metadataPath = Paths.get(getMetadataFileName());
+        }
        
         Files.createDirectories(segmentPath);
         BatchSegmenter bs = new BatchSegmenter(inputDirPath, 
@@ -877,8 +898,10 @@ public class TopicModelingTool {
 
         int nsegments = 
             Integer.parseInt(advFieldMap.get("io-segment-files").getText());
-        if (nsegments > 0 && !getMetadataFileName().equals("")) {
-            String delim = advFieldMap.get("io-metadata-delimiter").getText();
+        String delim = null;
+
+        if (nsegments > 0) {
+            delim = advFieldMap.get("io-metadata-delimiter").getText();
             delim = escapeTab(delim);
 
             appendLog("Automatically segmenting files...");
@@ -886,7 +909,8 @@ public class TopicModelingTool {
             try {
                 segmentInput(delim, nsegments);
             } catch (IOException exc) {
-                exc.printStackTrace();
+                errorLog(exc);
+                runMalletCleanup();
                 return;
             }
         }
@@ -950,7 +974,8 @@ public class TopicModelingTool {
             collectionPath =  
                 new File(outputDir, "topic-input.mallet").getCanonicalPath();
         } catch (IOException exc) {
-            exc.printStackTrace();
+            errorLog(exc);
+            runMalletCleanup();
             return;
         }
 
@@ -988,7 +1013,8 @@ public class TopicModelingTool {
                 malletImportCmd = "import-file";
             }
         } catch (ClassNotFoundException exc) {
-            exc.printStackTrace();
+            errorLog(exc);
+            runMalletCleanup();
             return;
         }
 
@@ -1001,7 +1027,8 @@ public class TopicModelingTool {
             importClass.getMethod("main", importArgTypes)
                        .invoke(null, importPassedArgs);
         } catch (Throwable exc) {
-            exc.printStackTrace();
+            errorLog(exc);
+            runMalletCleanup();
             return;
         }
 
@@ -1040,7 +1067,8 @@ public class TopicModelingTool {
         try {
             trainClass = Class.forName("cc.mallet.topics.tui.Vectors2Topics");
         } catch (ClassNotFoundException exc) {
-            exc.printStackTrace();
+            errorLog(exc);
+            runMalletCleanup();
             return;
         }
 
@@ -1052,7 +1080,8 @@ public class TopicModelingTool {
         try {
             trainClass.getMethod("main", trainArgTypes).invoke(null, trainPassedArgs);
         } catch (Throwable exc) {
-            exc.printStackTrace();
+            errorLog(exc);
+            runMalletCleanup();
             return;
         }
 
@@ -1065,7 +1094,8 @@ public class TopicModelingTool {
             g.unzip(new File(outputDir + File.separator + "output_state"));
             outputCsvFiles(outputDir, true);
         } catch (Throwable exc) {
-            exc.printStackTrace();
+            errorLog(exc);
+            runMalletCleanup();
             return;
         }
 
@@ -1085,14 +1115,18 @@ public class TopicModelingTool {
         // Get elapsed time in seconds
         float elapsedTimeSec = elapsedTimeMillis/1000F;
         appendLog("Time :" + elapsedTimeSec);
-    
+
+        runMalletCleanup();
+    }
+
+    public void runMalletCleanup() {
         Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
    
         // Renable the "Learn Topics" button -- this should happen even 
-        // on unexpected exits, actually. All this reset code probably 
-        // should...  case for a global `try... finally`? Yes! But only
-        // once these are broken out into individual methods; it can 
-        // wrap them. 
+        // on unexpected exits.
+        // 
+        // Eventually, a global `try... finally` should run this,
+        // once the runMallet routines are broken out into individual methods.
         trainButton.setText("Learn Topics");
         trainButton.setEnabled(true);
 
