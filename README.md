@@ -9,15 +9,15 @@
 * **Custom regex tokenization**
 * **Multicore processor support**
 
-#### Getting started:
+### Getting started:
 
 If you're familiar with the basic idea behind topic modeling, using the tool isn't difficult. However, you may want to read some background material on topic modeling if you're not quite sure how it works. Miriam Posner and Andy Wallace's [Very basic strategies for interpreting results from the Topic Modeling Tool](http://miriamposner.com/blog/very-basic-strategies-for-interpreting-results-from-the-topic-modeling-tool/) is a great starting point for people who think best by doing. Ted Underwood's [Topic modeling made just simple enough](https://tedunderwood.com/2012/04/07/topic-modeling-made-just-simple-enough/) provides a slightly more theoretical -- but still very accessible -- introduction.
 
-##### Install Java
+#### Install Java
 
 If you don't have a recent version of Java, you will need to install one or update your existing installation. (In particular, older Macs may have very out-of-date versions of Java that this tool no loner supports.) To install Java, follow the instructions for your operating system [here](https://java.com/en/download/help/download_options.xml).
 
-##### Setting up your workspace
+#### Set up your workspace
 
 We recommend starting with an organized workspace containing just the following directories and files. You may use any names you like, but we've chosen simple ones here for the sake of clarity:
 
@@ -47,7 +47,7 @@ We recommend starting with an organized workspace containing just the following 
       
       **NOTE for Excel users with Apple computers**: If you try to read a CSV saved with Excel on a Mac, the Topic Modeling Tool will currently choke on it. Excel's support for character encodings is [mind bogglingly obsolete](http://stackoverflow.com/q/4221176/577088). We're working on writing something that can handle unexpected Latin-1-encoded data, but for now, we recommend that you import your CSV into Google Sheets and export it back out as a CSV.
 
-##### Running the tool
+#### Run the tool
 
 Once you have your workspace set up, double-click the `TopicModelingTool.jar` file. A window should appear that looks roughly like this:
 
