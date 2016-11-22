@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.lang.reflect.*;
 
 import javax.swing.*;
@@ -71,6 +73,7 @@ public class TopicModelingTool {
     LinkedHashMap<String, JTextField> advFieldMap = new LinkedHashMap<String, JTextField>();
     
     Boolean frameBusy = false;
+    Boolean failOnExc = false;
 
 
     // THIS IS A GOD OBJECT. It needs to be refactored into at least three
@@ -81,6 +84,14 @@ public class TopicModelingTool {
     // ////////////////////////////////////////////////// //
     // SECTION ONE: Small Utility Functions and Accessors //
     // ////////////////////////////////////////////////// //
+
+    public TopicModelingTool(boolean isTest) {
+        failOnExc = isTest;
+    }
+
+    public TopicModelingTool() {
+        this(false);
+    }
 
     public String getInputDirName() {
         if (inputDirAlternate == null) {
@@ -145,11 +156,18 @@ public class TopicModelingTool {
     }
 
     private void errorLog(Throwable exc) {
+        if (failOnExc) {
+            throw new RuntimeException(exc);
+        }
+
         appendLog("Unexpected Error");
         appendLog("");
         appendLog(" -- System Message -- ");
         appendLog("");
-        appendLog(exc.getStackTrace().toString());
+
+        StringWriter traceStringWriter = new StringWriter();
+        exc.printStackTrace(new PrintWriter(traceStringWriter));
+        appendLog(traceStringWriter.toString());
         appendLog("");
         appendLog(" -- End System Message -- ");
         appendLog("");
@@ -1204,9 +1222,9 @@ public class TopicModelingTool {
             DEFAULT_METADATA_FILE = args[2];
         }
         
-        TopicModelingTool tmt = new TopicModelingTool();
+        TopicModelingTool tmt = new TopicModelingTool(istest);
         tmt.go();
-        
+
         if (istest) {
             tmt.runMallet();
         }
