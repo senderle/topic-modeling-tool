@@ -7,8 +7,13 @@ import junit.framework.TestCase;
 public class TopicModelOutputTest extends TestCase {
     public void testTopicModelOutput() throws Exception {
         String[] args = new String[3];
+
         args[0] = new File("src/test/resources/data/tinyset").getAbsolutePath();
-        args[1] = new File("target/test-outputs").getAbsolutePath();
+        
+        File outputDir = new File("target/test-outputs");
+        outputDir.mkdirs();
+        args[1] = outputDir.getAbsolutePath();
+
         args[2] = new File(
                 "src/test/resources/data/dos-bulletin-1953-1954-metadata.csv"
                 ).getAbsolutePath();

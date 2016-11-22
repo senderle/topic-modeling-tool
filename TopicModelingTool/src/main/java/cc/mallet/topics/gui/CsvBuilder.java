@@ -31,7 +31,6 @@ import static cc.mallet.topics.gui.TopicModelingTool.DOCS_IN_TOPICS;
 import cc.mallet.topics.gui.util.Util;
 import cc.mallet.topics.gui.util.CsvReader;
 import cc.mallet.topics.gui.util.CsvWriter;
-
 public class CsvBuilder {
 
     private final static Logger log = 
@@ -224,14 +223,14 @@ public class CsvBuilder {
         int nheaders = 0;
         String line, filename, malletId = null;
         HashMap<String, String[]> metaMap = null;
-        List<String> cells, emptyMetaCells;
+        List<String> cells, emptyMetaCells = null;
 
         // Create placeholder data of same length as metadata headers.
         if (meta != null) {
             nheaders = meta.getHeaders().get(0).length;
         }
-
-        emptyMetaCells = new ArrayList<String>();
+        
+        emptyMetaCells = getEmptyMetaCells(nheaders);
 
         // Initialize document name storage to be filled below.
         docNames = new ArrayList<String>();
@@ -250,7 +249,7 @@ public class CsvBuilder {
                 filename = inLine[1];
                 docNames.add(filename);
                 
-                filename = Paths.get(filename).getFileName().toString();
+                filename = Paths.get(java.net.URI.create(filename)).getFileName().toString();
             } else {
                 continue;
             }
