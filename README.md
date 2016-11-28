@@ -51,45 +51,45 @@ We recommend starting with an organized workspace containing just the following 
 
 Once you have your workspace set up, double-click the `TopicModelingTool.jar` file. A window should appear that looks roughly like this:
 
-<img src="doc/quickstart/main-tool-window.png" alt="Main tool window" title="Main tool window" width="50%" />
+<img src="doc/quickstart/main-tool-window.png" alt="Main tool window" title="Main tool window" width="631" height="691" />
 
 Recall that Mac users may need to hold control while double-clicking and select "Open." If that doesn't work, your version of Java may not be sufficiently up-to-date.
 
 Next, select the input folder by clicking this button:
 
-<img src="doc/quickstart/input-dir-button.png" alt="Input button" title="Input button" />
+<img src="doc/quickstart/input-dir-button.png" alt="Input directory button" title="Input directory button" width="251" height="34" />
 
 Use the file chooser to select `input` by clicking once. (If you double-click, it will take you into the folder, which is not what you want!) Then click the "Choose" button.
 
-<img src="doc/quickstart/input-select.png" alt="Selecting input" title="Selecting input" width="50%" />
+<img src="doc/quickstart/input-select.png" alt="Select input" title="Select input" width="662" height="534" />
 
 Then select the output folder by clicking this button:
 
-<img src="doc/quickstart/output-dir-button.png" alt="Output button" title="Output button" />
+<img src="doc/quickstart/output-dir-button.png" alt="Output directory button" title="Output directory button" width="250" height="33" />
 
 Use the file chooser to select `output` by clicking once and then clicking the "Choose" button.
 
-<img src="doc/quickstart/output-select.png" alt="Selecting output" title="Selecting output" width="50%" />
+<img src="doc/quickstart/output-select.png" alt="Select output" title="Select output" width="662" height="534" />
 
 Finally, if you'd like to include a metadata file, open the optional settings window by clicking this button:
 
-<img src="doc/quickstart/optional-settings-button.png" alt="Optional settings button" title="Optional settings button" />
+<img src="doc/quickstart/optional-settings-button.png" alt="Optional settings button" title="Optional settings button" width="160" height="30" />
 
 A window like this should open:
 
-<img src="doc/quickstart/optional-settings.png" alt="Selecting metadata" title="Selecting metadata" width="50%" />
+<img src="doc/quickstart/optional-settings.png" alt="Optional settings window" title="Optional settings window" width="666" height="553" />
 
 Click on this button:
 
-<img src="doc/quickstart/metadata-file-button.png" alt="Metadata button" title="Metadata button" />
+<img src="doc/quickstart/metadata-file-button.png" alt="Metadata file button" title="Metadata file button" width="271" height="31" />
 
 Again, use the file chooser to select `metadata.csv` and click on the "Choose" button.
 
-<img src="doc/quickstart/metadata-select.png" alt="Selecting metadata" title="Selecting metadata" width="50%" />
+<img src="doc/quickstart/metadata-select.png" alt="Select metadata" title="Select metadata" width="662" height="534" />
 
 Finally, you'll probably want to adjust the number of topics:
 
-<img src="doc/quickstart/number-of-topics.png" alt="Selecting number of topics" title="Selecting number of topics" width="50%" />
+<img src="doc/quickstart/number-of-topics.png" alt="Select number of topics" title="Select number of topics" width="631" height="691" />
 
 For more information on the other options, you might take a look at the [MALLET](http://mallet.cs.umass.edu/) documentation. Most of the settings will be passed straight on to MALLET; the others, such as the CSV delimiter options, should be fairly straightforward. More thorough documentation of the options available is forthcoming.
 
@@ -121,63 +121,63 @@ The CSV data is less self-explanatory, but can be much more useful for analysis.
 
 To build a pivot table in Excel, open `TopicsMetadata.csv` in Excel. Then select "Pivot Table..." under the top-level "Data" menu. (Note: The exact names of menu items differ between Excel versions, but all modern versions of Excel have the option somewhere; if you can't find it, search online for instructions for your version of Excel. This guide is based on Excel 2011 for Mac.)
 
-<img src="doc/quickstart/pivot-table-menu-item.png" alt="Pivot Table menu item" title="Pivot Table menu item" width="50%" />
+<img src="doc/quickstart/pivot-table-menu-item.png" alt="Pivot table menu item" title="Pivot table menu item" width="314" height="404" />
 
 When you select the Pivot Table menu item, a dialog box will appear, but you won't need to change any settings. Just click OK:
 
-<img src="doc/quickstart/pivot-table-create-window.png" alt="Create Pivot Table window" title="Create Pivot Table window" width="50%" />
+<img src="doc/quickstart/pivot-table-create-window.png" alt="Create pivot table window" title="Create pivot table window" width="495" height="451" />
 
 After a moment, a Pivot Table Builder window will appear. It will look roughly like this. (The exact appearance differs between Excel versions but the overall layout is the same.)
 
-<img src="doc/quickstart/pivot-table-builder-empty.png" alt="Main tool window" title="Main tool window" width="50%" />
+<img src="doc/quickstart/pivot-table-builder-empty.png" alt="Pivot table builder" title="Pivot table builder" width="331" height="524" />
 
 To start building the table, select the column you'd like to group rows by. In this example, we have a "Year" column, and by selecting that column, we can quickly create a line chart comparing year-by-year changes in the popularity of different topics.
 
-<img src="doc/quickstart/pivot-table-select-year.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-select-year.png" alt="Select year" title="Select year" width="121" height="60" />
 
 Once you've clikced on the "Year" check box, a "Year" entry will appear in the "Values" box, like so:
 
-<img src="doc/quickstart/pivot-table-year-selected.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-year-selected.png" alt="Year selected" title="Year selected" width="331" height="524" />
 
 All selected values start in the "Values" box. To use them to group rows together, we need to move them over to the "Row Labels" box. Simply drag and drop!
 
-<img src="doc/quickstart/pivot-table-year-to-row.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-year-to-row.png" alt="Move year to row" title="Move year to row" width="331" height="524" />
 
 At this point, we'll have a table with a row for each year. For each row in this new table, *all* the rows in the original table (`TopicsMetadata.csv`) with the same year will be grouped together into one, and the values for each of the columns in those rows will be aggregated. But first we have to select which values to aggregate. Until we do, the remaining columns will be blank, like this:
 
-<img src="doc/quickstart/pivot-table-year-row-example.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-year-row-example.png" alt="Empty year table" title="Empty year table" width="430" height="523" />
 
 In this example, one of the topics is labeled "17 welfare children social." Let's pick that one.
 
-<img src="doc/quickstart/pivot-table-select-welfare.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-select-welfare.png" alt="Select welfare column" title="Select welfare column" width="236" height="97" />
 
 Once we've done so, it will appear in the "Values" box.
 
-<img src="doc/quickstart/pivot-table-sum-welfare.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-sum-welfare.png" alt="Welfare sum" title="Welfare sum" width="141" height="56" />
 
 By default the values will be aggregated by *summing*. But we don't want to sum the values; we want to take the average instead.
 
-<img src="doc/quickstart/pivot-table-select-average-welfare.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-select-average-welfare.png" alt="Select welfare average" title="Select welfare average" width="468" height="355" />
 
 Now we have a meaninful table. Each row corresponds to a year, and each value is the average percent of each document published in that year to discuss topic 17, "welfare, children, social."
 
-<img src="doc/quickstart/pivot-table-year-welfare-avg-example.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-year-welfare-avg-example.png" alt="Average welfare table" title="Average welfare table" width="306" height="545" />
 
 From this we can quickly build a chart. First, select the "Charts" tab:
 
-<img src="doc/quickstart/pivot-table-select-chart.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-select-chart.png" alt="Select chart" title="Select chart" width="344" height="102" />
 
 Then select "Line":
 
-<img src="doc/quickstart/pivot-table-select-line-chart.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-select-line-chart.png" alt="Select line chart" title="Select line chart" width="294" height="436" />
 
 The chart will automatically be generated.
 
-<img src="doc/quickstart/pivot-table-basic-chart.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-basic-chart.png" alt="Basic pivot table chart" title="Basic pivot table chart" width="405" height="259" />
 
 It has a few warts, and advanced charting in Excel is beyond the scope of this guide, but with a bit of tinkering, you can clean it up to get a result like this:
 
-<img src="doc/quickstart/pivot-table-improved-chart.png" alt="" title="" width="50%" />
+<img src="doc/quickstart/pivot-table-improved-chart.png" alt="Improved pivot table chart" title="Improved pivot table chart" width="654" height="427" />
 
 There are *many* other ways to use pivot tables to analyze and visualize the data in this file. This has only scratched the surface, but we hope it will inspire you to learn more.
 
