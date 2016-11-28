@@ -67,7 +67,7 @@ Then select the output folder by clicking this button:
 
 <img src="doc/quickstart/output-dir-button.png" alt="Output directory button" title="Output directory button" width="250" height="33" />
 
-Use the file chooser to select `output` by clicking once and then clicking the "Choose" button.
+Use the file chooser to select `output` by clicking once and then click on the "Choose" button.
 
 <img src="doc/quickstart/output-select.png" alt="Select output" title="Select output" width="662" height="534" />
 
@@ -83,11 +83,11 @@ Click on this button:
 
 <img src="doc/quickstart/metadata-file-button.png" alt="Metadata file button" title="Metadata file button" width="271" height="31" />
 
-Again, use the file chooser to select `metadata.csv` and click on the "Choose" button.
+Now use the chooser to select `metadata.csv` and click on the "Open" button.
 
 <img src="doc/quickstart/metadata-select.png" alt="Select metadata" title="Select metadata" width="662" height="534" />
 
-Finally, you'll probably want to adjust the number of topics:
+Finally, you'll probably want to adjust the number of topics to look for:
 
 <img src="doc/quickstart/number-of-topics.png" alt="Select number of topics" title="Select number of topics" width="631" height="691" />
 
@@ -115,7 +115,7 @@ The CSV data is less self-explanatory, but can be much more useful for analysis.
     
   * **`TopicsMetadata.csv`**
   
-    This organizes the topic proportions from `TopicsInDocs.csv` as a table and associates those proportions with any metadata that has been supplied. By arranging the data as a table, this file makes it possible to build a pivot table that groups documents by metadata category and calculates topic proportions over those document groups. Pivot tables are extremely powerful tools for data analysis and visualization, and can be generated easily using Excel or Google Sheets.
+    This organizes the topic proportions from `TopicsInDocs.csv` as a table and associates those proportions with any metadata that has been supplied. By arranging the data as a table, this file makes it possible to build a pivot table that groups documents by metadata categories and calculates topic proportions over those document groups. Pivot tables are extremely powerful tools for data analysis and visualization, and can be generated easily using Excel or Google Sheets.
 
 #### Building a pivot table using **`TopicsMetadata.csv`**
 
