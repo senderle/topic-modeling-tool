@@ -11,7 +11,7 @@
 
 ### Getting started:
 
-If you're familiar with the basic idea behind topic modeling, using the tool isn't difficult. However, you may want to read some background material on topic modeling if you're not quite sure how it works. Miriam Posner and Andy Wallace's [Very basic strategies for interpreting results from the Topic Modeling Tool](http://miriamposner.com/blog/very-basic-strategies-for-interpreting-results-from-the-topic-modeling-tool/) is a great starting point for people who think best by doing. (It's based on a slightly older version of the tool, however.) Ted Underwood's [Topic modeling made just simple enough](https://tedunderwood.com/2012/04/07/topic-modeling-made-just-simple-enough/) provides a more theoretical -- but still very accessible -- introduction to the basic concepts. If you're really impatient, here's the one-sentence version: Topic modeling tags words with topic labels, such that words that often show up together in documents are more likely to have the same tag.
+If you're familiar with the basic idea behind topic modeling, using the tool isn't difficult. However, you may want to read some background material on topic modeling if you're not quite sure how it works. Miriam Posner and Andy Wallace's [Very basic strategies for interpreting results from the Topic Modeling Tool](http://miriamposner.com/blog/very-basic-strategies-for-interpreting-results-from-the-topic-modeling-tool/) is a great starting point for people who think best by doing. (It's based on a slightly older version of the tool, however.) Ted Underwood's [Topic modeling made just simple enough](https://tedunderwood.com/2012/04/07/topic-modeling-made-just-simple-enough/) provides a more theoretical -- but still very accessible -- introduction to the basic concepts. If you're really impatient, here's the one-sentence version: Topic modeling tags words with topic labels, such that words that often show up in the same document are more likely to receive the same label.
 
 #### Install Java
 
@@ -67,7 +67,7 @@ Then select the output folder by clicking this button:
 
 <img src="output-dir-button.png" alt="Output directory button" title="Output directory button" width="250" height="33" />
 
-Use the file chooser to select `output` by clicking once and then clicking the "Choose" button.
+Use the file chooser to select `output` by clicking once and then click on the "Choose" button.
 
 <img src="output-select.png" alt="Select output" title="Select output" width="662" height="534" />
 
@@ -83,11 +83,11 @@ Click on this button:
 
 <img src="metadata-file-button.png" alt="Metadata file button" title="Metadata file button" width="271" height="31" />
 
-Again, use the file chooser to select `metadata.csv` and click on the "Choose" button.
+Now use the chooser to select `metadata.csv` and click on the "Open" button.
 
 <img src="metadata-select.png" alt="Select metadata" title="Select metadata" width="662" height="534" />
 
-Finally, you'll probably want to adjust the number of topics:
+Finally, you'll probably want to adjust the number of topics to look for:
 
 <img src="number-of-topics.png" alt="Select number of topics" title="Select number of topics" width="631" height="691" />
 
@@ -115,7 +115,7 @@ The CSV data is less self-explanatory, but can be much more useful for analysis.
     
   * **`TopicsMetadata.csv`**
   
-    This organizes the topic proportions from `TopicsInDocs.csv` as a table and associates those proportions with any metadata that has been supplied. By arranging the data as a table, this file makes it possible to build a pivot table that groups documents by metadata category and calculates topic proportions over those document groups. Pivot tables are extremely powerful tools for data analysis and visualization, and can be generated easily using Excel or Google Sheets.
+    This organizes the topic proportions from `TopicsInDocs.csv` as a table and associates those proportions with any metadata that has been supplied. By arranging the data as a table, this file makes it possible to build a pivot table that groups documents by metadata categories and calculates topic proportions over those document groups. Pivot tables are extremely powerful tools for data analysis and visualization, and can be generated easily using Excel or Google Sheets.
 
 #### Building a pivot table using **`TopicsMetadata.csv`**
 
