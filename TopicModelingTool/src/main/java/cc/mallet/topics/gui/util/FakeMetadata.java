@@ -38,7 +38,6 @@ public class FakeMetadata {
         List<String[]> filenames = new ArrayList<>();
         String[] row = {"filename"};
         filenames.add(row);
-        row[0] = "";
         try (DirectoryStream<Path> directoryStream = 
                 Files.newDirectoryStream(directory)) {
             for (Path path : directoryStream) {
