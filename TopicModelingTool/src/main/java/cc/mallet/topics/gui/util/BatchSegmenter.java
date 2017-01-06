@@ -43,7 +43,6 @@ public class BatchSegmenter {
     }
 
     public ArrayList<String[]> segment(int nsegs) throws IOException {
-        String filename;
         ArrayList<String[]> res = new ArrayList<String[]>();
 
         for (String[] header: oldMetadata.getHeaders()) {
