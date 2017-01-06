@@ -6,7 +6,9 @@ categories: documentation
 ---
 
 # Topic Modeling Tool
+
 ### A GUI for MALLET's implementation of LDA.
+
 #### New features:
 
 * **Metadata integration**
