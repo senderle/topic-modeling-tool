@@ -1,6 +1,8 @@
 
 # Topic Modeling Tool
+
 ### A GUI for MALLET's implementation of LDA.
+
 #### New features:
 
 * **Metadata integration**
@@ -29,3 +31,5 @@ by following the instructions for your operating system
 This version of the tool was forked from the [original version](http://code.google.com/p/topic-modeling-tool) by [David Newman](http://www.ics.uci.edu/~newman/) and [Arun Balagopalan](https://github.com/arunbg).
 
 Previous work on the GUI for MALLET has been supported by a National Leadership Grant (LG-06-08-0057-08) from the Institute of Museum and Library Services to Yale University, the University of Michigan, and the University of California, Irvine. The Institute of Museum and Library Services is the primary source of federal support for the nation's 123,000 libraries and 17,500 museums. The Institute's mission is to create strong libraries and museums that connect people to information and ideas.
+
+Work on this version of the tool has benefited from the support of [Penn Libraries](http://www.library.upenn.edu/) and the the University of Pennsylvania's [Price Lab for Digital Humanities](https://pricelab.sas.upenn.edu/).
