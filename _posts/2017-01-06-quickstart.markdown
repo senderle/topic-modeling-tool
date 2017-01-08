@@ -7,7 +7,13 @@ categories: documentation
 
 ### Getting started with the Topic Modeling Tool
 
-If you're familiar with the basic idea behind topic modeling, using the tool isn't difficult. However, you may want to read some background material on topic modeling if you're not quite sure how it works. Miriam Posner and Andy Wallace's [Very basic strategies for interpreting results from the Topic Modeling Tool](http://miriamposner.com/blog/very-basic-strategies-for-interpreting-results-from-the-topic-modeling-tool/) is a great starting point for people who think best by doing. (It's based on a slightly older version of the tool, however.) Ted Underwood's [Topic modeling made just simple enough](https://tedunderwood.com/2012/04/07/topic-modeling-made-just-simple-enough/) provides a more theoretical -- but still very accessible -- introduction to the basic concepts. If you're really impatient, here's the one-sentence version: Topic modeling tags words with topic labels, such that words that often show up in the same document are more likely to receive the same label.
+#### Background
+
+Topic modeling tags words with topic labels, such that words that often show up in the same document are more likely to receive the same label. It can identify subjects in a collection of documents -- words that have similar meanings and associations -- and trends in discourse over time and across geographical boundaries. This guide will help you to use the tool and analyze the results it generates.
+
+If you're familiar with the basic idea behind topic modeling, using the tool isn't difficult. However, you may want to read some background material on topic modeling if you're not quite sure how it works. Miriam Posner and Andy Wallace's [Very basic strategies for interpreting results from the Topic Modeling Tool](http://miriamposner.com/blog/very-basic-strategies-for-interpreting-results-from-the-topic-modeling-tool/) is a great starting point for people who think best by doing. (It's based on a slightly older version of the tool, however.) Ted Underwood's [Topic modeling made just simple enough](https://tedunderwood.com/2012/04/07/topic-modeling-made-just-simple-enough/) provides a more theoretical -- but still very accessible -- introduction to the basic concepts.
+
+### First Steps
 
 #### Install Java
 
