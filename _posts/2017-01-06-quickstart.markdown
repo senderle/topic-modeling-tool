@@ -193,8 +193,3 @@ It has a few warts, and advanced charting in Excel is beyond the scope of this g
 
 There are *many* other ways to use pivot tables to analyze and visualize the data in this file. This has only scratched the surface, but we hope it will inspire you to learn more.
 
---
-
-This version of the tool was forked from the [original version](http://code.google.com/p/topic-modeling-tool) by [David Newman](http://www.ics.uci.edu/~newman/) and [Arun Balagopalan](https://github.com/arunbg).
-
-Previous work on the GUI for MALLET has been supported by a National Leadership Grant (LG-06-08-0057-08) from the Institute of Museum and Library Services to Yale University, the University of Michigan, and the University of California, Irvine. The Institute of Museum and Library Services is the primary source of federal support for the nation's 123,000 libraries and 17,500 museums. The Institute's mission is to create strong libraries and museums that connect people to information and ideas.
