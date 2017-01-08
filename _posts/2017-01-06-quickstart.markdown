@@ -17,7 +17,7 @@ If you're familiar with the basic idea behind topic modeling, using the tool isn
 
 #### Install Java
 
-If you don't have a recent version of Java, you will need to install one or update your existing installation. (In particular, older Macs may have very out-of-date versions of Java that this tool no loner supports.) To install Java, follow the instructions for your operating system [here](https://java.com/en/download/help/download_options.xml).
+If you don't have a recent version of Java, you will need to install one or update your existing installation. (In particular, older Macs may have very out-of-date versions of Java that this tool no longer supports.) To install Java, follow the instructions for your operating system [here](https://java.com/en/download/help/download_options.xml).
 
 #### Set up your workspace
 
