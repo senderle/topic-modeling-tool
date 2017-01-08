@@ -6,6 +6,7 @@
 #### New features:
 
 * **Metadata integration**
+* **Automatic file segmentation**
 * **Custom CSV delimiters**
 * **Alpha/Beta optimization**
 * **Custom regex tokenization**
