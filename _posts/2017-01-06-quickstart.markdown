@@ -5,19 +5,7 @@ date:   2017-01-06 14:09:33 -0500
 categories: documentation
 ---
 
-# Topic Modeling Tool
-
-### A GUI for MALLET's implementation of LDA.
-
-#### New features:
-
-* **Metadata integration**
-* **Customizable CSV delimiters**
-* **Alpha/Beta optimization**
-* **Custom regex tokenization**
-* **Multicore processor support**
-
-### Getting started:
+### Getting started with the Topic Modeling Tool
 
 If you're familiar with the basic idea behind topic modeling, using the tool isn't difficult. However, you may want to read some background material on topic modeling if you're not quite sure how it works. Miriam Posner and Andy Wallace's [Very basic strategies for interpreting results from the Topic Modeling Tool](http://miriamposner.com/blog/very-basic-strategies-for-interpreting-results-from-the-topic-modeling-tool/) is a great starting point for people who think best by doing. (It's based on a slightly older version of the tool, however.) Ted Underwood's [Topic modeling made just simple enough](https://tedunderwood.com/2012/04/07/topic-modeling-made-just-simple-enough/) provides a more theoretical -- but still very accessible -- introduction to the basic concepts. If you're really impatient, here's the one-sentence version: Topic modeling tags words with topic labels, such that words that often show up in the same document are more likely to receive the same label.
 
