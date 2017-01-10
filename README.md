@@ -1,9 +1,9 @@
 
 # Topic Modeling Tool
 
-### A GUI for MALLET's implementation of LDA.
+## A GUI for MALLET's implementation of LDA.
 
-#### New features:
+### New features:
 
 * **Metadata integration**
 * **Automatic file segmentation**
@@ -12,12 +12,12 @@
 * **Custom regex tokenization**
 * **Multicore processor support**
 
-### Getting started:
+## Getting started:
 
 To start using some of these new features right away, consult the 
 [quickstart guide](https://senderle.github.io/topic-modeling-tool/documentation/2017/01/06/quickstart.html).
 
-#### Requirements:
+## Requirements:
 
 You'll need to have a fairly recent version of Java; the version that came
 with your computer may not work, especially if your computer is a Mac.
@@ -27,7 +27,7 @@ Whatever your operating system, you can install an updated version of Java,
 by following the instructions for your operating system 
 [here](https://java.com/en/download/help/download_options.xml).
 
-#### Building the Development Version:
+## Building the Development Version:
 
 If you feel adventurous, you might want to modify the code and compile your 
 own version. To do so, you'll need to install [Apache Maven](https://maven.apache.org/) 
@@ -53,6 +53,7 @@ The javafx plugin also supports building Windows native apps -- apparently. But
 we don't have a Windows Java hacker to hold our hands through this process. If 
 you use Windows and know how to set up a Java development environemnt with maven, 
 please feel free to add instructions here and submit a PR.
+___
 
 #### Acknowledgements:
 
