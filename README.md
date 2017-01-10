@@ -43,13 +43,13 @@ Then use maven's `package` command:
 
     $ mvn package
 
-We now have experimental support for compiling the tool as a native OS X app 
-[javafx plugin](https://github.com/javafx-maven-plugin/javafx-maven-plugin) 
+We now have experimental support for compiling the tool as a native OS X app using
+the [javafx plugin](https://github.com/javafx-maven-plugin/javafx-maven-plugin) 
 for maven. This will build a native `.app` package that should run on any Mac (UNTESTED):
 
     $ mvn jfx:native
     
-The javafx pluging also supports building Windows native apps, apparently, but 
+The javafx plugin also supports building Windows native apps -- apparently. But 
 we don't have a Windows Java hacker to hold our hands through this process. If 
 you use Windows and know how to set up a Java development environemnt with maven, 
 please feel free to add instructions here and submit a PR.
