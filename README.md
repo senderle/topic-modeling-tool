@@ -27,10 +27,45 @@ Whatever your operating system, you can install an updated version of Java,
 by following the instructions for your operating system 
 [here](https://java.com/en/download/help/download_options.xml).
 
+#### Building the Development Version:
+
+If you feel adventurous, you might want to modify the code and compile your 
+own version. To do so, you'll need to install [Apache Maven](https://maven.apache.org/) 
+as well as the Java Development Kit. On Macs, [Homebrew](http://brew.sh/) 
+is the best way to do so; simply install homebrew as described on the Homebrew 
+site, and then type `brew install maven` at the command line.
+
+With maven installed, simply use the terminal to navigate to the `TopicModelingTool` folder:
+
+    $ cd topic-modeling-tool/TopicModelingTool
+    
+Then use maven's `package` command:
+
+    $ mvn package
+
+We now have experimental support for compiling the tool as a native OS X app 
+[javafx plugin](https://github.com/javafx-maven-plugin/javafx-maven-plugin) 
+for maven. This will build a native `.app` package that should run on any Mac (UNTESTED):
+
+    $ mvn jfx:native
+    
+The javafx pluging also supports building Windows native apps, apparently, but 
+we don't have a Windows Java hacker to hold our hands through this process. If 
+you use Windows and know how to set up a Java development environemnt with maven, 
+please feel free to add instructions here and submit a PR.
+
 #### Acknowledgements:
 
-This version of the tool was forked from the [original version](http://code.google.com/p/topic-modeling-tool) by [David Newman](http://www.ics.uci.edu/~newman/) and [Arun Balagopalan](https://github.com/arunbg).
+This version of the tool was forked from the [original version](http://code.google.com/p/topic-modeling-tool) 
+by [David Newman](http://www.ics.uci.edu/~newman/) and [Arun Balagopalan](https://github.com/arunbg).
 
-Previous work on the GUI for MALLET has been supported by a National Leadership Grant (LG-06-08-0057-08) from the Institute of Museum and Library Services to Yale University, the University of Michigan, and the University of California, Irvine. The Institute of Museum and Library Services is the primary source of federal support for the nation's 123,000 libraries and 17,500 museums. The Institute's mission is to create strong libraries and museums that connect people to information and ideas.
+Previous work on the GUI for MALLET has been supported by a National Leadership 
+Grant (LG-06-08-0057-08) from the Institute of Museum and Library Services to 
+Yale University, the University of Michigan, and the University of California, 
+Irvine. The Institute of Museum and Library Services is the primary source of 
+federal support for the nation's 123,000 libraries and 17,500 museums. The 
+Institute's mission is to create strong libraries and museums that connect people to information and ideas.
 
-Work on this version of the tool has benefited from the support of [Penn Libraries](http://www.library.upenn.edu/) and the the University of Pennsylvania's [Price Lab for Digital Humanities](https://pricelab.sas.upenn.edu/).
+Work on this version of the tool has benefited from the support of 
+[Penn Libraries](http://www.library.upenn.edu/) and the the University of 
+Pennsylvania's [Price Lab for Digital Humanities](https://pricelab.sas.upenn.edu/).
