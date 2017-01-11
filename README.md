@@ -51,7 +51,7 @@ for maven. This will build a native `.app` package that should run on any Mac (U
     
 The javafx plugin also supports building Windows native apps -- apparently. But 
 we don't have a Windows Java hacker to hold our hands through this process. If 
-you use Windows and know how to set up a Java development environemnt with maven, 
+you use Windows and know how to set up a Java development environment with maven, 
 please feel free to add instructions here and submit a PR.
 ___
 
