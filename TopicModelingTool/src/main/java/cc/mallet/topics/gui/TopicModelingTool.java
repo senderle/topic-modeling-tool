@@ -651,7 +651,7 @@ public class TopicModelingTool {
 
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(mode);
-        chooser.setCurrentDirectory(new File("."));
+        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 
         JButton button = new JButton(buttonText, createImageIcon(buttonIcon));
         button.addActionListener(
@@ -1211,10 +1211,11 @@ public class TopicModelingTool {
         if (args.length > 1) {
             DEFAULT_OUTPUT_DIR = args[1];
         } else {
+            String home = System.getProperty("user.home");
             try {
-                DEFAULT_OUTPUT_DIR = new File(".").getCanonicalPath();
+                DEFAULT_OUTPUT_DIR = new File(home).getCanonicalPath();
             } catch (IOException ioe) {
-                DEFAULT_OUTPUT_DIR = new File(".").getAbsolutePath();
+                DEFAULT_OUTPUT_DIR = new File(home).getAbsolutePath();
             }
         }
 
