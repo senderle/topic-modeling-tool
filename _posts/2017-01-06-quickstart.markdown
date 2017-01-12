@@ -17,6 +17,8 @@ If you're familiar with the basic idea behind topic modeling, using the tool isn
 
 #### Install Java
 
+**UPDATE:** There is now experimental support for a native MacOS App. To install it, download the [disk image](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool-1.0.dmg), open it, and drag the app into your Applications folder. If you do not have administrative access to your computer, you should be able to drag it onto your Desktop instead, and run it from there (or from any folder you have access to).
+
 If you don't have a recent version of Java, you will need to install one or update your existing installation. (In particular, older Macs may have very out-of-date versions of Java that this tool no longer supports.) To install Java, follow the instructions for your operating system [here](https://java.com/en/download/help/download_options.xml).
 
 #### Set up your workspace
