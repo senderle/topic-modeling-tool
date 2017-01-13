@@ -19,8 +19,14 @@ To start using some of these new features right away, consult the
 
 ## Requirements:
 
-You'll need to have a fairly recent version of Java; the version that came
-with your computer may not work, especially if your computer is a Mac.
+**UPDATE: We now have experimental support for a native Mac app. If you 
+feel adventurous, don't have administrative access to your Mac, or just
+don't like installing java, download and open `TopicModelingTool-1.0.dmg`.
+You should be able to drag it to any folder and run it. Support for 
+Windows and Linux is forthcoming.**
+
+Otherwise, you'll need to have a fairly recent version of Java; the version 
+that came with your computer may not work, especially if your computer is a Mac.
 
 If you have a newer Mac, you probably don't have Java installed at all. 
 Whatever your operating system, you can install an updated version of Java, 
