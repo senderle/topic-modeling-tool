@@ -4,7 +4,7 @@
     <groupId>cc.mallet.topic</groupId>
     <artifactId>TopicModelingTool</artifactId>
     <packaging>jar</packaging>
-   <version>0.1-SNAPSHOT</version>
+    <version>0.99-SNAPSHOT</version>
     <name>Mallet Topic-Modeling-Tool GUI</name>
     <url>https://code.google.com/p/topic-modeling-tool/</url>
     <properties>
@@ -93,7 +93,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <attach>false</attach>
                     <!-- set custom jar output names as defined by 'output.jar.name' including the version number  -->
-                    <finalName>${output.jar.name}-${project.version}</finalName>
+                    <finalName>${output.jar.name}</finalName>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
