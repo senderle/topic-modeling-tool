@@ -146,7 +146,7 @@ public class HtmlBuilder {
 		String[] st = null;	
 		
 		in.readLine();			//ignore header
-		int n =1;
+		int n = 0;
 		out.write("<table style=\" text-align: left;\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\"><tbody>");
         while ((line = in.readLine()) != null)
         {
