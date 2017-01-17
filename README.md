@@ -45,7 +45,7 @@ the [main issue](https://github.com/senderle/topic-modeling-tool/issues/48)
 so that we can start isolating and fixing these bugs. 
 
 We love getting new issues because it means the tool is improving!
-**When posting a bug report, please include *vast amounts of detail***. Copy
+**When posting a bug report, please include vast amounts of detail**. Copy
 and paste everything from the tool's console output if you can, tell us
 your operating system and version, and let us know the other tools you're
 using to view the output. It also helps if you verify that the bug still
