@@ -35,7 +35,7 @@
         <directory>target</directory>
         <outputDirectory>target/classes</outputDirectory>
       <!-- <finalName>${project.artifactId}-${project.version}</finalName> -->
-        <finalName>${project.artifactId}</finalName>
+        <finalName>${output.jar.name}</finalName>
         <testOutputDirectory>target/test-classes</testOutputDirectory>
         <!-- setting the source directory to a none maven default might cause problems -->
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -122,9 +122,9 @@
             <artifactId>javafx-maven-plugin</artifactId>
             <version>8.6.0</version>
             <configuration>
-                    <mainClass>cc.mallet.topics.gui.TopicModelingTool</mainClass>
-               <identifier>topic-modeling-tool</identifier>
-               <vendor>Upenn Libraries</vendor>
+				<mainClass>cc.mallet.topics.gui.TopicModelingTool</mainClass>
+              	<identifier>topic-modeling-tool</identifier>
+              	<vendor>Upenn Libraries</vendor>
             </configuration>
          </plugin>
 
