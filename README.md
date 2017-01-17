@@ -33,6 +33,25 @@ Whatever your operating system, you can install an updated version of Java,
 by following the instructions for your operating system 
 [here](https://java.com/en/download/help/download_options.xml).
 
+## Reporting and Replicating Bugs and Other Issues:
+
+If you hadn't already guessed, most testing for this tool happens on a Mac. 
+There are bound to be errors happening on other platforms that have slipped
+through the cracks. We need you to report them!
+
+For example, we know that there are some problems with Windows support for
+unicode text; if you see problems, please post *detailed* information under
+the [main issue](https://github.com/senderle/topic-modeling-tool/issues/48)
+so that we can start isolating and fixing these bugs. 
+
+We love getting new issues because it means the tool is improving!
+**When posting a bug report, please include vast amounts of detail**. Copy
+and paste everything from the tool's console output if you can, tell us
+your operating system and version, and let us know the other tools you're
+using to view the output. It also helps if you verify that the bug still
+exists in the most recent build of the tool (i.e. the one contained in 
+the `.jar` or `.dmg` files in the root directory).
+
 ## Building the Development Version:
 
 If you feel adventurous, you might want to modify the code and compile your 
@@ -63,15 +82,18 @@ ___
 
 #### Acknowledgements:
 
-This version of the tool was forked from the [original version](http://code.google.com/p/topic-modeling-tool) 
-by [David Newman](http://www.ics.uci.edu/~newman/) and [Arun Balagopalan](https://github.com/arunbg).
+This version of the tool was forked from the 
+[original version](http://code.google.com/p/topic-modeling-tool) 
+by [David Newman](http://www.ics.uci.edu/~newman/) and 
+[Arun Balagopalan](https://github.com/arunbg).
 
 Previous work on the GUI for MALLET has been supported by a National Leadership 
 Grant (LG-06-08-0057-08) from the Institute of Museum and Library Services to 
 Yale University, the University of Michigan, and the University of California, 
 Irvine. The Institute of Museum and Library Services is the primary source of 
 federal support for the nation's 123,000 libraries and 17,500 museums. The 
-Institute's mission is to create strong libraries and museums that connect people to information and ideas.
+Institute's mission is to create strong libraries and museums that connect 
+people to information and ideas.
 
 Work on this version of the tool has benefited from the support of 
 [Penn Libraries](http://www.library.upenn.edu/) and the the University of 
