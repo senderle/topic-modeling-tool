@@ -19,11 +19,21 @@ To start using some of these new features right away, consult the
 
 ## Requirements:
 
-**UPDATE: We now have experimental support for a native Mac app. If you 
-feel adventurous, don't have administrative access to your Mac, or just
-don't like installing java, download and open `TopicModelingTool-1.0.dmg`.
-You should be able to drag it to any folder and run it. Support for 
-Windows and Linux is forthcoming.**
+**UPDATE**: We now have experimental support for native Windows and Mac apps. 
+If you feel adventurous, don't have administrative access to your computer, 
+or just don't like installing java, follow the instructions for your 
+operating system:
+
+**For Macs**: 
+* Download `TopicModelingTool.dmg`.
+* Open it by double-clicking.
+* Drag the app into your `Applications` folder -- or into any folder at all.
+* Run the app by double-clicking.
+
+**For Windows PCs**:
+* Download `TopicModelingTool.zip`.
+* Extract the files into any folder and open it.
+* Double-click on the file called `TopicModelingTool.exe` to run it.
 
 Otherwise, you'll need to have a fairly recent version of Java; the version 
 that came with your computer may not work, especially if your computer is a Mac.
@@ -58,7 +68,9 @@ If you feel adventurous, you might want to modify the code and compile your
 own version. To do so, you'll need to install [Apache Maven](https://maven.apache.org/) 
 as well as the Java Development Kit. On Macs, [Homebrew](http://brew.sh/) 
 is the best way to do so; simply install homebrew as described on the Homebrew 
-site, and then type `brew install maven` at the command line.
+site, and then type `brew install maven` at the command line. On Windows PCs -- 
+you're on your own! But we did it and it wasn't terribly hard. You just need an
+up-to-date JDK and maven package, with their `bin` folders in your `PATH`. 
 
 With maven installed, simply use the terminal to navigate to the `TopicModelingTool` folder:
 
@@ -68,16 +80,13 @@ Then use maven's `package` command:
 
     $ mvn package
 
-We now have experimental support for compiling the tool as a native OS X app using
+We now have experimental support for compiling the tool as a native app using
 the [javafx plugin](https://github.com/javafx-maven-plugin/javafx-maven-plugin) 
-for maven. This will build a native `.app` package that should run on any Mac (UNTESTED):
+for maven. This will build a native package able to run on your operating system.
+This has been tested on both Macs and Windows PCs.
 
     $ mvn jfx:native
     
-The javafx plugin also supports building Windows native apps -- apparently. But 
-we don't have a Windows Java hacker to hold our hands through this process. If 
-you use Windows and know how to set up a Java development environment with maven, 
-please feel free to add instructions here and submit a PR.
 ___
 
 #### Acknowledgements:
