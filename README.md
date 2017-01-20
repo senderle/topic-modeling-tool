@@ -48,7 +48,10 @@ by following the instructions for your operating system
 If you hadn't already guessed, most testing for this tool happens on a Mac. 
 There are bound to be errors happening on other platforms that have slipped
 through the cracks. We need you to report them so we can keep improving the
-tool! **When posting a bug report, please include vast amounts of detail**.
+tool! 
+
+**When posting a bug report, please include vast amounts of detail.**
+
 Copy and paste everything from the tool's console output if you can, tell us
 your operating system and version, and let us know the other tools you're
 using to view the output. It also helps if you verify that the bug still
