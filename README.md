@@ -47,20 +47,21 @@ by following the instructions for your operating system
 
 If you hadn't already guessed, most testing for this tool happens on a Mac. 
 There are bound to be errors happening on other platforms that have slipped
-through the cracks. We need you to report them!
+through the cracks. We need you to report them so we can keep improving the
+tool! **When posting a bug report, please include vast amounts of detail**.
+Copy and paste everything from the tool's console output if you can, tell us
+your operating system and version, and let us know the other tools you're
+using to view the output. It also helps if you verify that the bug still
+exists in the most recent build of the tool (i.e. the one contained in 
+the `.jar`, `.dmg`, or `.zip` files in the root directory).
 
-For example, we know that there are some problems with Windows support for
+We know that there are substantial problems with Windows support for
 unicode text; if you see problems, please post *detailed* information under
 the [main issue](https://github.com/senderle/topic-modeling-tool/issues/48)
 so that we can start isolating and fixing these bugs. 
 
-We love getting new issues because it means the tool is improving!
-**When posting a bug report, please include vast amounts of detail**. Copy
-and paste everything from the tool's console output if you can, tell us
-your operating system and version, and let us know the other tools you're
-using to view the output. It also helps if you verify that the bug still
-exists in the most recent build of the tool (i.e. the one contained in 
-the `.jar` or `.dmg` files in the root directory).
+We love getting new issues because it means the tool is improving! But
+again, **when posting a bug report, please include vast amounts of detail**. 
 
 ## Building the Development Version:
 
