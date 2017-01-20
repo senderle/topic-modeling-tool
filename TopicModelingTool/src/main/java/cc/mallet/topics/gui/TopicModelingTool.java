@@ -40,11 +40,11 @@ public class TopicModelingTool {
     public static final String TOPICS_IN_DOCS = "TopicsInDocs.csv";
 
     public static final String MALLET_TOPIC_INPUT = "topic-input.mallet";
-    public static final String MALLET_TOPIC_KEYS = "output_topic_keys.txt";
-    public static final String MALLET_STATE = "output_state";
-    public static final String MALLET_STATE_GZ = "output_state.gz";
-    public static final String MALLET_DOC_TOPICS = "output_doc_topics.txt";
-    public static final String MALLET_WORDS_TOPICS_COUNTS = "words_topics_counts.txt";
+    public static final String MALLET_TOPIC_KEYS = "topic-keys.txt";
+    public static final String MALLET_STATE = "output-state";
+    public static final String MALLET_STATE_GZ = "output-state.gz";
+    public static final String MALLET_DOC_TOPICS = "doc-topics.txt";
+    public static final String MALLET_WORDS_TOPICS_COUNTS = "words-topics-counts.txt";
 
     /** used for testing to set an input dir on startup */
     public static String DEFAULT_INPUT_DIR = "";
