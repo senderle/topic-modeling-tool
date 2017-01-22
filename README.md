@@ -12,7 +12,7 @@
 * **Custom regex tokenization**
 * **Multicore processor support**
 
-## Getting started:
+## Getting Started:
 
 To start using some of these new features right away, consult the 
 [quickstart guide](https://senderle.github.io/topic-modeling-tool/documentation/2017/01/06/quickstart.html).
@@ -42,6 +42,17 @@ If you have a newer Mac, you probably don't have Java installed at all.
 Whatever your operating system, you can install an updated version of Java, 
 by following the instructions for your operating system 
 [here](https://java.com/en/download/help/download_options.xml).
+
+## Windows Unicode Support:
+
+Windows and Java still don't play well together when it comes to unicode 
+text. If your non-ascii characters are getting garbled on a Windows machine,
+there's a quick fix involving 
+[environment variables](https://github.com/senderle/topic-modeling-tool/issues/48#issuecomment-274331463)
+that will make things work. In the long term, we'd like to support unicode
+directly, without having to fiddle with environment variables. However,
+there are some, ahem, legacy code issues that make that more difficult than
+it ought to be.
 
 ## Reporting and Replicating Bugs and Other Issues:
 
