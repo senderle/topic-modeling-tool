@@ -49,7 +49,7 @@ Windows and Java still don't play well together when it comes to unicode
 text. If your non-ascii characters are getting garbled on a Windows machine,
 there's a quick fix involving 
 [environment variables](https://github.com/senderle/topic-modeling-tool/issues/48#issuecomment-274331463)
-that will make things work. In the long term, we'd like to support unicode
+that may make things work. In the long term, we'd like to support unicode
 directly, without having to fiddle with environment variables. However,
 there are some, ahem, legacy code issues that make that more difficult than
 it ought to be.
