@@ -39,7 +39,7 @@ Otherwise, you'll need to have a fairly recent version of Java; the version
 that came with your computer may not work, especially if your computer is a Mac.
 
 If you have a newer Mac, you probably don't have Java installed at all. 
-Whatever your operating system, you can install an updated version of Java, 
+Whatever your operating system, you can install an updated version of Java 
 by following the instructions for your operating system 
 [here](https://java.com/en/download/help/download_options.xml).
 
