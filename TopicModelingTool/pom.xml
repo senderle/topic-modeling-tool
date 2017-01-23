@@ -124,7 +124,10 @@
             <configuration>
 				<mainClass>cc.mallet.topics.gui.TopicModelingTool</mainClass>
               	<identifier>topic-modeling-tool</identifier>
-              	<vendor>Upenn Libraries</vendor>
+				<vendor>Upenn Libraries</vendor>
+				<jvmArgs>
+					<jvmArg>-Dfile.encoding=UTF-8</jvmArg>
+				</jvmArgs>
             </configuration>
          </plugin>
 
