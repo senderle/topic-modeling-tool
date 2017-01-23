@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.nio.charset.MalformedInputException;
+import java.nio.charset.Charset;
 
 import java.io.IOException;
 import java.io.File;
@@ -35,10 +36,13 @@ public class CsvWriter implements Closeable {
         this.eol = eol;
 
         try {
-            out = Files.newBufferedWriter(inputPath);
+            out = Files.newBufferedWriter(
+                    inputPath,
+                    Charset.forName("UTF-8")
+            );
         } catch (IOException exc) {
             System.out.println(inputPath.toString() + ": Error opening file");
-            throw new RuntimeException(exc);                                
+            throw new RuntimeException(exc);
         }
     }
 
@@ -69,8 +73,8 @@ public class CsvWriter implements Closeable {
         StringBuilder sb = new StringBuilder();
         for (String cell : row) {
             cell = cell.replaceAll(quote, quote + quote);
-            if (cell.contains(delim) || 
-                    cell.contains(eol) || 
+            if (cell.contains(delim) ||
+                    cell.contains(eol) ||
                     cell.contains(quote)) {
                 sb.append(quote);
                 sb.append(cell);
@@ -80,7 +84,7 @@ public class CsvWriter implements Closeable {
             }
             sb.append(delim);
         }
-      
+
         // Remove trailing comma if present
         sb.setLength(sb.length() == 0 ? 0 : sb.length() - 1);
 
@@ -97,7 +101,7 @@ public class CsvWriter implements Closeable {
             out.newLine();
         } catch (IOException exc) {
             System.out.println(inputPath.toString() + ": Error writing file");
-            throw new RuntimeException(exc);                                
+            throw new RuntimeException(exc);
         }
     }
 
@@ -107,7 +111,7 @@ public class CsvWriter implements Closeable {
             out.newLine();
         } catch (IOException exc) {
             System.out.println(inputPath.toString() + ": Error writing file");
-            throw new RuntimeException(exc);                                
+            throw new RuntimeException(exc);
         }
     }
 
@@ -128,7 +132,7 @@ public class CsvWriter implements Closeable {
             out.close();
         } catch (IOException exc) {
             System.out.println(inputPath.toString() + ": Error closing file");
-            throw new RuntimeException(exc);                                
+            throw new RuntimeException(exc);
         }
     }
 

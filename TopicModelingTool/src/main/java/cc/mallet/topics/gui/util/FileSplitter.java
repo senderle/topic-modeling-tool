@@ -3,6 +3,7 @@ package cc.mallet.topics.gui.util;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.nio.charset.Charset;
 import java.io.IOException;
 import java.io.File;
 import java.io.BufferedReader;
@@ -14,12 +15,15 @@ public class FileSplitter implements Closeable {
     private int wordsRead = 0;
     private int segmentsRead = 0;
     private String currentLine = null;
- 
+
     public FileSplitter(Path path) {
         inputPath = path;
 
         try {
-            inputReader = Files.newBufferedReader(inputPath);
+            inputReader = Files.newBufferedReader(
+                    inputPath,
+                    Charset.forName("UTF-8")
+            );
         } catch (IOException exc) {
             System.out.println(inputPath.toString() + ": Error reading file");
             throw new RuntimeException(exc);
@@ -63,13 +67,13 @@ public class FileSplitter implements Closeable {
             }
         }
 
-        if (out.length() < 1) { 
+        if (out.length() < 1) {
             return null;
         } else {
             segmentsRead += 1;
             return out.toString();
         }
-	}
+    }
 
     public String getSegment(int nwords) {
         try {
