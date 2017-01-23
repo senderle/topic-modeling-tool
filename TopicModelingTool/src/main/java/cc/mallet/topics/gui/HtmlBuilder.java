@@ -48,7 +48,7 @@ public class HtmlBuilder {
     }
 
     void writeHtmlHeader(BufferedWriter b, String title, String cssPath){
-        String str = "<html><head><meta charset="utf-8" /><head><link rel=\"stylesheet\" type=\"text/css\" href=\""+cssPath+"\" />";
+        String str = "<html><head><meta charset=\"utf-8\" /><head><link rel=\"stylesheet\" type=\"text/css\" href=\""+cssPath+"\" />";
         try {
             b.write(str);
             writeTitle(b, title);
