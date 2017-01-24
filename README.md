@@ -45,14 +45,17 @@ by following the instructions for your operating system
 
 ## Windows Unicode Support:
 
-Windows and Java still don't play well together when it comes to unicode 
-text. If your non-ascii characters are getting garbled on a Windows machine,
-there's a quick fix involving 
+Windows and Java don't play very well together when it comes to unicode 
+text. If you are using the `.jar` build, and non-ascii characters are 
+getting garbled on a Windows machine, there's a quick fix involving 
 [environment variables](https://github.com/senderle/topic-modeling-tool/issues/48#issuecomment-274331463)
-that may make things work. In the long term, we'd like to support unicode
-directly, without having to fiddle with environment variables. However,
-there are some, ahem, legacy code issues that make that more difficult than
-it ought to be.
+that may make things work.
+
+But the best answer may just be to use the native app. (Mac and 
+Windows only though!) It should now work correctly at every stage with 
+UTF-8-encoded text.
+
+(If it doesn't, let us know and we will moan and gnash our teeth some more.)
 
 ## Reporting and Replicating Bugs and Other Issues:
 
