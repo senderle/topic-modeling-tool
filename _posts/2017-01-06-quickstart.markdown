@@ -39,9 +39,9 @@ Although the Topic Modeling Tool is built with Java, it is possible to run it as
   
   * Double-click on the file called `TopicModelingTool.exe` to run it.
 
-**Caveat**
+**UTF-8 Caveat:**
 
-_If you plan to use the native app with UTF-8-encoded text, you may skip this paragraph_. Text with encodings other than UTF-8 may break the tool in ugly and unpredictable ways. Additionally, if you try to use the plain `.jar` file on a Windows machine, or on any machine that doesn't run Java using UTF-8 encoding by default, you will find that it doesn't work. You'll need to pass the `-Dfile.encoding=UTF-8` option to the JVM, either by running java from the command line (as in `java -Dfile.encoding=UTF-8 -jar TopicModelingTool.jar`), or by setting or modifying the `JAVA_TOOL_OPTIONS` environment variable.
+  * _If you plan to use the native app with UTF-8-encoded text, you may skip this paragraph_. Text with encodings other than UTF-8 may break the tool in ugly and unpredictable ways. Additionally, if you try to use the plain `.jar` file on a Windows machine, or on any machine that doesn't run Java using UTF-8 encoding by default, you will find that it doesn't work. You'll need to pass the `-Dfile.encoding=UTF-8` option to the JVM, either by running java from the command line (as in `java -Dfile.encoding=UTF-8 -jar TopicModelingTool.jar`), or by setting or modifying the `JAVA_TOOL_OPTIONS` environment variable.
 
 #### Set up your workspace
 
