@@ -58,14 +58,14 @@ doesn't, let us know and we will moan and gnash our teeth some more.)
 If you hadn't already guessed, most testing for this tool happens on a Mac. 
 There are bound to be errors happening on other platforms that have slipped
 through the cracks. We need you to report them so we can keep improving the
-tool! 
+tool! But we cannot fix a problem that we don't fully understand, so...
 
 **When posting a bug report, please include vast amounts of detail.**
 
-Copy and paste everything from the tool's console output if you can, tell us
-your operating system and version, and let us know the other tools you're
-using to view the output. It also helps if you verify that the bug still
-exists in the most recent build of the tool (i.e. the one contained in 
+_Copy and paste everything from the tool's console output_ if you can, _tell us
+your operating system and version_, and _let us know the other tools you're
+using to create and view input and output_. It also helps if you verify that the
+bug still exists in the most recent build of the tool (i.e. the one contained in 
 the `.jar`, `.dmg`, or `.zip` files in the root directory).
 
 We know that there are substantial problems with Windows support for
