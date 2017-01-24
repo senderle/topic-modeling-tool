@@ -15,11 +15,25 @@ If you're familiar with the basic idea behind topic modeling, using the tool isn
 
 ### First Steps
 
-#### Install Java
+#### Install the tool
 
-**UPDATE:** There is now experimental support for a native MacOS App. To install it, download the [disk image](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool-1.0.dmg), open it, and drag the app into your Applications folder. If you do not have administrative access to your computer, you should be able to drag it onto your Desktop instead, and run it from there (or from any folder you have access to). If the app works at this point, then you will not need to install Java.
+Although the Topic Modeling Tool is built with Java, it is possible to run it as if it were a native application, without having to install Java at all. There are currently builds for Windows and Mac OS X[^linux-install]. Simply follow the instructions for your operating system:
 
-If the app does not work, or if you are using Windows or Linux, you may need to install Java or update your existing installation. To install Java, follow the instructions for your operating system [here](https://java.com/en/download/help/download_options.xml).
+**For Macs**: 
+* Download [`TopicModelingTool.dmg`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.dmg).
+* Open it by double-clicking.
+* Drag the app into your `Applications` folder -- or into any folder at all.
+* Run the app by double-clicking.
+
+**For Windows PCs**:
+* Download [`TopicModelingTool.zip`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.zip).
+* Extract the files into any folder.
+* Open the folder containing the files.
+* Double-click on the file called `TopicModelingTool.exe` to run it.
+
+**Caveat**
+
+_If you plan to use the native app with UTF-8-encoded text, you may skip this paragraph_. Text with encodings other than UTF-8 may break the tool in ugly and unpredictable ways. Additionally, if you try to use the plain `.jar` file on a Windows machine, or on any machine that doesn't run Java using UTF-8 encoding by default, you will find that it doesn't work. You'll need to pass the `-Dfile.encoding=UTF-8` option to the JVM, either by running java from the command line (as in `java -Dfile.encoding=UTF-8 -jar TopicModelingTool.jar`), or by setting or modifying the `JAVA_TOOL_OPTIONS` environment variable.
 
 #### Set up your workspace
 
@@ -195,3 +209,4 @@ It has a few warts, and advanced charting in Excel is beyond the scope of this g
 
 There are *many* other ways to use pivot tables to analyze and visualize the data in this file. This has only scratched the surface, but we hope it will inspire you to learn more.
 
+[^linux-install]: If you use Linux, drop us a line. It should be possible to build a self-contained Linux app too; we haven't tried it yet, and would happily do some collaborative testing with you. But we assume that most of the time, Linux users will enthusiastically embrace the challenges of installing the right verison of Java and configuring necessary environment variables.
