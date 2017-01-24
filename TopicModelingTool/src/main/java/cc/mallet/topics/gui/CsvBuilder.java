@@ -1,10 +1,17 @@
 package cc.mallet.topics.gui;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.nio.charset.Charset;
+import java.nio.charset.MalformedInputException;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.Closeable;
 import java.io.IOException;
 
 import java.nio.file.Paths;
@@ -81,8 +88,12 @@ public class CsvBuilder {
 
     public int[][] buildNtd(int T, int D, String stateFile) throws IOException {
         int[][] Ntd = new int[T][D];
-        try (BufferedReader in =
-                new BufferedReader(new FileReader(stateFile))) {
+        try (
+                BufferedReader in = Files.newBufferedReader(
+                    Paths.get(stateFile),
+                    Charset.forName("UTF-8")
+                )
+        ) {
             String line = null;
 
             in.readLine(); in.readLine(); in.readLine();      // stateFile has three header lines
@@ -102,11 +113,19 @@ public class CsvBuilder {
         }
     }
 
-    public void docsTopics(String stateFile, int numDocsShown, String outputCsv) throws IOException {
+    public void docsTopics(
+            String stateFile,
+            int numDocsShown,
+            String outputCsv
+    ) throws IOException {
         Ntd =  buildNtd(numTopics, numDocs, stateFile);
         if (Ntd != null) {
-            try (BufferedWriter out =
-                    new BufferedWriter(new FileWriter(outputCsv))) {
+            try (
+                    BufferedWriter out = Files.newBufferedWriter(
+                        Paths.get(outputCsv),
+                        Charset.forName("UTF-8")
+                    )
+            ) {
                 String header = Util.join(CSV_DEL, "topicId", "rank",
                         "docId", "filename");
                 out.write(header + NEWLINE);
@@ -126,12 +145,17 @@ public class CsvBuilder {
         }
     }
 
-    public void topicWords(String topicKeysFile, String outputCsv) throws IOException {
+    public void topicWords(String topicKeysFile, String outputCsv)
+    throws IOException {
         try (
-            BufferedReader in =
-                new BufferedReader(new FileReader(topicKeysFile));
-            BufferedWriter out =
-                new BufferedWriter(new FileWriter(outputCsv))
+                BufferedReader in = Files.newBufferedReader(
+                    Paths.get(topicKeysFile),
+                    Charset.forName("UTF-8")
+                 );
+                 BufferedWriter out = Files.newBufferedWriter(
+                    Paths.get(outputCsv),
+                    Charset.forName("UTF-8")
+                 );
         ) {
             out.write("Topic Id" + CSV_DEL + "Top Words..." + NEWLINE);
 
@@ -159,12 +183,17 @@ public class CsvBuilder {
         }
     }
 
-    public void topicsDocs(String docTopicsFile, String outputCsv) throws IOException {
+    public void topicsDocs(String docTopicsFile, String outputCsv)
+    throws IOException {
         try (
-            BufferedReader in =
-                new BufferedReader(new FileReader(docTopicsFile));
-            BufferedWriter out =
-                new BufferedWriter(new FileWriter(outputCsv))
+                BufferedReader in = Files.newBufferedReader(
+                    Paths.get(docTopicsFile),
+                    Charset.forName("UTF-8")
+                 );
+                BufferedWriter out = Files.newBufferedWriter(
+                    Paths.get(outputCsv),
+                    Charset.forName("UTF-8")
+                );
         ) {
             String line = null;
             String[] row = null;
@@ -189,17 +218,24 @@ public class CsvBuilder {
         }
     }
 
-    public void topicsVectors(String docTopicsFile,
-            String outputCsv) throws IOException {
+    public void topicsVectors(
+            String docTopicsFile,
+            String outputCsv
+    ) throws IOException {
         topicsVectors(docTopicsFile, outputCsv, null);
     }
 
-    public void topicsVectors(String docTopicsFile, String outputCsv,
-            String metadataFile) throws IOException {
+    public void topicsVectors(
+            String docTopicsFile,
+            String outputCsv,
+            String metadataFile
+    ) throws IOException {
         try (
-            BufferedReader in =
-                new BufferedReader(new FileReader(docTopicsFile));
-            CsvWriter out = new CsvWriter(outputCsv);
+                BufferedReader in = Files.newBufferedReader(
+                    Paths.get(docTopicsFile),
+                    Charset.forName("UTF-8")
+                 );
+                CsvWriter out = new CsvWriter(outputCsv);
         ) {
             CsvReader meta = null;
             if (metadataFile != null) {
@@ -220,9 +256,11 @@ public class CsvBuilder {
         }
     }
 
-    private void writeTopicsVectorsRows(BufferedReader in, CsvReader meta,
-            CsvWriter out)
-    throws IOException {
+    private void writeTopicsVectorsRows(
+            BufferedReader in,
+            CsvReader meta,
+            CsvWriter out
+    ) throws IOException {
         int nd = 0;
         int nheaders = 0;
         String line, filename, malletId = null;
@@ -282,7 +320,8 @@ public class CsvBuilder {
         return header;
     }
 
-    private List<String> metadataHeaderCells(CsvReader meta) throws IOException {
+    private List<String> metadataHeaderCells(CsvReader meta)
+    throws IOException {
         if (meta != null) {
             return Arrays.asList(meta.getHeaders().get(0));
         } else {
@@ -301,8 +340,11 @@ public class CsvBuilder {
         return outCells;
     }
 
-    private List<String> metadataRowCells(HashMap<String, String[]> meta,
-            String filename, List<String> fallback) {
+    private List<String> metadataRowCells(
+            HashMap<String, String[]> meta,
+            String filename,
+            List<String> fallback
+    ) {
         if (meta == null) {
             return new ArrayList<String>();
         } else if (meta.containsKey(filename)) {
@@ -317,9 +359,10 @@ public class CsvBuilder {
         return csvMap(csvIterable, 0);
     }
 
-    private HashMap<String, String[]> csvMap(Iterable<String[]> csvIterable,
-            int keyColumn)
-    throws IOException {
+    private HashMap<String, String[]> csvMap(
+            Iterable<String[]> csvIterable,
+            int keyColumn
+    ) throws IOException {
         if (csvIterable == null) {
             return null;
         }
@@ -362,7 +405,8 @@ public class CsvBuilder {
         createCsvFiles(outputDir, "");
     }
 
-    public void createCsvFiles(String outputDir, String metadataFile) throws IOException {
+    public void createCsvFiles(String outputDir, String metadataFile)
+    throws IOException {
         File csvDir = new File(outputDir + File.separator + "output_csv");    // TODO: replace all strings with constants
         csvDir.mkdir();
         String csvDirPath = csvDir.getAbsolutePath();

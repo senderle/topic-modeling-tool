@@ -5,6 +5,7 @@ import cc.mallet.topics.gui.util.Util;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.nio.charset.Charset;
 import java.nio.charset.MalformedInputException;
 
 import java.io.IOException;
@@ -19,8 +20,8 @@ import java.util.Iterator;
 import java.lang.Iterable;
 
 // The way this class handles exceptions is not right. But I don't yet know
-// what the right way to handle them is. So I'm leaving well enough 
-// alone for now. 
+// what the right way to handle them is. So I'm leaving well enough
+// alone for now.
 
 // TODO: Figure out how to correctly handle different character sets.
 
@@ -54,7 +55,7 @@ public class CsvReader implements Iterable<String[]> {
     }
 
     // Read the header lines and store them; this means the headers are
-    // available separately from the row iterator below. (Should this 
+    // available separately from the row iterator below. (Should this
     // return an ArrayList<String> instead of modifying `headers` directly?)
     private void readHeaders() {
         String[] headerRow = null;
@@ -72,7 +73,10 @@ public class CsvReader implements Iterable<String[]> {
 
         public CsvRowIterator() {
             try {
-                inputReader = Files.newBufferedReader(inputPath);
+                inputReader = Files.newBufferedReader(
+                        inputPath,
+                        Charset.forName("UTF-8")
+                );
                 fileOpen = true;
             } catch (IOException exc) {
                 System.out.println(inputPath.toString() + ": Error opening file");
@@ -124,7 +128,7 @@ public class CsvReader implements Iterable<String[]> {
                 line = readLogicalLine();
             } catch (IOException exc) {
                 System.out.println(
-                        "Error on line " + linecount + 
+                        "Error on line " + linecount +
                         " of " + inputPath.toString()
                 );
                 throw new RuntimeException(exc);
@@ -157,7 +161,7 @@ public class CsvReader implements Iterable<String[]> {
                 return null;
             }
 
-            // In a well-formed CSV file, there will always be an 
+            // In a well-formed CSV file, there will always be an
             // even number of quote characters iff the row is complete.
             // If the `quoteCount` is odd, the line is incomplete, so
             // read another line, append, count quote characters, and
@@ -211,8 +215,8 @@ public class CsvReader implements Iterable<String[]> {
             int start = 0;
             int end = s.length();
 
-            // Remove outer quotation marks (if they are present) 
-            // and any whitespace not contained between them. 
+            // Remove outer quotation marks (if they are present)
+            // and any whitespace not contained between them.
             s = s.replaceAll("^[\\s]*\"", "");
             s = s.replaceAll("\"[\\s]*$", "");
             return s;
