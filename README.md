@@ -19,10 +19,9 @@ To start using some of these new features right away, consult the
 
 ## Requirements:
 
-**UPDATE**: We now have experimental support for native Windows and Mac apps. 
-If you feel adventurous, don't have administrative access to your computer, 
-or just don't like installing java, follow the instructions for your 
-operating system:
+The Topic Modeling Tool now has native Windows and Mac apps, and because of
+unicode issues, these are currently the best options for installation. 
+Just follow the instructions for your operating system.
 
 **For Macs**: 
 * Download `TopicModelingTool.dmg`.
@@ -35,12 +34,11 @@ operating system:
 * Extract the files into any folder and open it.
 * Double-click on the file called `TopicModelingTool.exe` to run it.
 
-Otherwise, you'll need to have a fairly recent version of Java; the version 
-that came with your computer may not work, especially if your computer is a Mac.
-
-If you have a newer Mac, you probably don't have Java installed at all. 
-Whatever your operating system, you can install an updated version of Java 
-by following the instructions for your operating system 
+If you want to run the plain `.jar` file, you'll need to have a fairly 
+recent version of Java; the version that came with your computer may 
+not work, especially if your computer is a Mac. Whatever your operating 
+system, you can install an updated version of Java by following the 
+instructions for your operating system 
 [here](https://java.com/en/download/help/download_options.xml).
 
 ## Windows Unicode Support:
@@ -51,11 +49,9 @@ getting garbled on a Windows machine, there's a quick fix involving
 [environment variables](https://github.com/senderle/topic-modeling-tool/issues/48#issuecomment-274331463)
 that may make things work.
 
-But the best answer may just be to use the native app. (Mac and 
-Windows only though!) It should now work correctly at every stage with 
-UTF-8-encoded text.
-
-(If it doesn't, let us know and we will moan and gnash our teeth some more.)
+Again, the best answer may just be to use the native app. It should
+now work correctly at every stage with UTF-8-encoded text. (If it 
+doesn't, let us know and we will moan and gnash our teeth some more.)
 
 ## Reporting and Replicating Bugs and Other Issues:
 
