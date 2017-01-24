@@ -20,16 +20,16 @@ If you're familiar with the basic idea behind topic modeling, using the tool isn
 Although the Topic Modeling Tool is built with Java, it is possible to run it as if it were a native application, without having to install Java at all. There are currently builds for Windows and Mac OS X[^linux-install]. Simply follow the instructions for your operating system:
 
 **For Macs**: 
-* Download [`TopicModelingTool.dmg`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.dmg).
-* Open it by double-clicking.
-* Drag the app into your `Applications` folder -- or into any folder at all.
-* Run the app by double-clicking.
+  - Download [`TopicModelingTool.dmg`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.dmg).
+  - Open it by double-clicking.
+  - Drag the app into your `Applications` folder -- or into any folder at all.
+  - Run the app by double-clicking.
 
 **For Windows PCs**:
-* Download [`TopicModelingTool.zip`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.zip).
-* Extract the files into any folder.
-* Open the folder containing the files.
-* Double-click on the file called `TopicModelingTool.exe` to run it.
+  - Download [`TopicModelingTool.zip`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.zip).
+  - Extract the files into any folder.
+  - Open the folder containing the files.
+  - Double-click on the file called `TopicModelingTool.exe` to run it.
 
 **Caveat**
 
