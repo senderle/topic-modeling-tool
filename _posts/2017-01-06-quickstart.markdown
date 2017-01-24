@@ -19,7 +19,7 @@ If you're familiar with the basic idea behind topic modeling, using the tool isn
 
 Although the Topic Modeling Tool is built with Java, it is possible to run it as if it were a native application, without having to install Java at all. There are currently builds for Windows and Mac OS X[^linux-install]. Simply follow the instructions for your operating system:
 
-**For Macs**: 
+##### For Macs: 
   
   * Download [`TopicModelingTool.dmg`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.dmg).
   
@@ -29,7 +29,7 @@ Although the Topic Modeling Tool is built with Java, it is possible to run it as
   
   * Run the app by double-clicking.
 
-**For Windows PCs**:
+##### For Windows PCs:
 
   * Download [`TopicModelingTool.zip`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.zip).
   
@@ -39,7 +39,7 @@ Although the Topic Modeling Tool is built with Java, it is possible to run it as
   
   * Double-click on the file called `TopicModelingTool.exe` to run it.
 
-**UTF-8 Caveat:**
+##### UTF-8 Caveat:
 
   * _If you plan to use the native app with UTF-8-encoded text, you may skip this paragraph_. Text with encodings other than UTF-8 may break the tool in ugly and unpredictable ways. Additionally, if you try to use the plain `.jar` file on a Windows machine, or on any machine that doesn't run Java using UTF-8 encoding by default, you will find that it doesn't work. You'll need to pass the `-Dfile.encoding=UTF-8` option to the JVM, either by running java from the command line (as in `java -Dfile.encoding=UTF-8 -jar TopicModelingTool.jar`), or by setting or modifying the `JAVA_TOOL_OPTIONS` environment variable.
 
@@ -47,7 +47,7 @@ Although the Topic Modeling Tool is built with Java, it is possible to run it as
 
 We recommend starting with an organized workspace containing just the following directories and files. You may use any names you like, but we've chosen simple ones here for the sake of clarity:
 
-  * **Workspace Directory**
+  * Workspace Directory
   
     * **`input`** (directory)
       
