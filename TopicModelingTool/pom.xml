@@ -2,9 +2,9 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>cc.mallet.topic</groupId>
-    <artifactId>gui</artifactId>
+    <artifactId>TopicModelingTool</artifactId>
     <packaging>jar</packaging>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.99-SNAPSHOT</version>
     <name>Mallet Topic-Modeling-Tool GUI</name>
     <url>https://code.google.com/p/topic-modeling-tool/</url>
     <properties>
@@ -34,13 +34,13 @@
 
         <directory>target</directory>
         <outputDirectory>target/classes</outputDirectory>
-        <finalName>${project.artifactId}-${project.version}</finalName>
+      <!-- <finalName>${project.artifactId}-${project.version}</finalName> -->
+        <finalName>${output.jar.name}</finalName>
         <testOutputDirectory>target/test-classes</testOutputDirectory>
         <!-- setting the source directory to a none maven default might cause problems -->
         <sourceDirectory>src/main/java</sourceDirectory>
         <scriptSourceDirectory>src</scriptSourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
-
 
         <resources>
             <resource>
@@ -85,7 +85,6 @@
                 </executions>
             </plugin>
 
-
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${maven-assembly-plugin.version}</version>
@@ -94,7 +93,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <attach>false</attach>
                     <!-- set custom jar output names as defined by 'output.jar.name' including the version number  -->
-                    <finalName>${output.jar.name}-${project.version}</finalName>
+                    <finalName>${output.jar.name}</finalName>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
@@ -117,6 +116,21 @@
                     </execution>
                 </executions>
             </plugin>
+
+         <plugin>
+            <groupId>com.zenjava</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>8.6.0</version>
+            <configuration>
+				<mainClass>cc.mallet.topics.gui.TopicModelingTool</mainClass>
+              	<identifier>topic-modeling-tool</identifier>
+				<vendor>Upenn Libraries</vendor>
+				<jvmArgs>
+					<jvmArg>-Dfile.encoding=UTF-8</jvmArg>
+				</jvmArgs>
+            </configuration>
+         </plugin>
+
         </plugins>
     </build>
 </project>
