@@ -39,6 +39,10 @@ import static cc.mallet.topics.gui.TopicModelingTool.MALLET_TOPIC_KEYS;
 import static cc.mallet.topics.gui.TopicModelingTool.MALLET_STATE;
 import static cc.mallet.topics.gui.TopicModelingTool.MALLET_DOC_TOPICS;
 
+import static cc.mallet.topics.gui.TopicModelingTool.MALLET_OUT;
+import static cc.mallet.topics.gui.TopicModelingTool.CSV_OUT;
+import static cc.mallet.topics.gui.TopicModelingTool.HTML_OUT;
+
 import cc.mallet.topics.gui.util.Util;
 import cc.mallet.topics.gui.util.CsvReader;
 import cc.mallet.topics.gui.util.CsvWriter;
@@ -407,24 +411,25 @@ public class CsvBuilder {
 
     public void createCsvFiles(String outputDir, String metadataFile)
     throws IOException {
-        File csvDir = new File(outputDir + File.separator + "output_csv");    // TODO: replace all strings with constants
-        csvDir.mkdir();
+        File csvDir = new File(outputDir + File.separator + CSV_OUT);
+		File malletDir = new File(outputDir + File.separator + MALLET_OUT);
         String csvDirPath = csvDir.getAbsolutePath();
+		String malletDirPath = malletDir.getAbsolutePath();
 
-        topicWords(outputDir + File.separator + MALLET_TOPIC_KEYS,
+        topicWords(malletDirPath + File.separator + MALLET_TOPIC_KEYS,
                 csvDirPath + File.separator + TOPIC_WORDS);
-        topicsDocs(outputDir + File.separator + MALLET_DOC_TOPICS,
+        topicsDocs(malletDirPath + File.separator + MALLET_DOC_TOPICS,
                 csvDirPath + File.separator + TOPICS_IN_DOCS);
 
         if (metadataFile.equals("")) {
-            topicsVectors(outputDir + File.separator + MALLET_DOC_TOPICS,
+            topicsVectors(malletDirPath + File.separator + MALLET_DOC_TOPICS,
                     csvDirPath + File.separator + TOPICS_IN_DOCS_VECTORS);
         } else {
-            topicsVectors(outputDir + File.separator + MALLET_DOC_TOPICS,
+            topicsVectors(malletDirPath + File.separator + MALLET_DOC_TOPICS,
                     csvDirPath + File.separator + TOPICS_IN_DOCS_VECTORS, metadataFile);
         }
 
-        docsTopics(outputDir + File.separator + MALLET_STATE,
+        docsTopics(malletDirPath + File.separator + MALLET_STATE,
                 Math.min(500, numDocs), csvDirPath + File.separator + DOCS_IN_TOPICS);
     }
 
