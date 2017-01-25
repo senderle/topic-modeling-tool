@@ -122,30 +122,26 @@ public class CsvBuilder {
             int numDocsShown,
             String outputCsv
     ) throws IOException {
-        Ntd =  buildNtd(numTopics, numDocs, stateFile);
-        if (Ntd != null) {
-            try (
-                    BufferedWriter out = Files.newBufferedWriter(
-                        Paths.get(outputCsv),
-                        Charset.forName("UTF-8")
-                    )
-            ) {
-                String header = Util.join(CSV_DEL, "topicId", "rank",
-                        "docId", "filename");
-                out.write(header + NEWLINE);
-                String line;
-                for (int i = 0; i < numTopics; i++){
-                    Integer[] idx = sortTopicIdx(Ntd[i]);
-                    for (int j = 0; j < numDocsShown; j++) {
-                        int k = idx[numDocs - j - 1];
-                        line = i + CSV_DEL + j + CSV_DEL + k + CSV_DEL + docNames.get(k) + NEWLINE;
-                        out.write(line);
-                    }
+        Ntd = buildNtd(numTopics, numDocs, stateFile);
+        try (
+                BufferedWriter out = Files.newBufferedWriter(
+                    Paths.get(outputCsv),
+                    Charset.forName("UTF-8")
+                )
+        ) {
+            String header = Util.join(CSV_DEL, "topicId", "rank",
+                    "docId", "filename");
+            out.write(header + NEWLINE);
+            String line;
+            for (int i = 0; i < numTopics; i++){
+                Integer[] idx = sortTopicIdx(Ntd[i]);
+                for (int j = 0; j < numDocsShown; j++) {
+                    int k = idx[numDocs - j - 1];
+                    line = i + CSV_DEL + j + CSV_DEL + k + CSV_DEL + docNames.get(k) + NEWLINE;
+                    out.write(line);
                 }
-                out.flush();
             }
-        } else {
-            System.out.println("NTB is NULL!!!");
+            out.flush();
         }
     }
 
@@ -411,26 +407,36 @@ public class CsvBuilder {
 
     public void createCsvFiles(String outputDir, String metadataFile)
     throws IOException {
-        File csvDir = new File(outputDir + File.separator + CSV_OUT);
-		File malletDir = new File(outputDir + File.separator + MALLET_OUT);
-        String csvDirPath = csvDir.getAbsolutePath();
-		String malletDirPath = malletDir.getAbsolutePath();
+        String csvDirPath = Paths.get(outputDir, CSV_OUT).toString();
+        String malletDirPath = Paths.get(outputDir, MALLET_OUT).toString();
 
-        topicWords(malletDirPath + File.separator + MALLET_TOPIC_KEYS,
-                csvDirPath + File.separator + TOPIC_WORDS);
-        topicsDocs(malletDirPath + File.separator + MALLET_DOC_TOPICS,
-                csvDirPath + File.separator + TOPICS_IN_DOCS);
+        topicWords(
+                Paths.get(malletDirPath, MALLET_TOPIC_KEYS).toString(),
+                Paths.get(csvDirPath, TOPIC_WORDS).toString()
+        );
+        topicsDocs(
+                Paths.get(malletDirPath, MALLET_DOC_TOPICS).toString(),
+                Paths.get(csvDirPath, TOPICS_IN_DOCS).toString()
+        );
 
         if (metadataFile.equals("")) {
-            topicsVectors(malletDirPath + File.separator + MALLET_DOC_TOPICS,
-                    csvDirPath + File.separator + TOPICS_IN_DOCS_VECTORS);
+            topicsVectors(
+                    Paths.get(malletDirPath, MALLET_DOC_TOPICS).toString(),
+                    Paths.get(csvDirPath, TOPICS_IN_DOCS_VECTORS).toString()
+            );
         } else {
-            topicsVectors(malletDirPath + File.separator + MALLET_DOC_TOPICS,
-                    csvDirPath + File.separator + TOPICS_IN_DOCS_VECTORS, metadataFile);
+            topicsVectors(
+                    Paths.get(malletDirPath, MALLET_DOC_TOPICS).toString(),
+                    Paths.get(csvDirPath, TOPICS_IN_DOCS_VECTORS).toString(),
+                    metadataFile
+            );
         }
 
-        docsTopics(malletDirPath + File.separator + MALLET_STATE,
-                Math.min(500, numDocs), csvDirPath + File.separator + DOCS_IN_TOPICS);
+        docsTopics(
+				Paths.get(malletDirPath, MALLET_STATE).toString(),
+                Math.min(500, numDocs), 
+				Paths.get(csvDirPath, DOCS_IN_TOPICS).toString()
+		);
     }
 
     public int[][] getNtd() {

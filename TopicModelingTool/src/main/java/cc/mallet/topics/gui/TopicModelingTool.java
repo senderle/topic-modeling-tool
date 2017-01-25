@@ -36,10 +36,10 @@ public class TopicModelingTool {
     public static final String NEWLINE = "\n";
 
     /** filename constants */
-    public static final String TOPIC_WORDS = "TopicWords.csv";
-    public static final String DOCS_IN_TOPICS = "DocsInTopics.csv";
-    public static final String TOPICS_IN_DOCS_VECTORS = "TopicsMetadata.csv";
-    public static final String TOPICS_IN_DOCS = "TopicsInDocs.csv";
+    public static final String TOPIC_WORDS = "topic-words.csv";
+    public static final String DOCS_IN_TOPICS = "docs-in-topics.csv";
+    public static final String TOPICS_IN_DOCS_VECTORS = "topics-metadata.csv";
+    public static final String TOPICS_IN_DOCS = "topics-in-docs.csv";
 
     public static final String MALLET_TOPIC_INPUT = "topic-input.mallet";
     public static final String MALLET_TOPIC_KEYS = "topic-keys.txt";
@@ -48,9 +48,9 @@ public class TopicModelingTool {
     public static final String MALLET_DOC_TOPICS = "doc-topics.txt";
     public static final String MALLET_WORDS_TOPICS_COUNTS = "words-topics-counts.txt";
 
-    public static final String MALLET_OUT = "mallet";
-    public static final String CSV_OUT = "csv";
-    public static final String HTML_OUT = "html";
+    public static final String MALLET_OUT = "output_mallet";
+    public static final String CSV_OUT = "output_csv";
+    public static final String HTML_OUT = "output_html";
 
     /** used for testing to set an input dir on startup */
     public static String DEFAULT_INPUT_DIR = "";
@@ -62,6 +62,10 @@ public class TopicModelingTool {
     private static final long serialVersionUID = 1L;
 
     Date timestamp = new Date();
+
+    // Currently always false, but the necessary functionality is 
+    // fully built-in! 
+    Boolean useTimeStamp = false;
 
     JFrame rootframe, advancedFrame;
     JPanel mainPanel, advPanel;
@@ -149,9 +153,14 @@ public class TopicModelingTool {
     }
 
     public String getTimestampedOutputDir() {
-    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd.HH.mm") ;
-    	String name = dateFormat.format(timestamp);
-        Path dir = Paths.get(getOutputDir(), "output-" + name);
+        Path dir = null;
+        if (useTimeStamp) {
+    	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd.HH.mm") ;
+    	    String name = dateFormat.format(timestamp);
+            dir = Paths.get(getOutputDir(), "output-" + name);
+        } else {
+            dir = Paths.get(getOutputDir());
+        }
         dir.toFile().mkdirs();
     	return dir.toString();
     }
@@ -1159,7 +1168,7 @@ public class TopicModelingTool {
 
         try {
             GunZipper g = new GunZipper(new File(stateFile));
-            g.unzip(new File(outputDir + File.separator + MALLET_OUT + File.separator + MALLET_STATE));
+            g.unzip(Paths.get(outputDir, MALLET_OUT, MALLET_STATE).toFile());
             outputCsvFiles(outputDir,
                     advCheckBoxMap.get("io-generate-html").isSelected(),
                     advCheckBoxMap.get("io-preserve-mallet").isSelected());
@@ -1175,13 +1184,16 @@ public class TopicModelingTool {
 
         appendLog("");
         if (advCheckBoxMap.get("io-preserve-mallet").isSelected()) {
-            appendLog("Mallet Output files written in " + outputDir);
+            appendLog("Mallet Output files written in " 
+                    + Paths.get(outputDir, MALLET_OUT).toString());
         }
         if (advCheckBoxMap.get("io-generate-html").isSelected()) {
-            appendLog("Html Output files written in " + outputDir + File.separator + HTML_OUT);
+            appendLog("Html Output files written in " 
+                    + Paths.get(outputDir, HTML_OUT).toString());
         }
 
-        appendLog("Csv Output files written in " + outputDir + File.separator + CSV_OUT);
+        appendLog("Csv Output files written in " 
+                + Paths.get(outputDir, CSV_OUT).toString());
 
         log.setCaretPosition(log.getDocument().getLength());
         clearButton.setEnabled(true);
@@ -1251,20 +1263,22 @@ public class TopicModelingTool {
 
     private void clearExtrafiles(String outputDir) {
         String[] fileNames = new String[6];
-        fileNames[0] = MALLET_OUT + File.separator + MALLET_TOPIC_INPUT;
-        fileNames[1] = MALLET_OUT + File.separator + MALLET_TOPIC_KEYS;
-        fileNames[2] = MALLET_OUT + File.separator + MALLET_STATE;
-        fileNames[3] = MALLET_OUT + File.separator + MALLET_STATE_GZ;
-        fileNames[4] = MALLET_OUT + File.separator + MALLET_DOC_TOPICS;
-        fileNames[5] = MALLET_OUT + File.separator + MALLET_WORDS_TOPICS_COUNTS;
+        fileNames[0] = Paths.get(MALLET_OUT, MALLET_TOPIC_INPUT).toString();
+        fileNames[1] = Paths.get(MALLET_OUT, MALLET_TOPIC_KEYS).toString();
+        fileNames[2] = Paths.get(MALLET_OUT, MALLET_STATE).toString();
+        fileNames[3] = Paths.get(MALLET_OUT, MALLET_STATE_GZ).toString();
+        fileNames[4] = Paths.get(MALLET_OUT, MALLET_DOC_TOPICS).toString();
+        fileNames[5] = Paths.get(MALLET_OUT, MALLET_WORDS_TOPICS_COUNTS).toString();
 
         for (String f:fileNames) {
             if (!(new File(outputDir, f).canWrite())) {
                 appendLog("clearExtrafiles failed on ");
                 appendLog(f);
             }
-            Boolean b = new File(outputDir, f).delete();
+            Paths.get(outputDir, f).toFile().delete();
         }
+
+        Paths.get(outputDir, MALLET_OUT).toFile().delete();
     }
 
     /**
