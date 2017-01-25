@@ -299,6 +299,7 @@ public class CsvReader implements Iterable<String[]> {
     public static void main (String[] args) throws IOException {
         CsvReader csv = new CsvReader(args[0], ",", 1);
         for (String[] row : csv) {
+            System.out.print("ROW: ");
             for (String cell : row) {
                 System.out.print(cell);
                 System.out.print(" | ");
