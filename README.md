@@ -19,10 +19,9 @@ To start using some of these new features right away, consult the
 
 ## Requirements:
 
-**UPDATE**: We now have experimental support for native Windows and Mac apps. 
-If you feel adventurous, don't have administrative access to your computer, 
-or just don't like installing java, follow the instructions for your 
-operating system:
+The Topic Modeling Tool now has native Windows and Mac apps, and because of
+unicode issues, these are currently the best options for installation. 
+Just follow the instructions for your operating system.
 
 **For Macs**: 
 * Download `TopicModelingTool.dmg`.
@@ -35,38 +34,38 @@ operating system:
 * Extract the files into any folder and open it.
 * Double-click on the file called `TopicModelingTool.exe` to run it.
 
-Otherwise, you'll need to have a fairly recent version of Java; the version 
-that came with your computer may not work, especially if your computer is a Mac.
-
-If you have a newer Mac, you probably don't have Java installed at all. 
-Whatever your operating system, you can install an updated version of Java 
-by following the instructions for your operating system 
+If you want to run the plain `.jar` file, you'll need to have a fairly 
+recent version of Java; the version that came with your computer may 
+not work, especially if your computer is a Mac. Whatever your operating 
+system, you can install an updated version of Java by following the 
+instructions for your operating system 
 [here](https://java.com/en/download/help/download_options.xml).
 
 ## Windows Unicode Support:
 
-Windows and Java still don't play well together when it comes to unicode 
-text. If your non-ascii characters are getting garbled on a Windows machine,
-there's a quick fix involving 
+Windows and Java don't play very well together when it comes to unicode 
+text. If you are using the `.jar` build, and non-ascii characters are 
+getting garbled on a Windows machine, there's a quick fix involving 
 [environment variables](https://github.com/senderle/topic-modeling-tool/issues/48#issuecomment-274331463)
-that may make things work. In the long term, we'd like to support unicode
-directly, without having to fiddle with environment variables. However,
-there are some, ahem, legacy code issues that make that more difficult than
-it ought to be.
+that may make things work.
+
+Again, the best answer may just be to use the native app. It should
+now work correctly at every stage with UTF-8-encoded text. (If it 
+doesn't, let us know and we will moan and gnash our teeth some more.)
 
 ## Reporting and Replicating Bugs and Other Issues:
 
 If you hadn't already guessed, most testing for this tool happens on a Mac. 
 There are bound to be errors happening on other platforms that have slipped
 through the cracks. We need you to report them so we can keep improving the
-tool! 
+tool! But we cannot fix a problem that we don't fully understand, so...
 
 **When posting a bug report, please include vast amounts of detail.**
 
-Copy and paste everything from the tool's console output if you can, tell us
-your operating system and version, and let us know the other tools you're
-using to view the output. It also helps if you verify that the bug still
-exists in the most recent build of the tool (i.e. the one contained in 
+_Copy and paste everything from the tool's console output_ if you can, _tell us
+your operating system and version_, and _let us know the other tools you're
+using to create and view input and output_. It also helps if you verify that the
+bug still exists in the most recent build of the tool (i.e. the one contained in 
 the `.jar`, `.dmg`, or `.zip` files in the root directory).
 
 We know that there are substantial problems with Windows support for
