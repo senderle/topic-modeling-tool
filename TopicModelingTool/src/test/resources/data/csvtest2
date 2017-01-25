@@ -1,7 +1,12 @@
 here,is,a,header
 here,are,some,values
-and, some, "sp â™¤ ced 
-utf-8", values
+and, some, spáced windows-1252, values
+and, some, "really
+weirdly
+spáced
+and
+delinieated
+windows-1252", values
 "and, some, values, quoted"
 "or, split", "and, quoted"
 " or ",    "spaced"    ,"quite", "w,e,i,r,d,l,y "

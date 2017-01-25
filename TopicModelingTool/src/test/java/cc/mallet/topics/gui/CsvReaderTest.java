@@ -9,5 +9,7 @@ public class CsvReaderTest extends TestCase {
         String[] args = new String[1];
         args[0] = new File("src/test/resources/data/csvtest").getAbsolutePath();
         CsvReader.main(args);
+        args[0] = new File("src/test/resources/data/csvtest2").getAbsolutePath();
+        CsvReader.main(args);
     }
 }

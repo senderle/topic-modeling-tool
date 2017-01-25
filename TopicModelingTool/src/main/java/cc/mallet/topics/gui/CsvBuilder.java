@@ -384,11 +384,11 @@ public class CsvBuilder {
 
     private ArrayList<String> getEmptyMetaCells(int len) {
         ArrayList<String> emptyMetaCells = new ArrayList<String>(
-            Collections.nCopies(len, "[empty]")
+            Collections.nCopies(len, "[missing metadata]")
         );
 
         if (emptyMetaCells.size() > 0) {
-            emptyMetaCells.set(0, "[filename-not-found-in-metadata]");
+            emptyMetaCells.set(0, "[filename not found in metadata]");
         }
         return emptyMetaCells;
     }

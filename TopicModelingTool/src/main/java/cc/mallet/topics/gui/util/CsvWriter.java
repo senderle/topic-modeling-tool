@@ -1,5 +1,7 @@
 package cc.mallet.topics.gui.util;
 
+import cc.mallet.topics.gui.util.Util;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
@@ -70,25 +72,7 @@ public class CsvWriter implements Closeable {
     }
 
     private String rowToString(String[] row) {
-        StringBuilder sb = new StringBuilder();
-        for (String cell : row) {
-            cell = cell.replaceAll(quote, quote + quote);
-            if (cell.contains(delim) ||
-                    cell.contains(eol) ||
-                    cell.contains(quote)) {
-                sb.append(quote);
-                sb.append(cell);
-                sb.append(quote);
-            } else {
-                sb.append(cell);
-            }
-            sb.append(delim);
-        }
-
-        // Remove trailing comma if present
-        sb.setLength(sb.length() == 0 ? 0 : sb.length() - 1);
-
-        return sb.toString();
+        return Util.joinQuoted(delim, quote, row);
     }
 
     private String cellsToString(Collection<String> cells) {
