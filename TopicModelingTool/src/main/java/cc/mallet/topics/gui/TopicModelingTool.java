@@ -48,6 +48,10 @@ public class TopicModelingTool {
     public static final String MALLET_DOC_TOPICS = "doc-topics.txt";
     public static final String MALLET_WORDS_TOPICS_COUNTS = "words-topics-counts.txt";
 
+    public static final String MALLET_OUT = "mallet";
+    public static final String CSV_OUT = "csv";
+    public static final String HTML_OUT = "html";
+
     /** used for testing to set an input dir on startup */
     public static String DEFAULT_INPUT_DIR = "";
     public static String DEFAULT_OUTPUT_DIR = "";
@@ -1174,10 +1178,10 @@ public class TopicModelingTool {
             appendLog("Mallet Output files written in " + outputDir);
         }
         if (advCheckBoxMap.get("io-generate-html").isSelected()) {
-            appendLog("Html Output files written in " + outputDir + File.separator + "output_html");
+            appendLog("Html Output files written in " + outputDir + File.separator + HTML_OUT);
         }
 
-        appendLog("Csv Output files written in " + outputDir + File.separator + "output_csv");
+        appendLog("Csv Output files written in " + outputDir + File.separator + CSV_OUT);
 
         log.setCaretPosition(log.getDocument().getLength());
         clearButton.setEnabled(true);
