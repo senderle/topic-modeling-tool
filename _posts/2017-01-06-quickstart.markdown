@@ -139,25 +139,25 @@ The tool outputs data in two formats: CSV and HTML. The HTML output comprises a 
 
 The CSV data is less self-explanatory, but can be much more useful for analysis. The `output_csv` folder contains four files:
 
-  * **`DocsInTopics.csv`**
+  * **`docs-in-topics.csv`**
     
     This is a list of documents ranked by topic. For each topic, it includes the 500 documents that feature the topic most prominently. It's useful for some purposes, but the HTML output presents the same data in a more browsable form. The order of topics here is insignificant, but the order of documents is significant. For each topic, the first document listed has the highest proportion of words tagged with that topic label.
 
-  * **`TopicWords.csv`**
+  * **`topic-words.csv`**
     
     This is a list of topics and words associated with them. The words listed are those that have been tagged with the given topic most often. Here again, the order of topics is insignficant, but the order of words is significant. For each topic, the first word listed has been tagged with that topic label most often. A more browsable form of this data also appears in the HTML output.
     
-  * **`TopicsInDocs.csv`**
+  * **`topics-in-docs.csv`**
 
-    This is a list of documents and the topics they contain. Each row corresponds to one document, and the first topic label in the list is the one that appears most frequently in the document. The decimal fraction that appears after each topic label is the proportion of words in the document that have been tagged with that label. This is in some sense the inverse of `DocsInTopics.csv`. Again, a more browsable form of this data appears in the HTML output.
+    This is a list of documents and the topics they contain. Each row corresponds to one document, and the first topic label in the list is the one that appears most frequently in the document. The decimal fraction that appears after each topic label is the proportion of words in the document that have been tagged with that label. This is in some sense the inverse of `docs-in-topics.csv`. Again, a more browsable form of this data appears in the HTML output.
     
-  * **`TopicsMetadata.csv`**
+  * **`topics-metadata.csv`**
   
-    This organizes the topic proportions from `TopicsInDocs.csv` as a table and associates those proportions with any metadata that has been supplied. By arranging the data as a table, this file makes it possible to build a pivot table that groups documents by metadata categories and calculates topic proportions over those document groups. Pivot tables are extremely powerful tools for data analysis and visualization, and can be generated easily using Excel or Google Sheets.
+    This organizes the topic proportions from `topics-in-docs.csv` as a table and associates those proportions with any metadata that has been supplied. By arranging the data as a table, this file makes it possible to build a pivot table that groups documents by metadata categories and calculates topic proportions over those document groups. Pivot tables are extremely powerful tools for data analysis and visualization, and can be generated easily using Excel or Google Sheets.
 
-#### Build a pivot table using **`TopicsMetadata.csv`**
+#### Build a pivot table using **`topics-metadata.csv`**
 
-To build a pivot table in Excel, open `TopicsMetadata.csv` in Excel. Then select "Pivot Table..." under the top-level "Data" menu. (Note: The exact names of menu items differ between Excel versions, but all modern versions of Excel have the option somewhere; if you can't find it, search online for instructions for your version of Excel. This guide is based on Excel 2011 for Mac.)
+To build a pivot table in Excel, open `topics-metadata.csv` in Excel. Then select "Pivot Table..." under the top-level "Data" menu. (Note: The exact names of menu items differ between Excel versions, but all modern versions of Excel have the option somewhere; if you can't find it, search online for instructions for your version of Excel. This guide is based on Excel 2011 for Mac.)
 
 <img src="{{site.baseurl}}/images/pivot-table-menu-item.png" alt="Pivot table menu item" title="Pivot table menu item" width="314" height="404" />
 
@@ -181,7 +181,7 @@ All selected values start in the "Values" box. To use them to group rows togethe
 
 <img src="{{site.baseurl}}/images/pivot-table-year-to-row.png" alt="Move year to row" title="Move year to row" width="331" height="524" />
 
-At this point, we'll have a table with a row for each year. For each row in this new table, *all* the rows in the original table (`TopicsMetadata.csv`) with the same year will be grouped together into one, and the values for each of the columns in those rows will be aggregated. But first we have to select which values to aggregate. Until we do, the remaining columns will be blank, like this:
+At this point, we'll have a table with a row for each year. For each row in this new table, *all* the rows in the original table (`topics-metadata.csv`) with the same year will be grouped together into one, and the values for each of the columns in those rows will be aggregated. But first we have to select which values to aggregate. Until we do, the remaining columns will be blank, like this:
 
 <img src="{{site.baseurl}}/images/pivot-table-year-row-example.png" alt="Empty year table" title="Empty year table" width="430" height="523" />
 
