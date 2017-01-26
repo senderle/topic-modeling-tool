@@ -39,6 +39,10 @@ import static cc.mallet.topics.gui.TopicModelingTool.MALLET_TOPIC_KEYS;
 import static cc.mallet.topics.gui.TopicModelingTool.MALLET_STATE;
 import static cc.mallet.topics.gui.TopicModelingTool.MALLET_DOC_TOPICS;
 
+import static cc.mallet.topics.gui.TopicModelingTool.MALLET_OUT;
+import static cc.mallet.topics.gui.TopicModelingTool.CSV_OUT;
+import static cc.mallet.topics.gui.TopicModelingTool.HTML_OUT;
+
 import cc.mallet.topics.gui.util.Util;
 import cc.mallet.topics.gui.util.CsvReader;
 import cc.mallet.topics.gui.util.CsvWriter;
@@ -118,30 +122,26 @@ public class CsvBuilder {
             int numDocsShown,
             String outputCsv
     ) throws IOException {
-        Ntd =  buildNtd(numTopics, numDocs, stateFile);
-        if (Ntd != null) {
-            try (
-                    BufferedWriter out = Files.newBufferedWriter(
-                        Paths.get(outputCsv),
-                        Charset.forName("UTF-8")
-                    )
-            ) {
-                String header = Util.join(CSV_DEL, "topicId", "rank",
-                        "docId", "filename");
-                out.write(header + NEWLINE);
-                String line;
-                for (int i = 0; i < numTopics; i++){
-                    Integer[] idx = sortTopicIdx(Ntd[i]);
-                    for (int j = 0; j < numDocsShown; j++) {
-                        int k = idx[numDocs - j - 1];
-                        line = i + CSV_DEL + j + CSV_DEL + k + CSV_DEL + docNames.get(k) + NEWLINE;
-                        out.write(line);
-                    }
+        Ntd = buildNtd(numTopics, numDocs, stateFile);
+        try (
+                BufferedWriter out = Files.newBufferedWriter(
+                    Paths.get(outputCsv),
+                    Charset.forName("UTF-8")
+                )
+        ) {
+            String header = Util.join(CSV_DEL, "topicId", "rank",
+                    "docId", "filename");
+            out.write(header + NEWLINE);
+            String line;
+            for (int i = 0; i < numTopics; i++){
+                Integer[] idx = sortTopicIdx(Ntd[i]);
+                for (int j = 0; j < numDocsShown; j++) {
+                    int k = idx[numDocs - j - 1];
+                    line = i + CSV_DEL + j + CSV_DEL + k + CSV_DEL + docNames.get(k) + NEWLINE;
+                    out.write(line);
                 }
-                out.flush();
             }
-        } else {
-            System.out.println("NTB is NULL!!!");
+            out.flush();
         }
     }
 
@@ -384,11 +384,11 @@ public class CsvBuilder {
 
     private ArrayList<String> getEmptyMetaCells(int len) {
         ArrayList<String> emptyMetaCells = new ArrayList<String>(
-            Collections.nCopies(len, "[empty]")
+            Collections.nCopies(len, "[missing metadata]")
         );
 
         if (emptyMetaCells.size() > 0) {
-            emptyMetaCells.set(0, "[filename-not-found-in-metadata]");
+            emptyMetaCells.set(0, "[filename not found in metadata]");
         }
         return emptyMetaCells;
     }
@@ -407,25 +407,36 @@ public class CsvBuilder {
 
     public void createCsvFiles(String outputDir, String metadataFile)
     throws IOException {
-        File csvDir = new File(outputDir + File.separator + "output_csv");    // TODO: replace all strings with constants
-        csvDir.mkdir();
-        String csvDirPath = csvDir.getAbsolutePath();
+        String csvDirPath = Paths.get(outputDir, CSV_OUT).toString();
+        String malletDirPath = Paths.get(outputDir, MALLET_OUT).toString();
 
-        topicWords(outputDir + File.separator + MALLET_TOPIC_KEYS,
-                csvDirPath + File.separator + TOPIC_WORDS);
-        topicsDocs(outputDir + File.separator + MALLET_DOC_TOPICS,
-                csvDirPath + File.separator + TOPICS_IN_DOCS);
+        topicWords(
+                Paths.get(malletDirPath, MALLET_TOPIC_KEYS).toString(),
+                Paths.get(csvDirPath, TOPIC_WORDS).toString()
+        );
+        topicsDocs(
+                Paths.get(malletDirPath, MALLET_DOC_TOPICS).toString(),
+                Paths.get(csvDirPath, TOPICS_IN_DOCS).toString()
+        );
 
         if (metadataFile.equals("")) {
-            topicsVectors(outputDir + File.separator + MALLET_DOC_TOPICS,
-                    csvDirPath + File.separator + TOPICS_IN_DOCS_VECTORS);
+            topicsVectors(
+                    Paths.get(malletDirPath, MALLET_DOC_TOPICS).toString(),
+                    Paths.get(csvDirPath, TOPICS_IN_DOCS_VECTORS).toString()
+            );
         } else {
-            topicsVectors(outputDir + File.separator + MALLET_DOC_TOPICS,
-                    csvDirPath + File.separator + TOPICS_IN_DOCS_VECTORS, metadataFile);
+            topicsVectors(
+                    Paths.get(malletDirPath, MALLET_DOC_TOPICS).toString(),
+                    Paths.get(csvDirPath, TOPICS_IN_DOCS_VECTORS).toString(),
+                    metadataFile
+            );
         }
 
-        docsTopics(outputDir + File.separator + MALLET_STATE,
-                Math.min(500, numDocs), csvDirPath + File.separator + DOCS_IN_TOPICS);
+        docsTopics(
+				Paths.get(malletDirPath, MALLET_STATE).toString(),
+                Math.min(500, numDocs), 
+				Paths.get(csvDirPath, DOCS_IN_TOPICS).toString()
+		);
     }
 
     public int[][] getNtd() {

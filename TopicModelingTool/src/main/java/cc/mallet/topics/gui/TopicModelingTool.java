@@ -9,11 +9,13 @@ import java.awt.event.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.nio.file.Path;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.io.PrintWriter;
@@ -34,10 +36,10 @@ public class TopicModelingTool {
     public static final String NEWLINE = "\n";
 
     /** filename constants */
-    public static final String TOPIC_WORDS = "TopicWords.csv";
-    public static final String DOCS_IN_TOPICS = "DocsInTopics.csv";
-    public static final String TOPICS_IN_DOCS_VECTORS = "TopicsMetadata.csv";
-    public static final String TOPICS_IN_DOCS = "TopicsInDocs.csv";
+    public static final String TOPIC_WORDS = "topic-words.csv";
+    public static final String DOCS_IN_TOPICS = "docs-in-topics.csv";
+    public static final String TOPICS_IN_DOCS_VECTORS = "topics-metadata.csv";
+    public static final String TOPICS_IN_DOCS = "topics-in-docs.csv";
 
     public static final String MALLET_TOPIC_INPUT = "topic-input.mallet";
     public static final String MALLET_TOPIC_KEYS = "topic-keys.txt";
@@ -45,6 +47,10 @@ public class TopicModelingTool {
     public static final String MALLET_STATE_GZ = "output-state.gz";
     public static final String MALLET_DOC_TOPICS = "doc-topics.txt";
     public static final String MALLET_WORDS_TOPICS_COUNTS = "words-topics-counts.txt";
+
+    public static final String MALLET_OUT = "output_mallet";
+    public static final String CSV_OUT = "output_csv";
+    public static final String HTML_OUT = "output_html";
 
     /** used for testing to set an input dir on startup */
     public static String DEFAULT_INPUT_DIR = "";
@@ -55,6 +61,11 @@ public class TopicModelingTool {
     /** no idea */
     private static final long serialVersionUID = 1L;
 
+    Date timestamp = new Date();
+
+    // Currently always false, but the necessary functionality is 
+    // fully built-in! 
+    Boolean useTimeStamp = false;
 
     JFrame rootframe, advancedFrame;
     JPanel mainPanel, advPanel;
@@ -137,10 +148,23 @@ public class TopicModelingTool {
         metadataFileAlternate = null;
     }
 
-    public String getOutputDirName() {
+    public String getOutputDir() {
         return outputDirTfield.getText();
     }
 
+    public String getTimestampedOutputDir() {
+        Path dir = null;
+        if (useTimeStamp) {
+    	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd.HH.mm") ;
+    	    String name = dateFormat.format(timestamp);
+            dir = Paths.get(getOutputDir(), "output-" + name);
+        } else {
+            dir = Paths.get(getOutputDir());
+        }
+        dir.toFile().mkdirs();
+    	return dir.toString();
+    }
+    
     public String getStopFileName() {
         return stopFileField.getText();
     }
@@ -876,13 +900,13 @@ public class TopicModelingTool {
     public void segmentInput(String delim, int nsegments)
             throws IOException {
         Path inputDirPath = Paths.get(getInputDirName());
-        Path outputDirPath = Paths.get(getOutputDirName());
-        Path segmentPath = Paths.get(getOutputDirName(), "segments");
-        Path newMetadataPath = Paths.get(getOutputDirName(), "segments-metadata.csv");
+        Path outputDirPath = Paths.get(getTimestampedOutputDir());
+        Path segmentPath = Paths.get(getTimestampedOutputDir(), "segments");
+        Path newMetadataPath = Paths.get(getTimestampedOutputDir(), "segments-metadata.csv");
         Path metadataPath = null;
 
         if (getMetadataFileName().equals("")) {
-            metadataPath = Paths.get(getOutputDirName(), "autogen-metadata.csv");
+            metadataPath = Paths.get(getTimestampedOutputDir(), "autogen-metadata.csv");
             setMetadataFileAlternate(metadataPath.toString());
             FakeMetadata.write(inputDirPath, metadataPath, delim);
         } else {
@@ -916,6 +940,7 @@ public class TopicModelingTool {
         // ////////////// //
 
         // Keep track of time elapsed
+        timestamp = new Date();
         long start = System.currentTimeMillis();
 
         // Disable user input during training
@@ -969,17 +994,17 @@ public class TopicModelingTool {
         //         out!
 
         String inputDir = getInputDirName();
-        String outputDir = getOutputDirName();
-        String collectionPath = null;
+        String outputDir = getTimestampedOutputDir();
 
-        try {
-            collectionPath =
-                new File(outputDir, MALLET_TOPIC_INPUT).getCanonicalPath();
-        } catch (IOException exc) {
-            errorLog(exc);
-            runMalletCleanup();
-            return;
-        }
+        String malletPath = Paths.get(outputDir, MALLET_OUT).toString();
+        String csvPath = Paths.get(outputDir, CSV_OUT).toString();
+        String htmlPath = Paths.get(outputDir, HTML_OUT).toString();
+        Paths.get(malletPath).toFile().mkdirs();
+        Paths.get(csvPath).toFile().mkdirs();
+        Paths.get(htmlPath).toFile().mkdirs();
+
+        String collectionPath = Paths.get(malletPath, MALLET_TOPIC_INPUT).toString();
+
 
         appendLog("");
         appendLog("Importing and Training");
@@ -1066,11 +1091,11 @@ public class TopicModelingTool {
         // INPUT: outputDir, collectionPath (derivable from outputDir + hard-coded thing above), numTopics,
         // OUTPUT, none, effectively, I think?
 
-        outputDir = getOutputDirName();
-        String stateFile = outputDir + File.separator + MALLET_STATE_GZ;
-        String topicKeysFile = outputDir + File.separator + MALLET_TOPIC_KEYS;
-        String outputDocTopicsFile = outputDir + File.separator + MALLET_DOC_TOPICS;
-        String wordsTopicCountsFile = outputDir + File.separator + MALLET_WORDS_TOPICS_COUNTS;
+        outputDir = getTimestampedOutputDir();
+        String stateFile = Paths.get(outputDir, MALLET_OUT, MALLET_STATE_GZ).toString();
+        String topicKeysFile = Paths.get(outputDir, MALLET_OUT, MALLET_TOPIC_KEYS).toString();
+        String outputDocTopicsFile = Paths.get(outputDir, MALLET_OUT, MALLET_DOC_TOPICS).toString();
+        String wordsTopicCountsFile = Paths.get(outputDir, MALLET_OUT, MALLET_WORDS_TOPICS_COUNTS).toString();
 
         Class<?> trainClass = null;
         String[] trainArgs = null;
@@ -1143,9 +1168,7 @@ public class TopicModelingTool {
 
         try {
             GunZipper g = new GunZipper(new File(stateFile));
-            g.unzip(new File(outputDir + File.separator + MALLET_STATE));
-
-            delim = advFieldMap.get("io-metadata-delimiter").getText();
+            g.unzip(Paths.get(outputDir, MALLET_OUT, MALLET_STATE).toFile());
             outputCsvFiles(outputDir,
                     advCheckBoxMap.get("io-generate-html").isSelected(),
                     advCheckBoxMap.get("io-preserve-mallet").isSelected());
@@ -1161,13 +1184,16 @@ public class TopicModelingTool {
 
         appendLog("");
         if (advCheckBoxMap.get("io-preserve-mallet").isSelected()) {
-            appendLog("Mallet Output files written in " + outputDir);
+            appendLog("Mallet Output files written in " 
+                    + Paths.get(outputDir, MALLET_OUT).toString());
         }
         if (advCheckBoxMap.get("io-generate-html").isSelected()) {
-            appendLog("Html Output files written in " + outputDir + File.separator + "output_html");
+            appendLog("Html Output files written in " 
+                    + Paths.get(outputDir, HTML_OUT).toString());
         }
 
-        appendLog("Csv Output files written in " + outputDir + File.separator + "output_csv");
+        appendLog("Csv Output files written in " 
+                + Paths.get(outputDir, CSV_OUT).toString());
 
         log.setCaretPosition(log.getDocument().getLength());
         clearButton.setEnabled(true);
@@ -1237,20 +1263,22 @@ public class TopicModelingTool {
 
     private void clearExtrafiles(String outputDir) {
         String[] fileNames = new String[6];
-        fileNames[0] = MALLET_TOPIC_INPUT;
-        fileNames[1] = MALLET_TOPIC_KEYS;
-        fileNames[2] = MALLET_STATE;
-        fileNames[3] = MALLET_STATE_GZ;
-        fileNames[4] = MALLET_DOC_TOPICS;
-        fileNames[5] = MALLET_WORDS_TOPICS_COUNTS;
+        fileNames[0] = Paths.get(MALLET_OUT, MALLET_TOPIC_INPUT).toString();
+        fileNames[1] = Paths.get(MALLET_OUT, MALLET_TOPIC_KEYS).toString();
+        fileNames[2] = Paths.get(MALLET_OUT, MALLET_STATE).toString();
+        fileNames[3] = Paths.get(MALLET_OUT, MALLET_STATE_GZ).toString();
+        fileNames[4] = Paths.get(MALLET_OUT, MALLET_DOC_TOPICS).toString();
+        fileNames[5] = Paths.get(MALLET_OUT, MALLET_WORDS_TOPICS_COUNTS).toString();
 
         for (String f:fileNames) {
             if (!(new File(outputDir, f).canWrite())) {
                 appendLog("clearExtrafiles failed on ");
                 appendLog(f);
             }
-            Boolean b = new File(outputDir, f).delete();
+            Paths.get(outputDir, f).toFile().delete();
         }
+
+        Paths.get(outputDir, MALLET_OUT).toFile().delete();
     }
 
     /**
@@ -1259,7 +1287,6 @@ public class TopicModelingTool {
      * @param args the arguments
      */
     public static void main(String[] args, boolean istest) {
-
         if (args.length > 0) {
             DEFAULT_INPUT_DIR = args[0];
         }
