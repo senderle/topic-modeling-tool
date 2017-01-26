@@ -71,7 +71,7 @@ We recommend starting with an organized workspace containing just the following 
       
       **3)** This must be a strictly-formatted CSV file. Every row should have the same number of cells, and there should be no blank rows. If you want to have notes, put them in a dedicated column. Be certain that cells with delimiters inside them are double-quoted, and that double-quotes inside cells are themselves doubled. So for example, a cell that contains the string `"You were kind of snippy in this part," he said.` will need to look like this: `"""You were kind of snippy in this part,"" he said."` We've tried to follow [this specification](https://tools.ietf.org/html/rfc4180) carefully, and we even do our best to massage non-compliant data, but unfortunately we can't cover every possible version of the CSV "standard."
       
-      **NOTE for Excel users with Apple computers**: If you try to read a CSV saved with Excel on a Mac, the Topic Modeling Tool will currently choke on it. Excel's support for character encodings is [mind bogglingly obsolete](http://stackoverflow.com/q/4221176/577088). We're working on writing something that can handle unexpected Latin-1-encoded data, but for now, we recommend that you import your CSV into Google Sheets and export it back out as a CSV.
+      **NOTE for Excel users**: The Topic Modeling Tool sometimes has trouble with CSV files saved using Excel, which insists on using a [mind-bogglingly obsolete](http://stackoverflow.com/q/4221176/577088) text encoding for CSV export. We've taken steps to handle this problem, but if you still have trouble, we recommend using Google Sheets or [Libre Office](https://www.libreoffice.org/) instead.
 
 ### Running the tool
 
