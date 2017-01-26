@@ -27,7 +27,9 @@ Although the Topic Modeling Tool is built with Java, it is possible to run it as
   
   * Drag the app into your `Applications` folder -- or into any folder at all.
   
-  * Run the app by double-clicking. If you get an error message saying that the file is from an "unidentified developer," you can override it by holding control while double-clicking. The error message will still appear, but you will be given an option to run the file anyway.
+  * Run the app by double-clicking. 
+  
+  * If you get an error message saying that the file is from an "unidentified developer," you can override it by holding control while double-clicking. The error message will still appear, but you will be given an option to run the file anyway.
 
 #### For Windows PCs
 
