@@ -120,6 +120,10 @@ public class CsvReader implements Iterable<String[]> {
             return (nextRow != null);
         }
 
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
         public String[] next() {
             String[] result = nextRow;
             nextRow = readRow();
