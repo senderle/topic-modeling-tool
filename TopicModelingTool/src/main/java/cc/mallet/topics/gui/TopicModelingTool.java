@@ -1167,8 +1167,6 @@ public class TopicModelingTool {
         updateStatusCursor("Generating output...");
 
         try {
-            GunZipper g = new GunZipper(new File(stateFile));
-            g.unzip(Paths.get(outputDir, MALLET_OUT, MALLET_STATE).toFile());
             outputCsvFiles(outputDir,
                     advCheckBoxMap.get("io-generate-html").isSelected(),
                     advCheckBoxMap.get("io-preserve-mallet").isSelected());
@@ -1262,13 +1260,12 @@ public class TopicModelingTool {
     }
 
     private void clearExtrafiles(String outputDir) {
-        String[] fileNames = new String[6];
+        String[] fileNames = new String[5];
         fileNames[0] = Paths.get(MALLET_OUT, MALLET_TOPIC_INPUT).toString();
         fileNames[1] = Paths.get(MALLET_OUT, MALLET_TOPIC_KEYS).toString();
-        fileNames[2] = Paths.get(MALLET_OUT, MALLET_STATE).toString();
-        fileNames[3] = Paths.get(MALLET_OUT, MALLET_STATE_GZ).toString();
-        fileNames[4] = Paths.get(MALLET_OUT, MALLET_DOC_TOPICS).toString();
-        fileNames[5] = Paths.get(MALLET_OUT, MALLET_WORDS_TOPICS_COUNTS).toString();
+        fileNames[2] = Paths.get(MALLET_OUT, MALLET_STATE_GZ).toString();
+        fileNames[3] = Paths.get(MALLET_OUT, MALLET_DOC_TOPICS).toString();
+        fileNames[4] = Paths.get(MALLET_OUT, MALLET_WORDS_TOPICS_COUNTS).toString();
 
         for (String f:fileNames) {
             if (!(new File(outputDir, f).canWrite())) {

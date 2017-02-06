@@ -37,6 +37,7 @@ import static cc.mallet.topics.gui.TopicModelingTool.DOCS_IN_TOPICS;
 
 import static cc.mallet.topics.gui.TopicModelingTool.MALLET_TOPIC_KEYS;
 import static cc.mallet.topics.gui.TopicModelingTool.MALLET_STATE;
+import static cc.mallet.topics.gui.TopicModelingTool.MALLET_STATE_GZ;
 import static cc.mallet.topics.gui.TopicModelingTool.MALLET_DOC_TOPICS;
 
 import static cc.mallet.topics.gui.TopicModelingTool.MALLET_OUT;
@@ -432,11 +433,17 @@ public class CsvBuilder {
             );
         }
 
+        GunZipper g = new GunZipper(
+                Paths.get(malletDirPath, MALLET_STATE_GZ).toFile()
+        );
+        g.unzip(Paths.get(malletDirPath, MALLET_STATE).toFile());
         docsTopics(
 				Paths.get(malletDirPath, MALLET_STATE).toString(),
                 Math.min(500, numDocs), 
 				Paths.get(csvDirPath, DOCS_IN_TOPICS).toString()
 		);
+
+        Paths.get(outputDir, MALLET_STATE).toFile().delete();
     }
 
     public int[][] getNtd() {
