@@ -18,8 +18,8 @@ import static cc.mallet.topics.gui.TopicModelingTool.TOPIC_WORDS;
 import static cc.mallet.topics.gui.TopicModelingTool.DOCS_IN_TOPICS;
 import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS;
 
-import static cc.mallet.topics.gui.TopicModelingTool.MALLET_OUT;                
-import static cc.mallet.topics.gui.TopicModelingTool.CSV_OUT;                   
+import static cc.mallet.topics.gui.TopicModelingTool.MALLET_OUT;
+import static cc.mallet.topics.gui.TopicModelingTool.CSV_OUT;
 import static cc.mallet.topics.gui.TopicModelingTool.HTML_OUT;
 
 public class HtmlBuilder {
