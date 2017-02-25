@@ -443,7 +443,7 @@ public class CsvBuilder {
 				Paths.get(csvDirPath, DOCS_IN_TOPICS).toString()
 		);
 
-        Paths.get(outputDir, MALLET_STATE).toFile().delete();
+        Paths.get(malletDirPath, MALLET_STATE).toFile().delete();
     }
 
     public int[][] getNtd() {

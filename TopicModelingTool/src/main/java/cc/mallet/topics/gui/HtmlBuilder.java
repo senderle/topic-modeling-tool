@@ -91,7 +91,7 @@ public class HtmlBuilder {
         String line;
         BufferedReader in = Files.newBufferedReader(f.toPath(), Charset.forName("UTF-8"));
         int PRINTCHARS = 500;
-        int charsPrinted=0;
+        int charsPrinted = 0;
         out.write("<textarea style=\"width: 50%; height: 150px;\">");
             while ((line = in.readLine()) != null){
                 if(charsPrinted+line.length()>PRINTCHARS)
@@ -216,26 +216,26 @@ public class HtmlBuilder {
         String prevId = "-1";
         BufferedWriter out = null;
 
-        while ((line = in.readLine()) != null)
-        {
+        while ((line = in.readLine()) != null) {
             st = line.split(CSV_DEL);
 
-            if(!st[0].equals(prevId))
-            {    if(!prevId.equals("-1"))
-                {    out.write("</tbody></table>");
+            if (!st[0].equals(prevId)) {    
+                if (!prevId.equals("-1")) {    
+                    out.write("</tbody></table>");
                     writeReturnLink(out);
                     writeHtmlFooter(out);
                     out.flush();
                     out.close();
                 }
-            String FILE_NAME = "Topic"+st[0]+".html";
-               out = Files.newBufferedWriter(new File(outputDir, FILE_NAME).toPath(), Charset.forName("UTF-8"));
-            writeHtmlHeader(out, FILE_NAME, "../" + GUI_CSS);
+            
+                String FILE_NAME = "Topic"+st[0]+".html";
+                out = Files.newBufferedWriter(new File(outputDir, FILE_NAME).toPath(), Charset.forName("UTF-8"));
+                writeHtmlHeader(out, FILE_NAME, "../" + GUI_CSS);
 
-            out.write("<body><h4><u>TOPIC</u> : "+topics.get(Integer.parseInt(st[0]))+" ...</h4>");
-            prevId = st[0];
-            out.write("<br>top-ranked docs in this topic (#words in doc assigned to this topic)<br>");
-            out.write("<table style=\" text-align: left;\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\"><tbody>");
+                out.write("<body><h4><u>TOPIC</u> : "+topics.get(Integer.parseInt(st[0]))+" ...</h4>");
+                prevId = st[0];
+                out.write("<br>top-ranked docs in this topic (#words in doc assigned to this topic)<br>");
+                out.write("<table style=\" text-align: left;\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\"><tbody>");
             }
 
             String tdocname = new File(st[st.length-1]).getName();
@@ -244,8 +244,15 @@ public class HtmlBuilder {
             }
 
             String doc_name = makeUrl("../Docs/Doc"+st[st.length-2]+".html ", tdocname);
-            try{
-            out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>%d.</td><td>%s</td><td>%s</td></tr>", Integer.parseInt(st[1])+1, "("+Ntd[Integer.parseInt(st[0])][Integer.parseInt(st[st.length-2])]+")", doc_name));
+            try {
+                out.write(
+                        String.format(
+                            "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>%d.</td><td>%s</td><td>%s</td></tr>", 
+                            Integer.parseInt(st[1]) + 1, 
+                            "(" + Ntd[Integer.parseInt(st[0])][Integer.parseInt(st[st.length-2])] + ")", 
+                            doc_name
+                        )
+                );
             } catch (Exception e){}
             //String temStr = String.format("        %d. %6s    ", "("+Ntd[Integer.parseInt(st[0])][Integer.parseInt(st[st.length-2])]+")");
             //out.write(temStr.replace(" ", "&nbsp;"));

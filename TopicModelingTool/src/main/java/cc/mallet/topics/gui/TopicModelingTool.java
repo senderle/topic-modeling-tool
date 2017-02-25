@@ -152,6 +152,16 @@ public class TopicModelingTool {
         return outputDirTfield.getText();
     }
 
+    public static Path getUserHomePath() {
+        String home = System.getProperty("user.home");
+        Path desktop = Paths.get(home, "Desktop");
+        if (Files.isDirectory(desktop)) {
+            return desktop;
+        } else {
+            return Paths.get(home);
+        }
+    }
+
     public String getTimestampedOutputDir() {
         Path dir = null;
         if (useTimeStamp) {
@@ -673,9 +683,10 @@ public class TopicModelingTool {
 
         JFileChooser chooser = new JFileChooser();
         allFileChoosers.add(chooser);
-
         chooser.setFileSelectionMode(mode);
-        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+
+        Path home = getUserHomePath();
+        chooser.setCurrentDirectory(home.toFile());
 
         JButton button = new JButton(buttonText, createImageIcon(buttonIcon));
         button.addActionListener(
@@ -1266,6 +1277,7 @@ public class TopicModelingTool {
         fileNames[2] = Paths.get(MALLET_OUT, MALLET_STATE_GZ).toString();
         fileNames[3] = Paths.get(MALLET_OUT, MALLET_DOC_TOPICS).toString();
         fileNames[4] = Paths.get(MALLET_OUT, MALLET_WORDS_TOPICS_COUNTS).toString();
+        //fileNames[5] = Paths.get(MALLET_OUT, MALLET_STATE).toString();
 
         for (String f:fileNames) {
             if (!(new File(outputDir, f).canWrite())) {
@@ -1291,12 +1303,7 @@ public class TopicModelingTool {
         if (args.length > 1) {
             DEFAULT_OUTPUT_DIR = args[1];
         } else {
-            String home = System.getProperty("user.home");
-            try {
-                DEFAULT_OUTPUT_DIR = new File(home).getCanonicalPath();
-            } catch (IOException ioe) {
-                DEFAULT_OUTPUT_DIR = new File(home).getAbsolutePath();
-            }
+            DEFAULT_OUTPUT_DIR = getUserHomePath().toString();
         }
 
         if (args.length > 2) {
