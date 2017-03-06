@@ -93,19 +93,19 @@ public class HtmlBuilder {
         int PRINTCHARS = 500;
         int charsPrinted = 0;
         out.write("<textarea style=\"width: 50%; height: 150px;\">");
-            while ((line = in.readLine()) != null){
-                if(charsPrinted+line.length()>PRINTCHARS)
-                {
-                    out.write(line.substring(0, PRINTCHARS - charsPrinted));
-                    break;
-                }
-                else{
-                    out.write(line+"\n");
-                    charsPrinted++;
-                }
+        while ((line = in.readLine()) != null){
+            if(charsPrinted+line.length()>PRINTCHARS)
+            {
+                out.write(line.substring(0, PRINTCHARS - charsPrinted));
+                break;
             }
-            out.write("...</textarea>");
-
+            else{
+                out.write(line+"\n");
+                charsPrinted++;
+            }
+        }
+        out.write("...</textarea>");
+        in.close();
     }
 
     void writeLineExcerpt(String str, BufferedWriter out) throws IOException{
@@ -141,19 +141,18 @@ public class HtmlBuilder {
         }
         writeHtmlFooter(out);
         out.flush();
+
+        out.close();
+        in.close();
     }
 
     public void buildHtml2(File inputCsv, File outputDir)
     throws IOException {
         BufferedReader in = Files.newBufferedReader(inputCsv.toPath(), Charset.forName("UTF-8"));
-        BufferedReader br = null;
         in.readLine();            //ignore header
 
         String line = "";
         String[] st = null;
-        if (input.isFile()) {
-            br = Files.newBufferedReader(input.toPath(), Charset.forName("UTF-8"));
-        }
 
         while ((line = in.readLine()) != null)
         {
@@ -170,22 +169,17 @@ public class HtmlBuilder {
 
             out.write("<table style=\" text-align: left;\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\"><tbody>");
             String tdocname = st[1];
-            if(input.isDirectory()){
-                URI furi = null;
-                try {
-                    furi = new URI(st[1]);
-                } catch (URISyntaxException exc) {
-                    throw new RuntimeException(exc);
-                }
-                File df = new File(furi);
-                out.write("<body><h4><u>DOC</u> :"+df.getName()+"</h4><br>");
-                try{writeFileExcerpt(df, out);} catch (Exception e){}
+            
+            URI furi = null;
+            try {
+                furi = new URI(st[1]);
+            } catch (URISyntaxException exc) {
+                throw new RuntimeException(exc);
             }
-            else{
-                out.write("<body><h4><u>DOC</u> : "+"doc "+st[0]+"</h4><br>");
-                String abc = br.readLine();
-                writeLineExcerpt(abc, out);
-            }
+            File df = new File(furi);
+            out.write("<body><h4><u>DOC</u> :"+df.getName()+"</h4><br>");
+            try{writeFileExcerpt(df, out);} catch (Exception e){}
+            
             out.write("<br><br>Top topics in this doc (% words in doc assigned to this topic) <br>");
             for(int i =2;i<st.length-1;i=i+2){
                 try{out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>(%.0f%%)</td><td>", new Float(st[i+1])*100));}catch(Exception e){}
@@ -203,6 +197,8 @@ public class HtmlBuilder {
             out.flush();
             out.close();
         }
+
+        in.close();
     }
 
 
@@ -265,7 +261,7 @@ public class HtmlBuilder {
         writeHtmlFooter(out);
         out.flush();
         out.close();
-
+        in.close();
     }
 
     public void createHtmlFiles(File outputDir)
