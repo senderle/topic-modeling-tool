@@ -105,7 +105,7 @@ public class CsvBuilder {
             String curDocId = START_DOC_ID;
             int curDocIndex = 0;
             while ((line = in.readLine()) != null) {
-                String[] strArr= line.split(" ");
+                String[] strArr = line.split(" ");
                 if (!strArr[0].equals(curDocId)) {
                     curDocIndex++;
                     curDocId = strArr[0];

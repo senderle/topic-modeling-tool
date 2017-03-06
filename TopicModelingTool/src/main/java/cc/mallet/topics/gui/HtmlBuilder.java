@@ -85,9 +85,7 @@ public class HtmlBuilder {
         return(String.format("<a href=%s>%s</a>", url, text));
     }
 
-    void writeFileExcerpt(File f, BufferedWriter out) throws IOException{
-
-
+    void writeFileExcerpt(File f, BufferedWriter out) throws IOException {
         String line;
         BufferedReader in = Files.newBufferedReader(f.toPath(), Charset.forName("UTF-8"));
         int PRINTCHARS = 500;
@@ -148,47 +146,55 @@ public class HtmlBuilder {
 
     public void buildHtml2(File inputCsv, File outputDir)
     throws IOException {
-        BufferedReader in = Files.newBufferedReader(inputCsv.toPath(), Charset.forName("UTF-8"));
+        BufferedReader in = Files.newBufferedReader(
+                inputCsv.toPath(), 
+                Charset.forName("UTF-8"));
         in.readLine();            //ignore header
 
         String line = "";
-        String[] st = null;
+        String[] row = null;
 
         while ((line = in.readLine()) != null)
         {
-            st = line.split(CSV_DEL);
-            // values always have to be arranged pairwise -> if mod 2 not 0 this indicates prolems
-            if (st.length % 2 != 0) {
+            row = line.split(CSV_DEL);
+            // Values always have to be arranged pairwise -> 
+            //      if mod 2 not 0 this indicates problems
+            if (row.length % 2 != 0) {
+                System.out.println("Error on line ");
                 System.out.println(line);
             }
-            String FILE_NAME = "Doc"+st[0]+".html";
-            BufferedWriter out = Files.newBufferedWriter(new File(outputDir, FILE_NAME).toPath(), Charset.forName("UTF-8"));
+
+            String FILE_NAME = "Doc" + row[0] + ".html";
+            BufferedWriter out = Files.newBufferedWriter(
+                    new File(outputDir, FILE_NAME).toPath(), 
+                    Charset.forName("UTF-8"));
             writeHtmlHeader(out, FILE_NAME, "../" + GUI_CSS);
 
-            docNames.add(st[1]);
+            docNames.add(row[1]);
 
             out.write("<table style=\" text-align: left;\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\"><tbody>");
-            String tdocname = st[1];
-            
+            String tdocname = row[1];
+           
+            // Create file URI for display:
             URI furi = null;
             try {
-                furi = new URI(st[1]);
+                furi = new URI(row[1]);
             } catch (URISyntaxException exc) {
                 throw new RuntimeException(exc);
             }
+
             File df = new File(furi);
-            out.write("<body><h4><u>DOC</u> :"+df.getName()+"</h4><br>");
-            try{writeFileExcerpt(df, out);} catch (Exception e){}
+            out.write("<body><h4><u>DOC</u> :" + df.getName() + "</h4><br>");
+            writeFileExcerpt(df, out);
             
             out.write("<br><br>Top topics in this doc (% words in doc assigned to this topic) <br>");
-            for(int i =2;i<st.length-1;i=i+2){
-                try{out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>(%.0f%%)</td><td>", new Float(st[i+1])*100));}catch(Exception e){}
-                try{
-                    // create <a href=""> based on the values in the st array
-                    out.write(makeUrl("../Topics/Topic"+st[i]+".html", topics.get(Integer.parseInt(st[i]))));
-                }catch(Exception e){
-                    System.out.println();
-                }
+            for (int i = 2; i < row.length - 1; i = i + 2) {
+                // Record the topic percent for the given document:
+                out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>(%.0f%%)</td><td>", 
+                            new Float(row[i + 1]) * 100));
+                // Build a link to the topic page:
+                out.write(makeUrl("../Topics/Topic" + row[i] + ".html", 
+                            topics.get(Integer.parseInt(row[i]))));
                 out.write(" ...</td></tr>");
             }
             out.write("</tbody></table>");
