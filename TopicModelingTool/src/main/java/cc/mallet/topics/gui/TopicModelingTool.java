@@ -206,8 +206,9 @@ public class TopicModelingTool {
             throw new RuntimeException(exc);
         }
 
-        appendLog(" **** Unexpected Error **** ");
         appendLog("");
+        appendLog(" ************************************");
+        appendLog(" **** **   Unexpected Error   ** ****");
         appendLog(" **** -- Start System Message -- ****");
         appendLog("");
 
@@ -215,7 +216,8 @@ public class TopicModelingTool {
         exc.printStackTrace(new PrintWriter(traceStringWriter));
         appendLog(traceStringWriter.toString());
         appendLog("");
-        appendLog(" **** -- End System Message -- ****");
+        appendLog(" **** --  End System Message  -- ****");
+        appendLog(" ************************************");
         appendLog("");
         appendLog("Resetting Tool...");
     }

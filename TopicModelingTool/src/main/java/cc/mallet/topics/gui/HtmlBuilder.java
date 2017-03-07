@@ -114,7 +114,7 @@ public class HtmlBuilder {
         out.write("...</textarea>");
     }
 
-    public void buildHtml1(File inputCsv, File outputDir)
+    public void buildTopicWords(File inputCsv, File outputDir)
     throws IOException {
         String FILE_NAME = "all_topics.html";
         BufferedWriter out = Files.newBufferedWriter(new File(outputDir, FILE_NAME).toPath(), Charset.forName("UTF-8"));
@@ -124,17 +124,17 @@ public class HtmlBuilder {
         out.write("<body><h4>List of Topics </h4>");
 
         String line = "";
-        String[] st = null;
+        String[] row = null;
 
         in.readLine();            //ignore header
         int n = 0;
         out.write("<table style=\" text-align: left;\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\"><tbody>");
         while ((line = in.readLine()) != null)
         {
-            st = line.split(CSV_DEL);
-            out.write(String.format("<tr><td>%d. </td><td>%s</td></tr>", n, makeUrl("Topics/Topic"+st[0]+".html", st[1])));
+            row = line.split(CSV_DEL);
+            out.write(String.format("<tr><td>%d. </td><td>%s</td></tr>", n, makeUrl("Topics/Topic"+row[0]+".html", row[1])));
 
-            topics.add(st[1]);
+            topics.add(row[1]);
             n++;
         }
         writeHtmlFooter(out);
@@ -144,7 +144,7 @@ public class HtmlBuilder {
         in.close();
     }
 
-    public void buildHtml2(File inputCsv, File outputDir)
+    public void buildTopicsInDocs(File inputCsv, File outputDir)
     throws IOException {
         BufferedReader in = Files.newBufferedReader(
                 inputCsv.toPath(), 
@@ -185,7 +185,12 @@ public class HtmlBuilder {
 
             File df = new File(furi);
             out.write("<body><h4><u>DOC</u> :" + df.getName() + "</h4><br>");
-            writeFileExcerpt(df, out);
+            try { 
+                writeFileExcerpt(df, out);
+            } catch (java.nio.charset.MalformedInputException exc) {
+                System.out.println("MalformedInputException encountered" +
+                                   "in file " + df.getName());
+            }
             
             out.write("<br><br>Top topics in this doc (% words in doc assigned to this topic) <br>");
             for (int i = 2; i < row.length - 1; i = i + 2) {
@@ -207,21 +212,20 @@ public class HtmlBuilder {
         in.close();
     }
 
-
-    public void buildHtml3(File inputCsv, File outputDir)
+    public void buildDocsInTopics(File inputCsv, File outputDir)
     throws IOException {
         BufferedReader in = Files.newBufferedReader(inputCsv.toPath(), Charset.forName("UTF-8"));
         in.readLine();            //ignore header
 
         String line = "";
-        String[] st = null;
+        String[] row = null;
         String prevId = "-1";
         BufferedWriter out = null;
 
         while ((line = in.readLine()) != null) {
-            st = line.split(CSV_DEL);
+            row = line.split(CSV_DEL);
 
-            if (!st[0].equals(prevId)) {    
+            if (!row[0].equals(prevId)) {    
                 if (!prevId.equals("-1")) {    
                     out.write("</tbody></table>");
                     writeReturnLink(out);
@@ -230,37 +234,31 @@ public class HtmlBuilder {
                     out.close();
                 }
             
-                String FILE_NAME = "Topic"+st[0]+".html";
+                String FILE_NAME = "Topic" + row[0] + ".html";
                 out = Files.newBufferedWriter(new File(outputDir, FILE_NAME).toPath(), Charset.forName("UTF-8"));
                 writeHtmlHeader(out, FILE_NAME, "../" + GUI_CSS);
 
-                out.write("<body><h4><u>TOPIC</u> : "+topics.get(Integer.parseInt(st[0]))+" ...</h4>");
-                prevId = st[0];
+                out.write("<body><h4><u>TOPIC</u> : " + topics.get(Integer.parseInt(row[0])) + " ...</h4>");
+                prevId = row[0];
                 out.write("<br>top-ranked docs in this topic (#words in doc assigned to this topic)<br>");
                 out.write("<table style=\" text-align: left;\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\"><tbody>");
             }
 
-            String tdocname = new File(st[st.length-1]).getName();
-            if(tdocname.equals("null-source")){
-                tdocname = "doc "+st[st.length-2];
+            String docId = row[row.length - 2];
+            int docIdInt = docId.equals("null") ? 0 : Integer.parseInt(docId);
+            docId = String.valueOf(docIdInt);
+
+            String tdocname = new File(row[row.length - 1]).getName();
+            if (tdocname.equals("null-source")) {
+                tdocname = "doc " + docId;
             }
 
-            String doc_name = makeUrl("../Docs/Doc"+st[st.length-2]+".html ", tdocname);
-            try {
-                out.write(
-                        String.format(
-                            "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>%d.</td><td>%s</td><td>%s</td></tr>", 
-                            Integer.parseInt(st[1]) + 1, 
-                            "(" + Ntd[Integer.parseInt(st[0])][Integer.parseInt(st[st.length-2])] + ")", 
-                            doc_name
-                        )
-                );
-            } catch (Exception e){}
-            //String temStr = String.format("        %d. %6s    ", "("+Ntd[Integer.parseInt(st[0])][Integer.parseInt(st[st.length-2])]+")");
-            //out.write(temStr.replace(" ", "&nbsp;"));
-            //out.write(makeUrl("../Docs/Doc"+st[st.length-2]+".html ", new File(st[st.length-1]).getName()));
-            //out.write(" <br>");
-
+            String doc_name = makeUrl("../Docs/Doc" + docId + ".html ", tdocname);
+            
+            out.write(String.format("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>%d.</td><td>%s</td><td>%s</td></tr>", 
+                        Integer.parseInt(row[1]) + 1, 
+                        "(" + Ntd[Integer.parseInt(row[0])][docIdInt] + ")", 
+                        doc_name));
         }
         out.write("</tbody></table>");
         writeReturnLink(out);
@@ -281,12 +279,9 @@ public class HtmlBuilder {
         File docsHtmlDir = new File(htmlDir, "Docs");
         docsHtmlDir.mkdir();
         File csvDir = new File(outputDir, CSV_OUT);
-        buildHtml1(new File(csvDir, TOPIC_WORDS), htmlDir);
-        buildHtml2(new File(csvDir, TOPICS_IN_DOCS), docsHtmlDir);
-        buildHtml3(new File(csvDir, DOCS_IN_TOPICS), topicsHtmlDir);
+        buildTopicWords(new File(csvDir, TOPIC_WORDS), htmlDir);
+        buildTopicsInDocs(new File(csvDir, TOPICS_IN_DOCS), docsHtmlDir);
+        buildDocsInTopics(new File(csvDir, DOCS_IN_TOPICS), topicsHtmlDir);
 
     }
-
-
-
 }

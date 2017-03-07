@@ -56,9 +56,9 @@ public class CsvBuilder {
     String CSV_DEL = ",";
     int numDocs;
     int numTopics;
-    String START_DOC_ID = "0";
     ArrayList<String> docNames; // Potential memory issue for very large collections.
     int[][] Ntd;
+    String[] rowIxToDocId;
 
     ArrayList<String[]> topicHeaderWords;
 
@@ -92,7 +92,9 @@ public class CsvBuilder {
     }
 
     public int[][] buildNtd(int T, int D, String stateFile) throws IOException {
-        int[][] Ntd = new int[T][D];
+        Ntd = new int[T][D];
+        rowIxToDocId = new String[D];
+
         try (
                 BufferedReader in = Files.newBufferedReader(
                     Paths.get(stateFile),
@@ -102,13 +104,17 @@ public class CsvBuilder {
             String line = null;
 
             in.readLine(); in.readLine(); in.readLine();      // stateFile has three header lines
-            String curDocId = START_DOC_ID;
+            
             int curDocIndex = 0;
+            String curDocId = "0";
+            rowIxToDocId[0] = "0";
+
             while ((line = in.readLine()) != null) {
                 String[] strArr = line.split(" ");
                 if (!strArr[0].equals(curDocId)) {
                     curDocIndex++;
                     curDocId = strArr[0];
+                    rowIxToDocId[curDocIndex] = curDocId;
                 }
                 int wordTopicIndex = Integer.parseInt(strArr[strArr.length - 1]);
                 Ntd[wordTopicIndex][curDocIndex]++;
@@ -123,7 +129,7 @@ public class CsvBuilder {
             int numDocsShown,
             String outputCsv
     ) throws IOException {
-        Ntd = buildNtd(numTopics, numDocs, stateFile);
+        buildNtd(numTopics, numDocs, stateFile);
         try (
                 BufferedWriter out = Files.newBufferedWriter(
                     Paths.get(outputCsv),
@@ -134,11 +140,12 @@ public class CsvBuilder {
                     "docId", "filename");
             out.write(header + NEWLINE);
             String line;
-            for (int i = 0; i < numTopics; i++){
-                Integer[] idx = sortTopicIdx(Ntd[i]);
-                for (int j = 0; j < numDocsShown; j++) {
-                    int k = idx[numDocs - j - 1];
-                    line = i + CSV_DEL + j + CSV_DEL + k + CSV_DEL + docNames.get(k) + NEWLINE;
+            for (int topicIx = 0; topicIx < numTopics; topicIx++){
+                Integer[] idx = sortTopicIdx(Ntd[topicIx]);
+                for (int docCount = 0; docCount < numDocsShown; docCount++) {
+                    int docIx = idx[numDocs - docCount - 1];
+                    String docId = rowIxToDocId[docIx];
+                    line = topicIx + CSV_DEL + docCount + CSV_DEL + docId + CSV_DEL + docNames.get(docIx) + NEWLINE;
                     out.write(line);
                 }
             }
