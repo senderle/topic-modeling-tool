@@ -1,4 +1,6 @@
 
+[![DOI](https://zenodo.org/badge/47996186.svg)](https://zenodo.org/badge/latestdoi/47996186)
+
 # Topic Modeling Tool
 
 ## A GUI for MALLET's implementation of LDA.
