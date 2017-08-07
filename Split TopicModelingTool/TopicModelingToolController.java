@@ -36,7 +36,8 @@ public class TopicModelingToolController {
     private TopicModelingToolAccessor accessor;
     private TopicModelingToolGUI gui;
 
-    public TopicModelingToolController(TopicModelingToolAccessor accessor, TopicModelingToolGUI gui) {
+    public TopicModelingToolController(TopicModelingToolAccessor accessor, 
+        TopicModelingToolGUI gui) {
         this.accessor = accessor;
         this.gui = gui;
     }
@@ -171,7 +172,8 @@ public class TopicModelingToolController {
 
         this.accessor.appendLog("");
         this.accessor.appendLog("Importing and Training");
-        this.accessor.appendLog("This could take minutes or days depending on settings and corpus size.");
+        this.accessor.appendLog(
+            "This could take minutes or days depending on settings and corpus size.");
         this.accessor.appendLog("");
 
         String malletImportCmd = "";

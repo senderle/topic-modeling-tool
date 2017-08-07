@@ -292,7 +292,8 @@ public class TopicModelingToolGUI {
                             "Please select an input file or directory", 
                             "Invalid input", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        this.controller.runMallet(this.fieldOptionMap, this.checkBoxOptionMap, this.advFieldMap, this.advCheckBoxMap);
+                        this.controller.runMallet(this.fieldOptionMap, this.checkBoxOptionMap, 
+                            this.advFieldMap, this.advCheckBoxMap);
                     }
                 }
             };
@@ -351,7 +352,8 @@ public class TopicModelingToolGUI {
 
     /**
      *
-     * Set corresponding special string, default value, description and associated command for the options
+     * Set corresponding special string, default value, description and associated command for the 
+     * options
      */
     public void setDefaultOptions() {
         // Field Format:
@@ -759,5 +761,54 @@ public class TopicModelingToolGUI {
 
     private JTextField getNumTopics() {
         return this.numTopics;
+    }
+
+    private LinkedHashMap<String, OptionStrings> getCheckBoxOptionMap() {
+        return this.getCheckBoxOptionMap;
+    }
+
+    private LinkedHashMap<String, OptionStrings> getFieldOptionMap() {
+        return this.fieldOptionMap;
+    }
+
+    private LinkedHashMap<String, JTextField> getAdvFieldMap() {
+        return this.advFieldMap;
+    }
+
+    private LinkedHashMap<String, JCheckBox> getAdvCheckBoxMap() {
+        return this.advCheckBoxMap;
+    }
+
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     */
+    public static void main(String[] args, boolean istest) {
+        if (args.length > 0) {
+            DEFAULT_INPUT_DIR = args[0];
+        }
+
+        if (args.length > 1) {
+            DEFAULT_OUTPUT_DIR = args[1];
+        } else {
+            DEFAULT_OUTPUT_DIR = getUserHomePath().toString();
+        }
+
+        if (args.length > 2) {
+            DEFAULT_METADATA_FILE = args[2];
+        }
+
+        TopicModelingToolGUI tmt = new TopicModelingToolGUI(istest);
+        tmt.go();
+
+        if (istest) {
+            tmt.controller.runMallet(this.getCheckBoxOptionMap(), this.getFieldOptionMap(), 
+                this.getAdvFieldMap(), this.getAdvCheckBoxMap());
+        }
+    }
+
+    public static void main(String[] args) {
+        TopicModelingToolGUI.main(args, false);
     }
 }
