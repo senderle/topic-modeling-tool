@@ -18,7 +18,7 @@ import java.lang.reflect.*;
 
 import java.util.*;
 
-import TopicModelingToolAccessor;
+import cc.mallet.topics.gui.TopicModelingToolAccessor;
 
 public class TopicModelingToolController {
     /** filename constants */
@@ -32,6 +32,14 @@ public class TopicModelingToolController {
     public static final String MALLET_OUT = "output_mallet";
     public static final String CSV_OUT = "output_csv";
     public static final String HTML_OUT = "output_html";
+
+    public static final String CSV_DEL = ",";
+    public static final String MALLET_CSV_DEL = "\\t";
+
+    public static final String TOPIC_WORDS = "topic-words.csv";
+    public static final String DOCS_IN_TOPICS = "docs-in-topics.csv";
+    public static final String TOPICS_IN_DOCS_VECTORS = "topics-metadata.csv";
+    public static final String TOPICS_IN_DOCS = "topics-in-docs.csv";
 
     private TopicModelingToolAccessor accessor;
     private TopicModelingToolGUI gui;

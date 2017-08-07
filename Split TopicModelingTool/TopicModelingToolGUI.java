@@ -16,9 +16,9 @@ import javax.swing.filechooser.FileFilter;
 
 import java.util.*;
 
-import OptionStrings;
-import TopicModelingToolController;
-import TopicModelingToolAccessor;
+import cc.mallet.topics.gui.OptionStrings;
+import cc.mallet.topics.gui.TopicModelingToolController;
+import cc.mallet.topics.gui.TopicModelingToolAccessor;
 
 public class TopicModelingToolGUI {
     /** used for testing to set an input dir on startup */
@@ -341,7 +341,9 @@ public class TopicModelingToolGUI {
      * @return the image icon
      */
     protected static ImageIcon createImageIcon(String path) {
-        java.net.URL imgURL = TopicModelingTool.class.getResource(path);
+        // Switched from TopicModelingTool for TopicModelingToolGUI
+        // Let's see how this will work
+        java.net.URL imgURL = TopicModelingToolGUI.class.getResource(path);
         if (imgURL != null) {
             return new ImageIcon(imgURL);
         } else {
