@@ -33,19 +33,15 @@ public class TopicModelingToolController {
     public static final String CSV_OUT = "output_csv";
     public static final String HTML_OUT = "output_html";
 
-    private Date timestamp;
-
     private TopicModelingToolAccessor accessor;
     private TopicModelingToolGUI gui;
 
     public TopicModelingToolController(TopicModelingToolAccessor accessor, TopicModelingToolGUI gui) {
-        this.timestamp = new Date();
         this.accessor = accessor;
         this.gui = gui;
     }
 
     public TopicModelingToolController() {
-        this.timestamp = new Date();
         this.accessor = new TopicModelingToolAccessor();
     }
 
@@ -107,7 +103,7 @@ public class TopicModelingToolController {
         // ////////////// //
 
         // Keep track of time elapsed
-        this.timestamp = new Date();
+        this.accessor.generateDate();
         long start = System.currentTimeMillis();
 
         // Disable user input during training

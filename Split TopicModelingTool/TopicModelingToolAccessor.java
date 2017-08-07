@@ -289,4 +289,8 @@ public class TopicModelingToolAccessor {
     private JTextField getMetadataFileField() {
         return this.metadataFileField;
     }
+
+    private void generateDate() {
+        this.timestamp = new Date();
+    }
 }
