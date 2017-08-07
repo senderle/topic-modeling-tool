@@ -1,8 +1,8 @@
 package cc.mallet.topics.gui;
 
-public class OptionStrings { 
+public class OptionStringsCheckBox { 
 	private String optionA;
-	private String optionB;
+	private boolean optionB;
 	private String optionC;
 	private boolean optionD;
 
@@ -17,7 +17,7 @@ public class OptionStrings {
 		return this.optionA;
 	}
 
-	public String getOptionB() {
+	public boolean getOptionB() {
 		return this.optionB;
 	}
 
