@@ -35,26 +35,17 @@ public class TopicModelingToolController {
 
     private Date timestamp;
 
-    private JFrame rootframe;
-
-    private JTextArea log;
-
-    private JButton trainButton, clearButton;
-
-    private JTextField numTopics;
-
-    private Boolean frameBusy;
-
     private TopicModelingToolAccessor accessor;
+    private TopicModelingToolGUI gui;
+
+    public TopicModelingToolController(TopicModelingToolAccessor accessor, TopicModelingToolGUI gui) {
+        this.timestamp = new Date();
+        this.accessor = accessor;
+        this.gui = gui;
+    }
 
     public TopicModelingToolController() {
         this.timestamp = new Date();
-        this.rootframe = null;
-        this.log = null;
-        this.trainButton = null;
-        this.clearButton = null;
-        this.numTopics = new JTextField(2);
-        this.frameBusy = false;
         this.accessor = new TopicModelingToolAccessor();
     }
 
@@ -107,7 +98,9 @@ public class TopicModelingToolController {
      * and runs Mallet's importing and topic modeling methods.
      */
     public void runMallet(LinkedHashMap<String, OptionStrings> checkBoxOptionMap, 
-                          LinkedHashMap<String, OptionStrings> fieldOptionMap) {
+                          LinkedHashMap<String, OptionStrings> fieldOptionMap,
+                          LinkedHashMap<String, JTextField> advFieldMap,
+                          LinkedHashMap<String, JCheckBox> advCheckBoxMap) {
 
         // ////////////// //
         // Initialize GUI //
@@ -118,8 +111,8 @@ public class TopicModelingToolController {
         long start = System.currentTimeMillis();
 
         // Disable user input during training
-        this.clearButton.setEnabled(false);
-        this.trainButton.setEnabled(false);
+        this.gui.enableClearButton(false)
+        this.gui.enableTrainButton(false);
 
         int nsegments =
             Integer.parseInt(advFieldMap.get("io-segment-files").getText());
@@ -281,7 +274,7 @@ public class TopicModelingToolController {
         arglists.get("train").addAll(getAdvArgs("train"));
         arglists.get("train").addAll(Arrays.asList(
                 "--input", collectionPath,
-                "--num-topics", this.numTopics.getText(),
+                "--num-topics", this.gui.getNumTopics().getText(),
                 "--output-state", stateFile,
                 "--output-topic-keys", topicKeysFile,
                 "--output-doc-topics", outputDocTopicsFile,
@@ -369,8 +362,8 @@ public class TopicModelingToolController {
         this.accessor.appendLog("Csv Output files written in " 
                 + Paths.get(outputDir, CSV_OUT).toString());
 
-        log.setCaretPosition(log.getDocument().getLength());
-        this.clearButton.setEnabled(true);
+        this.accessor.setLogCaretPosition();
+        this.gui.enableClearButton(true);
 
         long elapsedTimeMillis = System.currentTimeMillis() - start;
 
@@ -390,8 +383,8 @@ public class TopicModelingToolController {
         //
         // Eventually, a global `try... finally` should run this,
         // once the runMallet routines are broken out into individual methods.
-        this.trainButton.setText("Learn Topics");
-        this.trainButton.setEnabled(true);
+        this.gui.setTrainButton("Learn Topics");
+        this.gui.enableTrainButton(true);
 
         // Idempotently reset any temporary assignments to the input and
         // metadata fields. This allows us to temporarily override
@@ -400,8 +393,8 @@ public class TopicModelingToolController {
         this.accessor.setInputDirAlternate();
         this.accessor.setMetadataFileAlternate();
 
-        this.rootframe.setCursor(normalCursor);
-        this.frameBusy = false;
+        this.gui.setRootFrame(normalCursor);
+        this.gui.setFrameBusy(false);
     }
 
     /**
@@ -415,7 +408,7 @@ public class TopicModelingToolController {
             Boolean preserveMalletFilesFlag)
         throws IOException {
         CsvBuilder makecsv = new CsvBuilder(
-            Integer.parseInt(this.numTopics.getText()),
+            Integer.parseInt(this.gui.getNumTopics().getText()),
             escapeTab(advFieldMap.get("io-metadata-delimiter").getText()),
             escapeTab(advFieldMap.get("io-output-delimiter").getText())
         );

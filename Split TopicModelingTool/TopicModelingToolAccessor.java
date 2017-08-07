@@ -207,4 +207,86 @@ public class TopicModelingToolAccessor {
         System.setOut(new PrintStream(out, true));
         System.setErr(new PrintStream(out, true));
     }
+
+    private void setLog(String input) {
+        this.log.setText(input);
+    }
+
+    private JTextArea getLog() {
+        return this.log;
+    }
+
+    private void setUpNewLog() {
+        this.log = new JTextArea(20, 20);
+        this.log.setMargin(new Insets(5, 5, 5, 5));
+        this.log.setEditable(false);
+    }
+
+    private void setLogCaretPosition() {
+        this.log.setCaretPosition(this.log.getDocument().getLength());
+    }
+
+    private void enableInputDirTfield(boolean input) {
+        this.inputDirTfield.setEnabled(input);
+    }
+
+    private void setEditableInputDirTfield(boolean input) {
+        this.inputDirTfield.setEditable(input);
+    }
+
+    private void setInputDirTfield(String input) {
+        this.inputDirTfield.setText(input);
+    }
+
+    private JTextField getInputDirTfield() {
+        return this.inputDirTfield;
+    }
+
+    private void enableOutputDirTfield(boolean input) {
+        this.outputDirTfield.setEnabled(input);
+    }
+
+    private void setEditableOutputDirTfield(boolean input) {
+        this.outputDirTfield.setEditable(input);
+    }
+
+    private void setOutputDirTfield(String input) {
+        this.outputDirTfield.setText(input);
+    }
+
+    private JTextField getOutputDirTfield() {
+        return this.outputDirTfield;
+    }
+
+    private void enableStopFileField(boolean input) {
+        this.stopFileField.setEnabled(input);
+    }
+    
+    private void setEditableStopFileField(boolean input) {
+        this.stopFileField.setEditable(input);
+    }
+
+    private void setStopFileField(String input) {
+        this.stopFileField.setText(input);
+    }
+
+    private JTextField getStopFileField() {
+        return this.stopFileField;
+    }
+
+    private void enableMetadataFileField(boolean input) {
+        this.metadataFileField.setEnabled(input);
+    }
+    
+    private void setEditableMetadataFileField(boolean input) {
+        this.metadataFileField.setEditable(input);
+    }
+
+    private void setMetadataFileField(String input) {
+        this.metadataFileField.setText(input);
+    }
+
+    private JTextField getMetadataFileField() {
+        return this.metadataFileField;
+    }
 }

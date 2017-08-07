@@ -34,7 +34,6 @@ public class TopicModelingToolGUI {
 
     private JDialog helpPane1;
     private JDialog helpPane2;
-    private JTextArea log;
 
     private JButton inputDataButton;
     private JButton outputDirButton;
@@ -44,11 +43,6 @@ public class TopicModelingToolGUI {
     private JCheckBox stopBox;
 
     private JTextField numTopics;
-
-    private JTextField inputDirTfield;
-    private JTextField outputDirTfield;
-    private JTextField stopFileField;
-    private JTextField metadataFileField;
 
     private ArrayList<JFileChooser> allFileChoosers;
 
@@ -70,7 +64,6 @@ public class TopicModelingToolGUI {
         this.advPanel = null;
         this.helpPane1 = null;
         this.helpPane2 = null;
-        this.log = null;
         this.inputDataButton = null;
         this.outputDirButton = null;
         this.trainButton = null;
@@ -78,18 +71,14 @@ public class TopicModelingToolGUI {
         this.advancedButton = null;
         this.stopBox = null;
         this.numTopics = new JTextField(2);
-        this.inputDirTfield = new JTextField();
-        this.outputDirTfield = new JTextField();
-        this.stopFileField = new JTextField();
-        this.metadataFileField = new JTextField();
         this.allFileChoosers = new ArrayList<JFileChooser>();
         this.checkBoxOptionMap = new LinkedHashMap<String, OptionStrings>();
         this.fieldOptionMap = new LinkedHashMap<String, OptionStrings>();
         this.advCheckBoxMap = new LinkedHashMap<String, JCheckBox>();
         this.advFieldMap = new LinkedHashMap<String, JTextField>();
         this.frameBusy = false;
-        this.controller = new TopicModelingToolController();
         this.accessor = new TopicModelingToolAccessor();
+        this.controller = new TopicModelingToolController(this.accessor, this);
     }
 
 
@@ -303,7 +292,7 @@ public class TopicModelingToolGUI {
                             "Please select an input file or directory", 
                             "Invalid input", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        this.controller.runMallet(this.fieldOptionMap, this.checkBoxOptionMap);
+                        this.controller.runMallet(this.fieldOptionMap, this.checkBoxOptionMap, this.advFieldMap, this.advCheckBoxMap);
                     }
                 }
             };
@@ -328,7 +317,7 @@ public class TopicModelingToolGUI {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent e) {
-            this.log.setText("");
+            this.accessor.setLog("");
         }
     }
 
@@ -439,7 +428,7 @@ public class TopicModelingToolGUI {
     public void initAdvControls() {
         for (String k : this.fieldOptionMap.keySet()) {
             if (k.equals("--stoplist-file")) {
-                this.advFieldMap.put(k, this.stopFileField);
+                this.advFieldMap.put(k, this.accessor.getStopFileField());
             } else {
                 JTextField tempField = new JTextField(this.fieldOptionMap.get(k).getOptionB());
                 this.advFieldMap.put(k, tempField);
@@ -476,8 +465,8 @@ public class TopicModelingToolGUI {
             }
         }
 
-        this.metadataFileField.setText(DEFAULT_METADATA_FILE);
-        this.stopFileField.setText(DEFAULT_STOPLIST_FILE);
+        this.accessor.setMetadataFileField(DEFAULT_METADATA_FILE);
+        this.accessor.setStopFileField(DEFAULT_STOPLIST_FILE);
     }
 
     /**
@@ -584,19 +573,19 @@ public class TopicModelingToolGUI {
 
         JPanel fcPanel = new JPanel(new GridLayout(2, 3));
 
-        this.metadataFileField.setEnabled(true);
-        this.metadataFileField.setEditable(false);
-        this.metadataFileField.setText(DEFAULT_METADATA_FILE);
+        this.accessor.enableMetadataFileField(true);
+        this.accessor.setEditableMetadataFileField(false);
+        this.accessor.setMetadataFileField(DEFAULT_METADATA_FILE);
         addChooserPanel(
-            JFileChooser.FILES_ONLY, this.metadataFileField, "Metadata File...",
+            JFileChooser.FILES_ONLY, this.accessor.getMetadataFileField(), "Metadata File...",
             "/images/Open16.gif", "Metadata File", fcPanel
         );
 
-        this.stopFileField.setEnabled(true);
-        this.stopFileField.setEditable(false);
-        this.stopFileField.setText(DEFAULT_STOPLIST_FILE);
+        this.accessor.enableStopFileField(true);
+        this.accessor.setEditableStopFileField(false);
+        this.accessor.setStopFileField(DEFAULT_STOPLIST_FILE);
         addChooserPanel(
-            JFileChooser.FILES_ONLY, this.stopFileField, "Stopword File...",
+            JFileChooser.FILES_ONLY, this.accessor.getStopFileField(), "Stopword File...",
             "/images/Open16.gif", "Stopword File", fcPanel
         );
 
@@ -636,13 +625,11 @@ public class TopicModelingToolGUI {
      * Go.
      */
     public void go() {
-        this.log = new JTextArea(20, 20);
-        this.log.setMargin(new Insets(5, 5, 5, 5));
-        this.log.setEditable(false);
+        this.accessor.setUpNewLog();
 
         this.accessor.redirectSystemStreams();
 
-        JScrollPane logScrollPane = new JScrollPane(this.log);
+        JScrollPane logScrollPane = new JScrollPane(this.accessor.getLog);
         setDefaultOptions();
         initAdvControls();
         buildAdvPanel();
@@ -656,22 +643,22 @@ public class TopicModelingToolGUI {
         JPanel inoutPanel = new JPanel(new GridLayout(0, 2, 5, 5));
         inoutPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        this.inputDirTfield.setEnabled(true);
-        this.inputDirTfield.setEditable(false);
-        this.inputDirTfield.setText(DEFAULT_INPUT_DIR);
+        this.accessor.enableInputDirTfield(true);
+        this.accessor.setEditableInputDirTfield(false);
+        this.accessor.setInputDirTfield(DEFAULT_INPUT_DIR);
 
         addChooserPanel(
-            JFileChooser.DIRECTORIES_ONLY, this.inputDirTfield, "Input Dir...",
+            JFileChooser.DIRECTORIES_ONLY, this.accessor.getInputDirTfield(), "Input Dir...",
             "/images/Open16.gif", "Input Dir", inoutPanel
         );
 
         //// Output File Chooser ////
 
-        this.outputDirTfield.setEnabled(true);
-        this.outputDirTfield.setEditable(false);
-        this.outputDirTfield.setText(DEFAULT_OUTPUT_DIR);
+        this.accessor.enableOutputDirTfield(true);
+        this.accessor.setEditableOutputDirTfield(false);
+        this.accessor.setOutputDirTfield(DEFAULT_OUTPUT_DIR);
         addChooserPanel(
-            JFileChooser.DIRECTORIES_ONLY, this.outputDirTfield, "Output Dir...",
+            JFileChooser.DIRECTORIES_ONLY, this.accessor.getOutputDirTfield(), "Output Dir...",
             "/images/Open16.gif", "Output Dir", inoutPanel
         );
 
@@ -744,5 +731,33 @@ public class TopicModelingToolGUI {
         this.controller.runMalletCleanup();
 
         this.rootframe.setVisible(true);
+    }
+
+    private JFrame getRootFrame() {
+        return this.rootframe;
+    }
+
+    private void setRootFrame(Cursor cursor) {
+        this.rootframe.setCursor(cursor);
+    }
+
+    private void enableClearButton(boolean input) {
+        this.clearButton.setEnabled(input);
+    }
+
+    private void enableTrainButton(boolean input) {
+        this.trainButton.setEnabled(input);
+    }
+
+    private void setTrainButton(String input) {
+        this.trainButton.setText(input);
+    }
+
+    private void setFrameBusy(boolean input) {
+        this.frameBusy = input;
+    }
+
+    private JTextField getNumTopics() {
+        return this.numTopics;
     }
 }
