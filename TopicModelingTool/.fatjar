@@ -1,12 +1,16 @@
 #Fat Jar Configuration File
 #Thu Sep 22 02:51:44 IST 2011
+#New Edits: Tue Aug 8 15:36:30 EST 2017
 onejar.license.required=true
 manifest.classpath=
 manifest.removesigners=true
 onejar.checkbox=false
 jarname=TopicModelingTool.jar
 manifest.mergeall=true
-manifest.mainclass=cc.mallet.topics.gui.TopicModelingTool
+#Changing the main class to the TopicModelingToolGUI class
+#Now that the TopicModelingTool class has been split up
+#Originally TopicModelingTool
+manifest.mainclass=cc.mallet.topics.gui.TopicModelingToolGUI
 manifest.file=<createnew>
 jarname.isextern=false
 onejar.expand=
