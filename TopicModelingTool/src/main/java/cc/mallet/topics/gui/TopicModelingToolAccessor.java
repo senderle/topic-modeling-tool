@@ -16,6 +16,7 @@ import java.io.PrintStream;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.*;
+import java.lang.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -32,7 +33,7 @@ public class TopicModelingToolAccessor {
     // fully built-in! 
     private Boolean useTimeStamp;
 
-    private JTextArea log;
+    public JTextArea log;
 
     private JTextField inputDirTfield;
     private JTextField outputDirTfield;
@@ -48,7 +49,7 @@ public class TopicModelingToolAccessor {
     // SECTION ONE: Small Utility Functions and Accessors //
     // ////////////////////////////////////////////////// //
 
-    public TopicModelingToolAccessor() {
+    public TopicModelingToolAccessor(boolean isTest) {
         this.timestamp = new Date();
         this.useTimeStamp = false;
         this.inputDirTfield = new JTextField();
@@ -58,6 +59,11 @@ public class TopicModelingToolAccessor {
         this.inputDirAlternate = null;
         this.metadataFileAlternate = null;
         this.failOnExc = isTest;
+        log = null;
+    }
+
+    public TopicModelingToolAccessor() {
+        this(false);
     }
 
     public String getInputDirName() {
@@ -68,11 +74,11 @@ public class TopicModelingToolAccessor {
         }
     }
 
-    private void setInputDirAlternate(String in) {
+    public void setInputDirAlternate(String in) {
         this.inputDirAlternate = in;
     }
 
-    private void setInputDirAlternate() {
+    public void setInputDirAlternate() {
         this.inputDirAlternate = null;
     }
 
@@ -84,11 +90,11 @@ public class TopicModelingToolAccessor {
         }
     }
 
-    private void setMetadataFileAlternate(String meta) {
+    public void setMetadataFileAlternate(String meta) {
         this.metadataFileAlternate = meta;
     }
 
-    private void setMetadataFileAlternate() {
+    public void setMetadataFileAlternate() {
         this.metadataFileAlternate = null;
     }
 
@@ -128,24 +134,24 @@ public class TopicModelingToolAccessor {
      *
      * @param text the text
      */
-    private void updateTextArea(final String text) {
+    public void updateTextArea(final String text) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                this.log.append(text);
-                this.log.setCaretPosition(this.log.getDocument().getLength());
+                log.append(text);
+                log.setCaretPosition(log.getDocument().getLength());
             }
         });
     }
 
-    private void appendLog(String... lines) {
+    public void appendLog(String... lines) {
         for (String ln : lines) {
-            this.log.append(ln);
-            this.log.append(NEWLINE);
+            log.append(ln);
+            log.append(NEWLINE);
         }
-        this.log.setCaretPosition(this.log.getDocument().getLength());
+        log.setCaretPosition(log.getDocument().getLength());
     }
 
-    private void errorLog(Throwable exc) {
+    public void errorLog(Throwable exc) {
         if (this.failOnExc) {
             throw new RuntimeException(exc);
         }
@@ -166,11 +172,11 @@ public class TopicModelingToolAccessor {
         appendLog("Resetting Tool...");
     }
 
-    private static String escapeTab(String in) {
+    public static String escapeTab(String in) {
         return in.replace("\\t", "\t");
     }
 
-    private String formatMalletCommand(String cmd, String[] args) {
+    public String formatMalletCommand(String cmd, String[] args) {
         StringBuilder cmdstr = new StringBuilder();
         cmdstr.append("mallet ");
         cmdstr.append(cmd);
@@ -186,7 +192,7 @@ public class TopicModelingToolAccessor {
     /**
      * Redirect system streams.
      */
-    private void redirectSystemStreams() {
+    public void redirectSystemStreams() {
         OutputStream out = new OutputStream() {
             @Override
             public void write(int b) throws IOException {
@@ -208,89 +214,89 @@ public class TopicModelingToolAccessor {
         System.setErr(new PrintStream(out, true));
     }
 
-    private void setLog(String input) {
-        this.log.setText(input);
+    public void setLog(String input) {
+        log.setText(input);
     }
 
-    private JTextArea getLog() {
-        return this.log;
+    public JTextArea getLog() {
+        return log;
     }
 
-    private void setUpNewLog() {
-        this.log = new JTextArea(20, 20);
-        this.log.setMargin(new Insets(5, 5, 5, 5));
-        this.log.setEditable(false);
+    public void setUpNewLog() {
+        log = new JTextArea(20, 20);
+        log.setMargin(new Insets(5, 5, 5, 5));
+        log.setEditable(false);
     }
 
-    private void setLogCaretPosition() {
-        this.log.setCaretPosition(this.log.getDocument().getLength());
+    public void setLogCaretPosition() {
+        log.setCaretPosition(log.getDocument().getLength());
     }
 
-    private void enableInputDirTfield(boolean input) {
+    public void enableInputDirTfield(boolean input) {
         this.inputDirTfield.setEnabled(input);
     }
 
-    private void setEditableInputDirTfield(boolean input) {
+    public void setEditableInputDirTfield(boolean input) {
         this.inputDirTfield.setEditable(input);
     }
 
-    private void setInputDirTfield(String input) {
+    public void setInputDirTfield(String input) {
         this.inputDirTfield.setText(input);
     }
 
-    private JTextField getInputDirTfield() {
+    public JTextField getInputDirTfield() {
         return this.inputDirTfield;
     }
 
-    private void enableOutputDirTfield(boolean input) {
+    public void enableOutputDirTfield(boolean input) {
         this.outputDirTfield.setEnabled(input);
     }
 
-    private void setEditableOutputDirTfield(boolean input) {
+    public void setEditableOutputDirTfield(boolean input) {
         this.outputDirTfield.setEditable(input);
     }
 
-    private void setOutputDirTfield(String input) {
+    public void setOutputDirTfield(String input) {
         this.outputDirTfield.setText(input);
     }
 
-    private JTextField getOutputDirTfield() {
+    public JTextField getOutputDirTfield() {
         return this.outputDirTfield;
     }
 
-    private void enableStopFileField(boolean input) {
+    public void enableStopFileField(boolean input) {
         this.stopFileField.setEnabled(input);
     }
     
-    private void setEditableStopFileField(boolean input) {
+    public void setEditableStopFileField(boolean input) {
         this.stopFileField.setEditable(input);
     }
 
-    private void setStopFileField(String input) {
+    public void setStopFileField(String input) {
         this.stopFileField.setText(input);
     }
 
-    private JTextField getStopFileField() {
+    public JTextField getStopFileField() {
         return this.stopFileField;
     }
 
-    private void enableMetadataFileField(boolean input) {
+    public void enableMetadataFileField(boolean input) {
         this.metadataFileField.setEnabled(input);
     }
     
-    private void setEditableMetadataFileField(boolean input) {
+    public void setEditableMetadataFileField(boolean input) {
         this.metadataFileField.setEditable(input);
     }
 
-    private void setMetadataFileField(String input) {
+    public void setMetadataFileField(String input) {
         this.metadataFileField.setText(input);
     }
 
-    private JTextField getMetadataFileField() {
+    public JTextField getMetadataFileField() {
         return this.metadataFileField;
     }
 
-    private void generateDate() {
+    public void generateDate() {
         this.timestamp = new Date();
     }
 }

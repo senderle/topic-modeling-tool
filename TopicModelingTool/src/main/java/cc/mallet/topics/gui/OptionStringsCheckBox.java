@@ -6,7 +6,8 @@ public class OptionStringsCheckBox {
 	private String optionC;
 	private boolean optionD;
 
-	public OptionStrings(addOptionA, addOptionB, addOptionC, addOptionD) {
+	public OptionStringsCheckBox(String addOptionA, boolean addOptionB, String addOptionC, 
+		boolean addOptionD) {
 		this.optionA = addOptionA;
 		this.optionB = addOptionB;
 		this.optionC = addOptionC;
@@ -26,6 +27,6 @@ public class OptionStringsCheckBox {
 	}
 
 	public boolean getOptionD() {
-		return this.optionD;
+        return this.optionD;
 	}
 }

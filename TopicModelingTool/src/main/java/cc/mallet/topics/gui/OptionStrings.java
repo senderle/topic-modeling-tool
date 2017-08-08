@@ -6,7 +6,8 @@ public class OptionStrings {
 	private String optionC;
 	private boolean optionD;
 
-	public OptionStrings(addOptionA, addOptionB, addOptionC, addOptionD) {
+	public OptionStrings(String addOptionA, String addOptionB, String addOptionC, 
+		boolean addOptionD) {
 		this.optionA = addOptionA;
 		this.optionB = addOptionB;
 		this.optionC = addOptionC;

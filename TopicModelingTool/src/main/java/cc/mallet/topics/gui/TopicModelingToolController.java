@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.*;
 
 import java.util.*;
+import javax.swing.*;
 
 import cc.mallet.topics.gui.TopicModelingToolAccessor;
 
@@ -116,7 +117,7 @@ public class TopicModelingToolController {
         long start = System.currentTimeMillis();
 
         // Disable user input during training
-        this.gui.enableClearButton(false)
+        this.gui.enableClearButton(false);
         this.gui.enableTrainButton(false);
 
         int nsegments =
@@ -125,7 +126,7 @@ public class TopicModelingToolController {
 
         if (nsegments > 0) {
             delim = advFieldMap.get("io-metadata-delimiter").getText();
-            delim = escapeTab(delim);
+            delim = TopicModelingToolAccessor.escapeTab(delim);
 
             this.accessor.appendLog("Automatically segmenting files...");
 
@@ -208,7 +209,7 @@ public class TopicModelingToolController {
             arglists.get("import").add(this.accessor.getStopFileName());
         }
 
-        arglists.get("import").addAll(getAdvArgs("import"));
+        arglists.get("import").addAll(this.gui.getAdvArgs("import"));
         arglists.get("import").addAll(Arrays.asList(
                 "--input", inputDir,
                 "--output", collectionPath,
@@ -240,12 +241,12 @@ public class TopicModelingToolController {
         this.accessor.appendLog("** Importing From " + inputDir + " **");
         this.accessor.appendLog("");
         this.accessor.appendLog("Mallet command: ");
-        this.accessor.appendLog("    " + formatMalletCommand(malletImportCmd, importArgs));
+        this.accessor.appendLog("    " + this.accessor.formatMalletCommand(malletImportCmd, importArgs));
         this.accessor.appendLog("");
         this.accessor.appendLog("");
         this.accessor.appendLog("--- Start of Mallet Output ---");
         this.accessor.appendLog("");
-        updateStatusCursor("Importing...");
+        this.gui.updateStatusCursor("Importing...");
 
         // The only thing that should actually have a blanket catch statement:
         try {
@@ -277,7 +278,7 @@ public class TopicModelingToolController {
         Class<?>[] trainArgTypes = new Class<?>[1];
         Object[] trainPassedArgs = new Object[1];
 
-        arglists.get("train").addAll(getAdvArgs("train"));
+        arglists.get("train").addAll(this.gui.getAdvArgs("train"));
         arglists.get("train").addAll(Arrays.asList(
                 "--input", collectionPath,
                 "--num-topics", this.gui.getNumTopics().getText(),
@@ -311,12 +312,12 @@ public class TopicModelingToolController {
         this.accessor.appendLog("** Training **");
         this.accessor.appendLog("");
         this.accessor.appendLog("Mallet command: ");
-        this.accessor.appendLog("    " + formatMalletCommand("train-topics", trainArgs));
+        this.accessor.appendLog("    " + this.accessor.formatMalletCommand("train-topics", trainArgs));
         this.accessor.appendLog("");
         this.accessor.appendLog("");
         this.accessor.appendLog("--- Start of Mallet Output ---");
         this.accessor.appendLog("");
-        updateStatusCursor("Training...");
+        this.gui.updateStatusCursor("Training...");
 
         // The only thing that should actually have a blanket catch statement:
         try {
@@ -339,12 +340,13 @@ public class TopicModelingToolController {
         this.accessor.appendLog("Training successful.");
         this.accessor.appendLog("");
         this.accessor.appendLog("** Generating Output **");
-        updateStatusCursor("Generating output...");
+        this.gui.updateStatusCursor("Generating output...");
 
         try {
             outputCsvFiles(outputDir,
                     advCheckBoxMap.get("io-generate-html").isSelected(),
-                    advCheckBoxMap.get("io-preserve-mallet").isSelected());
+                    advCheckBoxMap.get("io-preserve-mallet").isSelected(),
+                    advFieldMap);
         } catch (Throwable exc) {
             this.accessor.errorLog(exc);
             runMalletCleanup();
@@ -409,14 +411,15 @@ public class TopicModelingToolController {
     * @param outputDir the output directory
     * @param htmlOutputFlag print html output or not
     */
-    private void outputCsvFiles(String outputDir,
+    public void outputCsvFiles(String outputDir,
             Boolean htmlOutputFlag,
-            Boolean preserveMalletFilesFlag)
+            Boolean preserveMalletFilesFlag,
+            LinkedHashMap<String, JTextField> advFieldMap)
         throws IOException {
         CsvBuilder makecsv = new CsvBuilder(
             Integer.parseInt(this.gui.getNumTopics().getText()),
-            escapeTab(advFieldMap.get("io-metadata-delimiter").getText()),
-            escapeTab(advFieldMap.get("io-output-delimiter").getText())
+            TopicModelingToolAccessor.escapeTab(advFieldMap.get("io-metadata-delimiter").getText()),
+            TopicModelingToolAccessor.escapeTab(advFieldMap.get("io-output-delimiter").getText())
         );
         makecsv.createCsvFiles(outputDir, this.accessor.getMetadataFileName());
 
@@ -434,7 +437,7 @@ public class TopicModelingToolController {
         }
     }
 
-    private void clearExtrafiles(String outputDir) {
+    public void clearExtrafiles(String outputDir) {
         String[] fileNames = new String[5];
         fileNames[0] = Paths.get(MALLET_OUT, MALLET_TOPIC_INPUT).toString();
         fileNames[1] = Paths.get(MALLET_OUT, MALLET_TOPIC_KEYS).toString();
