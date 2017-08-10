@@ -31,7 +31,7 @@ public class TopicModelingToolGUI {
     public static String DEFAULT_STOPLIST_FILE = "";
 
     private JFrame rootframe; 
-    private JFrame advancedFrame;
+    public JFrame advancedFrame;
     private JPanel mainPanel;
     private JPanel advPanel;
 
@@ -60,7 +60,7 @@ public class TopicModelingToolGUI {
 
     public TopicModelingToolGUI(boolean isTest) {
         this.rootframe = null;
-        this.advancedFrame = null;
+        advancedFrame = null;
         this.mainPanel = null;
         this.advPanel = null;
         this.helpPane1 = null;
@@ -389,7 +389,7 @@ public class TopicModelingToolGUI {
      * Builds the advanced panel.
      */
     public void buildAdvPanel() {
-        this.advancedFrame = new JFrame("TopicModelingTool");
+        advancedFrame = new JFrame("TopicModelingTool");
         this.advPanel = new JPanel(new BorderLayout());
 
         //// Checkbox Panel ////
@@ -457,7 +457,7 @@ public class TopicModelingToolGUI {
         okButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                this.advancedFrame.setVisible(false);
+                advancedFrame.setVisible(false);
             }
         });
 
@@ -468,12 +468,12 @@ public class TopicModelingToolGUI {
 
         this.advPanel.add(btmPanel, BorderLayout.SOUTH);
         this.advPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        this.advancedFrame.getContentPane().add(this.advPanel);
-        this.advancedFrame.setLocation(550, 100);
-        this.advancedFrame.setSize(450, 300);
-        this.advancedFrame.pack();
-        this.advancedFrame.setResizable(false);
-        this.advancedFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        advancedFrame.getContentPane().add(this.advPanel);
+        advancedFrame.setLocation(550, 100);
+        advancedFrame.setSize(450, 300);
+        advancedFrame.pack();
+        advancedFrame.setResizable(false);
+        advancedFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
     public void runMallet(LinkedHashMap<String, Option<Boolean>> checkBoxOptionMap, 
@@ -604,7 +604,7 @@ public class TopicModelingToolGUI {
     }
 
     public void setAdvancedFrame(boolean input) {
-        this.advancedFrame.setVisible(input);
+        advancedFrame.setVisible(input);
     }
 
     public void enableClearButton(boolean input) {
