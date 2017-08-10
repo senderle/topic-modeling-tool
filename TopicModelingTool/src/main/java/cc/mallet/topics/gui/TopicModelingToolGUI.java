@@ -17,7 +17,7 @@ import javax.swing.filechooser.FileFilter;
 import java.util.*;
 import java.lang.*;
 
-import cc.mallet.topics.gui.OptionStrings;
+import cc.mallet.topics.gui.Option;
 import cc.mallet.topics.gui.TopicModelingToolController;
 import cc.mallet.topics.gui.TopicModelingToolAccessor;
 
@@ -47,8 +47,8 @@ public class TopicModelingToolGUI {
 
     public ArrayList<JFileChooser> allFileChoosers;
 
-    public LinkedHashMap<String, OptionStrings> checkBoxOptionMap;
-    public LinkedHashMap<String, OptionStrings> fieldOptionMap;
+    public LinkedHashMap<String, Option<Boolean>> checkBoxOptionMap;
+    public LinkedHashMap<String, Option<String>> fieldOptionMap;
 
     public LinkedHashMap<String, JCheckBox> advCheckBoxMap;
     public LinkedHashMap<String, JTextField> advFieldMap;
@@ -73,8 +73,8 @@ public class TopicModelingToolGUI {
         this.stopBox = null;
         this.numTopics = new JTextField(2);
         allFileChoosers = new ArrayList<JFileChooser>();
-        checkBoxOptionMap = new LinkedHashMap<String, OptionStrings>();
-        fieldOptionMap = new LinkedHashMap<String, OptionStrings>();
+        checkBoxOptionMap = new LinkedHashMap<String, Option<Boolean>>();
+        fieldOptionMap = new LinkedHashMap<String, Option<String>>();
         advCheckBoxMap = new LinkedHashMap<String, JCheckBox>();
         advFieldMap = new LinkedHashMap<String, JTextField>();
         frameBusy = false;
@@ -297,7 +297,7 @@ public class TopicModelingToolGUI {
                             "Please select an input file or directory", 
                             "Invalid input", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        controller.runMallet(fieldOptionMap, checkBoxOptionMap, 
+                        controller.runMallet(checkBoxOptionMap, fieldOptionMap,
                             advFieldMap, advCheckBoxMap);
                     }
                 }
@@ -371,53 +371,53 @@ public class TopicModelingToolGUI {
 
         // (These are manually generated and appear at the top of the
         // advanced window).
-        fieldOptionMap.put("io-metadata", new OptionStrings("Metadata File", 
+        fieldOptionMap.put("io-metadata", new Option<String>("Metadata File", 
             DEFAULT_METADATA_FILE, "io", false));
 
-        fieldOptionMap.put("--stoplist-file", new OptionStrings("Custom Stoplist File", 
+        fieldOptionMap.put("--stoplist-file", new Option<String>("Custom Stoplist File", 
             DEFAULT_STOPLIST_FILE, "import", false));
 
         //// Checkboxes ////
 
         checkBoxOptionMap.put("--remove-stopwords", 
-            new OptionStrings("Remove default English stopwords", 
-            "TRUE", "import", true));
-        checkBoxOptionMap.put("--preserve-case", new OptionStrings("Preserve case ", 
-            "FALSE", "import", true));
-        checkBoxOptionMap.put("io-generate-html", new OptionStrings("Generate HTML output", 
-            "TRUE", "io", true));
+            new Option<Boolean>("Remove default English stopwords", 
+            true, "import", true));
+        checkBoxOptionMap.put("--preserve-case", new Option<Boolean>("Preserve case ", 
+            false, "import", true));
+        checkBoxOptionMap.put("io-generate-html", new Option<Boolean>("Generate HTML output", 
+            true, "io", true));
         checkBoxOptionMap.put("io-preserve-mallet", 
-            new OptionStrings("Preserve raw MALLET output", 
-            "FALSE", "io", true));
+            new Option<Boolean>("Preserve raw MALLET output", 
+            false, "io", true));
 
         //// Importing field options ////
 
         // This regex accepts all unicode characters.
         fieldOptionMap.put("--token-regex", 
-            new OptionStrings("Tokenize with regular expression", 
+            new Option<String>("Tokenize with regular expression", 
             "[\\p{L}\\p{N}_]+", "import", true));
 
         //// Training field options ////
 
-        fieldOptionMap.put("--num-iterations", new OptionStrings("Number of iterations ", 
+        fieldOptionMap.put("--num-iterations", new Option<String>("Number of iterations ", 
             "400", "train", true));
         fieldOptionMap.put("--num-top-words", 
-            new OptionStrings("Number of topic words to print ", 
+            new Option<String>("Number of topic words to print ", 
             "20", "train", true));
         fieldOptionMap.put("--optimize-interval", 
-            new OptionStrings("Interval between hyperprior optimizations ", 
+            new Option<String>("Interval between hyperprior optimizations ", 
             "10", "train", true));
-        fieldOptionMap.put("--num-threads", new OptionStrings("Number of training threads ", 
+        fieldOptionMap.put("--num-threads", new Option<String>("Number of training threads ", 
             "4", "train", true));
 
         //// Input and Output Options ////
 
         fieldOptionMap.put("io-segment-files", 
-            new OptionStrings("Divide input into n-word chunks", 
+            new Option<String>("Divide input into n-word chunks", 
             "0", "io", true));
         fieldOptionMap.put("io-metadata-delimiter", 
-            new OptionStrings("Metadata CSV delimiter", ",", "io", true));
-        fieldOptionMap.put("io-output-delimiter", new OptionStrings("Output CSV delimiter", 
+            new Option<String>("Metadata CSV delimiter", ",", "io", true));
+        fieldOptionMap.put("io-output-delimiter", new Option<String>("Output CSV delimiter", 
             ",", "io", true));
 
         //// Disabled options ////
@@ -425,9 +425,9 @@ public class TopicModelingToolGUI {
         // These two are disabled right now because I don't think they're
         // especially useful, and they're adding complexity to the interface.
         fieldOptionMap.put("--show-topics-interval", 
-            new OptionStrings("Topic preview interval", "100", "train", false));
+            new Option<String>("Topic preview interval", "100", "train", false));
         fieldOptionMap.put("--doc-topics-threshold", 
-            new OptionStrings("Topic proportion threshold ", "0.0", "train", false));
+            new Option<String>("Topic proportion threshold ", "0.0", "train", false));
 
     }
 
@@ -439,14 +439,14 @@ public class TopicModelingToolGUI {
             if (k.equals("--stoplist-file")) {
                 advFieldMap.put(k, accessor.getStopFileField());
             } else {
-                JTextField tempField = new JTextField(fieldOptionMap.get(k).getOptionB());
+                JTextField tempField = new JTextField(fieldOptionMap.get(k).getDefaultVal());
                 advFieldMap.put(k, tempField);
             }
         }
 
         for (String k : checkBoxOptionMap.keySet()) {
-            JCheckBox tempCheckBox = new JCheckBox(checkBoxOptionMap.get(k).getOptionA());
-            if(checkBoxOptionMap.get(k).getOptionB().equals("TRUE")) {
+            JCheckBox tempCheckBox = new JCheckBox(checkBoxOptionMap.get(k).getDescription());
+            if(checkBoxOptionMap.get(k).getDefaultVal()) {
                 tempCheckBox.setSelected(true);
             }
 
@@ -463,11 +463,11 @@ public class TopicModelingToolGUI {
      */
     public void resetAdvControls() {
         for (String k : fieldOptionMap.keySet()) {
-            advFieldMap.get(k).setText(fieldOptionMap.get(k).getOptionB());
+            advFieldMap.get(k).setText(fieldOptionMap.get(k).getDefaultVal());
         }
 
         for (String k : checkBoxOptionMap.keySet()) {
-            if (checkBoxOptionMap.get(k).getOptionB().equals("TRUE")) {
+            if (checkBoxOptionMap.get(k).getDefaultVal()) {
                 advCheckBoxMap.get(k).setSelected(true);
             } else {
                 advCheckBoxMap.get(k).setSelected(false);
@@ -487,7 +487,7 @@ public class TopicModelingToolGUI {
         ArrayList<String> advArgs = new ArrayList<String>();
 
         for (String k : checkBoxOptionMap.keySet()) {
-            if (checkBoxOptionMap.get(k).getOptionC().equals(key)) {
+            if (checkBoxOptionMap.get(k).getCategory().equals(key)) {
                 if (advCheckBoxMap.get(k).isSelected()) {
                     advArgs.add(k);
                 }
@@ -495,7 +495,7 @@ public class TopicModelingToolGUI {
         }
 
         for (String k : fieldOptionMap.keySet()) {
-            if (fieldOptionMap.get(k).getOptionC().equals(key)) {
+            if (fieldOptionMap.get(k).getCategory().equals(key)) {
                 String v = advFieldMap.get(k).getText();
 
                 // MALLET displays one less word than specified. (Why?)
@@ -563,10 +563,10 @@ public class TopicModelingToolGUI {
         advFieldPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         Iterator<JTextField> fieldIter = advFieldMap.values().iterator();
-        for (OptionStrings opts : fieldOptionMap.values()) {
+        for (Option<String> opts : fieldOptionMap.values()) {
             JTextField field = fieldIter.next();
-            if (opts.getOptionC().equals("TRUE")) {
-                advFieldPanel.add(new Label(opts.getOptionA()));
+            if (opts.getAutogenerate()) {
+                advFieldPanel.add(new Label(opts.getDescription()));
                 advFieldPanel.add(field);
             }
         }
@@ -770,11 +770,11 @@ public class TopicModelingToolGUI {
         return this.numTopics;
     }
 
-    public LinkedHashMap<String, OptionStrings> getCheckBoxOptionMap() {
+    public LinkedHashMap<String, Option<Boolean>> getCheckBoxOptionMap() {
         return checkBoxOptionMap;
     }
 
-    public LinkedHashMap<String, OptionStrings> getFieldOptionMap() {
+    public LinkedHashMap<String, Option<String>> getFieldOptionMap() {
         return fieldOptionMap;
     }
 

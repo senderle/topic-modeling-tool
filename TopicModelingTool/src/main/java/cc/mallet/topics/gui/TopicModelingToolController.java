@@ -103,8 +103,8 @@ public class TopicModelingToolController {
      * Method that assembles all the options given by the user through the GUI
      * and runs Mallet's importing and topic modeling methods.
      */
-    public void runMallet(LinkedHashMap<String, OptionStrings> checkBoxOptionMap, 
-                          LinkedHashMap<String, OptionStrings> fieldOptionMap,
+    public void runMallet(LinkedHashMap<String, Option<Boolean>> checkBoxOptionMap, 
+                          LinkedHashMap<String, Option<String>> fieldOptionMap,
                           LinkedHashMap<String, JTextField> advFieldMap,
                           LinkedHashMap<String, JCheckBox> advCheckBoxMap) {
 
@@ -148,13 +148,13 @@ public class TopicModelingToolController {
 
         HashMap<String, ArrayList<String>> arglists =
             new HashMap<String, ArrayList<String>>();
-        ArrayList<LinkedHashMap<String, OptionStrings>> optionMaps =
-            new ArrayList<LinkedHashMap<String, OptionStrings>>();
+        // ArrayList<LinkedHashMap<String, Option<String>>> optionMaps =
+        //    new ArrayList<LinkedHashMap<String, Option<String>>>();
 
         arglists.put("import", new ArrayList<String>());
         arglists.put("train", new ArrayList<String>());
-        optionMaps.add(fieldOptionMap);
-        optionMaps.add(checkBoxOptionMap);
+        // optionMaps.add(fieldOptionMap);
+        // optionMaps.add(checkBoxOptionMap);
 
         // ////// //
         // Import //
