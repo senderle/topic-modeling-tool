@@ -28,21 +28,21 @@ import java.util.Iterator;
 import java.util.Collections;
 import java.util.logging.Logger;
 
-import static cc.mallet.topics.gui.TopicModelingToolController.MALLET_CSV_DEL;
-import static cc.mallet.topics.gui.TopicModelingToolAccessor.NEWLINE;
-import static cc.mallet.topics.gui.TopicModelingToolController.TOPIC_WORDS;
-import static cc.mallet.topics.gui.TopicModelingToolController.TOPICS_IN_DOCS;
-import static cc.mallet.topics.gui.TopicModelingToolController.TOPICS_IN_DOCS_VECTORS;
-import static cc.mallet.topics.gui.TopicModelingToolController.DOCS_IN_TOPICS;
+import static cc.mallet.topics.gui.TopicModelingTool.MALLET_CSV_DEL;
+import static cc.mallet.topics.gui.TopicModelingTool.NEWLINE;
+import static cc.mallet.topics.gui.TopicModelingTool.TOPIC_WORDS;
+import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS;
+import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS_VECTORS;
+import static cc.mallet.topics.gui.TopicModelingTool.DOCS_IN_TOPICS;
 
-import static cc.mallet.topics.gui.TopicModelingToolController.MALLET_TOPIC_KEYS;
-import static cc.mallet.topics.gui.TopicModelingToolController.MALLET_STATE;
-import static cc.mallet.topics.gui.TopicModelingToolController.MALLET_STATE_GZ;
-import static cc.mallet.topics.gui.TopicModelingToolController.MALLET_DOC_TOPICS;
+import static cc.mallet.topics.gui.TopicModelingTool.MALLET_TOPIC_KEYS;
+import static cc.mallet.topics.gui.TopicModelingTool.MALLET_STATE;
+import static cc.mallet.topics.gui.TopicModelingTool.MALLET_STATE_GZ;
+import static cc.mallet.topics.gui.TopicModelingTool.MALLET_DOC_TOPICS;
 
-import static cc.mallet.topics.gui.TopicModelingToolController.MALLET_OUT;
-import static cc.mallet.topics.gui.TopicModelingToolController.CSV_OUT;
-import static cc.mallet.topics.gui.TopicModelingToolController.HTML_OUT;
+import static cc.mallet.topics.gui.TopicModelingTool.MALLET_OUT;
+import static cc.mallet.topics.gui.TopicModelingTool.CSV_OUT;
+import static cc.mallet.topics.gui.TopicModelingTool.HTML_OUT;
 
 import cc.mallet.topics.gui.util.Util;
 import cc.mallet.topics.gui.util.CsvReader;

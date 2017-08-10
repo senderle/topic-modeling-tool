@@ -15,12 +15,12 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
 import java.util.*;
-import java.lang.*;
 
-import cc.mallet.topics.gui.OptionStrings;
-import cc.mallet.topics.gui.TopicModelingToolController;
-import cc.mallet.topics.gui.TopicModelingToolAccessor;
+import OptionStrings;
 
+/**
+ * The Class TopicModelingGUI.
+ */
 public class TopicModelingToolGUI {
     /** used for testing to set an input dir on startup */
     public static String DEFAULT_INPUT_DIR = "";
@@ -28,77 +28,55 @@ public class TopicModelingToolGUI {
     public static String DEFAULT_METADATA_FILE = "";
     public static String DEFAULT_STOPLIST_FILE = "";
 
-    public JFrame rootframe; 
-    public JFrame advancedFrame;
-    public JPanel mainPanel;
-    private JPanel advPanel;
+    /** no idea */
+    private static final long serialVersionUID = 1L;
 
-    private JDialog helpPane1;
-    private JDialog helpPane2;
+    JFrame rootframe, advancedFrame;
+    JPanel mainPanel, advPanel;
 
-    private JButton inputDataButton;
-    private JButton outputDirButton;
-    private JButton trainButton;
-    private JButton clearButton;
-    private JButton advancedButton;
-    private JCheckBox stopBox;
+    JDialog helpPane1, helpPane2;
+    JTextArea log;
 
-    private JTextField numTopics;
+    JButton inputDataButton, outputDirButton, trainButton, clearButton,
+            advancedButton;
+    JCheckBox stopBox;
 
-    public ArrayList<JFileChooser> allFileChoosers;
+    JTextField numTopics = new JTextField(2);
 
-    public LinkedHashMap<String, OptionStrings> checkBoxOptionMap;
-    public LinkedHashMap<String, OptionStrings> fieldOptionMap;
+    JTextField inputDirTfield = new JTextField();
+    JTextField outputDirTfield = new JTextField();
+    JTextField stopFileField = new JTextField();
+    JTextField metadataFileField = new JTextField();
 
-    public LinkedHashMap<String, JCheckBox> advCheckBoxMap;
-    public LinkedHashMap<String, JTextField> advFieldMap;
+    ArrayList<JFileChooser> allFileChoosers = new ArrayList<JFileChooser>();
 
-    public Boolean frameBusy;
+    LinkedHashMap<String, OptionStrings> checkBoxOptionMap = new LinkedHashMap<String, OptionStrings>();
+    LinkedHashMap<String, OptionStrings> fieldOptionMap = new LinkedHashMap<String, OptionStrings>();
 
-    public TopicModelingToolController controller;
-    public TopicModelingToolAccessor accessor;
+    LinkedHashMap<String, JCheckBox> advCheckBoxMap = new LinkedHashMap<String, JCheckBox>();
+    LinkedHashMap<String, JTextField> advFieldMap = new LinkedHashMap<String, JTextField>();
 
-    public TopicModelingToolGUI(boolean isTest) {
-        rootframe = null;
-        advancedFrame = null;
-        mainPanel = null;
-        this.advPanel = null;
-        this.helpPane1 = null;
-        this.helpPane2 = null;
-        this.inputDataButton = null;
-        this.outputDirButton = null;
-        this.trainButton = null;
-        this.clearButton = null;
-        this.advancedButton = null;
-        this.stopBox = null;
-        this.numTopics = new JTextField(2);
-        allFileChoosers = new ArrayList<JFileChooser>();
-        checkBoxOptionMap = new LinkedHashMap<String, OptionStrings>();
-        fieldOptionMap = new LinkedHashMap<String, OptionStrings>();
-        advCheckBoxMap = new LinkedHashMap<String, JCheckBox>();
-        advFieldMap = new LinkedHashMap<String, JTextField>();
-        frameBusy = false;
-        accessor = new TopicModelingToolAccessor(isTest);
-        controller = new TopicModelingToolController(accessor, this);
+    Boolean frameBusy = false;
+    Boolean failOnExc = false;
+
+    public TopicModelingTool(boolean isTest) {
+        failOnExc = isTest;
     }
 
-    public TopicModelingToolGUI() {
+    public TopicModelingTool() {
         this(false);
     }
-
 
     /**
      * Creates the help panel in the Basic window.
      */
     public void createHelp1() {
 
-        this.helpPane1 = new JDialog();
+        helpPane1 = new JDialog();
         JPanel p1 = new JPanel();
-        String text = "<html><b>Input - </b>Select a directory containing text files," + 
-                      " or a single text file where each line is a"+
-                      " data instance.<br><br> <b>Output Directory -</b> All generated output" +
-                      " is written to this folder. Current directory by default.<br><br>"+
-                      "<b>Number of Topics -</b> The number of topics to fit.<br></html>";
+        String text = "<html><b>Input - </b>Select a directory containing text files, or a single text file where each line is a"+
+    " data instance.<br><br> <b>Output Directory -</b> All generated output is written to this folder. Current directory by default.<br><br>"+
+    "<b>Number of Topics -</b> The number of topics to fit.<br></html>";
 
         JLabel b = new JLabel(text, SwingConstants.LEFT) {
             public Dimension getPreferredSize() {
@@ -116,45 +94,39 @@ public class TopicModelingToolGUI {
         p1.add(b);
         p1.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Help"),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        this.helpPane1.setContentPane(p1);
-        this.helpPane1.setTitle("Basic Options");
-        this.helpPane1.setResizable(false);
-        this.helpPane1.pack();
-        this.helpPane1.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+        helpPane1.setContentPane(p1);
+        helpPane1.setTitle("Basic Options");
+        helpPane1.setResizable(false);
+        helpPane1.pack();
+        helpPane1.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
     }
 
     /**
      * Show help in Basic panel.
      */
     public void showHelp1() {
-        this.helpPane1.setVisible(true);
+        helpPane1.setVisible(true);
     }
 
     /**
      * Show help in Advanced panel.
      */
     public void showHelp2() {
-        this.helpPane2.setVisible(true);
+        helpPane2.setVisible(true);
     }
 
     /**
      * Creates the help panel in the Advanced window.
      */
     public void createHelp2() {
-        this.helpPane2 = new JDialog();
+        helpPane2 = new JDialog();
         JPanel p1 = new JPanel();
 
-        String text = "<html><b>Remove stopwords - </b>If checked, remove a " +
-                      "list of \"stop words\" from the text.<br><br>"+
-                      " <b>Stopword file - </b>Read \"stop words\" from a file, one per line. "+
-                      "Default is Mallet's list of standard English stopwords.<br><br>"+
-                      "<b>Case sensitive - </b>If checked, do not force all strings to "+
-                      "lowercase.<br><br><b>No. of iterations - </b> The number of iterations of "+
-                      "Gibbs sampling to run. Default is 1000.<br><br>" +
-                      "<b>No. of topic words printed - </b>The number of most probable words to "+
-                      "print for each topic after model estimation.<br><br>"+
-                      "<b>Topic proportion threshold - </b>Do not print topics with proportions "+
-                      "less than this threshold value.</b></html>";
+        String text = "<html><b>Remove stopwords - </b>If checked, remove a list of \"stop words\" from the text.<br><br>"+
+    " <b>Stopword file - </b>Read \"stop words\" from a file, one per line. Default is Mallet's list of standard English stopwords.<br><br>"+
+    "<b>Case sensitive - </b>If checked, do not force all strings to lowercase.<br><br><b>No. of iterations - </b> The number of iterations of Gibbs sampling to run. Default is 1000.<br><br>" +
+    "<b>No. of topic words printed - </b>The number of most probable words to print for each topic after model estimation.<br><br>"+
+    "<b>Topic proportion threshold - </b>Do not print topics with proportions less than this threshold value.</b></html>";
 
         JLabel b = new JLabel(text, SwingConstants.LEFT) {
             public Dimension getPreferredSize() {
@@ -172,16 +144,15 @@ public class TopicModelingToolGUI {
         p1.add(b);
         p1.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Help"),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        this.helpPane2.setContentPane(p1);
-        this.helpPane2.setTitle("Advanced Options");
-        this.helpPane2.setResizable(false);
-        this.helpPane2.pack();
-        this.helpPane2.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+        helpPane2.setContentPane(p1);
+        helpPane2.setTitle("Advanced Options");
+        helpPane2.setResizable(false);
+        helpPane2.pack();
+        helpPane2.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
     }
 
     /**
-     * The listener interface for receiving openButton events. The same interface is used for both 
-     * the input
+     * The listener interface for receiving openButton events. The same interface is used for both the input
      * and output directory options
      *
      */
@@ -223,7 +194,7 @@ public class TopicModelingToolGUI {
                     inputType = " File: ";
                 }
 
-                accessor.appendLog("Chose " + filedescription + inputType + inputDir);
+                appendLog("Chose " + filedescription + inputType + inputDir);
 
                 filefield.setText(inputDir);
 
@@ -232,7 +203,7 @@ public class TopicModelingToolGUI {
                 }
 
             } else {
-                accessor.appendLog("Open command cancelled by user.");
+                appendLog("Open command cancelled by user.");
             }
         }
     }
@@ -241,7 +212,7 @@ public class TopicModelingToolGUI {
      * The listener interface for receiving frameFocus events.
      * To show a busy hour glass icon when the Basic window is in focus.
      */
-    public class FrameFocusListener implements FocusListener {
+    public class FrameFocusListener implements FocusListener{
 
        /* (non-Javadoc)
         * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
@@ -292,13 +263,10 @@ public class TopicModelingToolGUI {
             // Get current time
             t = new Thread() {
                 public void run() {
-                    if (accessor.getInputDirName().equals("")) {
-                        JOptionPane.showMessageDialog(mainPanel, 
-                            "Please select an input file or directory", 
-                            "Invalid input", JOptionPane.ERROR_MESSAGE);
+                    if (getInputDirName().equals("")) {
+                        JOptionPane.showMessageDialog(mainPanel, "Please select an input file or directory", "Invalid input", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        controller.runMallet(fieldOptionMap, checkBoxOptionMap, 
-                            advFieldMap, advCheckBoxMap);
+                        runMallet();
                     }
                 }
             };
@@ -311,7 +279,7 @@ public class TopicModelingToolGUI {
         Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
         rootframe.setCursor(hourglassCursor);
         frameBusy = true;
-        this.trainButton.setText(statusMessage);
+        trainButton.setText(statusMessage);
     }
 
     /**
@@ -323,7 +291,7 @@ public class TopicModelingToolGUI {
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent e) {
-            accessor.setLog("");
+            log.setText("");
         }
     }
 
@@ -346,9 +314,7 @@ public class TopicModelingToolGUI {
      * @return the image icon
      */
     protected static ImageIcon createImageIcon(String path) {
-        // Switched from TopicModelingTool for TopicModelingToolGUI
-        // Let's see how this will work
-        java.net.URL imgURL = TopicModelingToolGUI.class.getResource(path);
+        java.net.URL imgURL = TopicModelingTool.class.getResource(path);
         if (imgURL != null) {
             return new ImageIcon(imgURL);
         } else {
@@ -359,8 +325,7 @@ public class TopicModelingToolGUI {
 
     /**
      *
-     * Set corresponding special string, default value, description and associated command for the 
-     * options
+     * Set corresponding special string, default value, description and associated command for the options
      */
     public void setDefaultOptions() {
         // Field Format:
@@ -372,62 +337,56 @@ public class TopicModelingToolGUI {
         // (These are manually generated and appear at the top of the
         // advanced window).
         fieldOptionMap.put("io-metadata", new OptionStrings("Metadata File", 
-            DEFAULT_METADATA_FILE, "io", false));
+            DEFAULT_METADATA_FILE, "io", "FALSE"));
 
         fieldOptionMap.put("--stoplist-file", new OptionStrings("Custom Stoplist File", 
-            DEFAULT_STOPLIST_FILE, "import", false));
+            DEFAULT_STOPLIST_FILE, "import", "FALSE"));
 
         //// Checkboxes ////
 
-        checkBoxOptionMap.put("--remove-stopwords", 
-            new OptionStrings("Remove default English stopwords", 
-            "TRUE", "import", true));
+        checkBoxOptionMap.put("--remove-stopwords", new OptionStrings("Remove default English stopwords", 
+            "TRUE", "import", "TRUE"));
         checkBoxOptionMap.put("--preserve-case", new OptionStrings("Preserve case ", 
-            "FALSE", "import", true));
+            "FALSE", "import", "TRUE"));
         checkBoxOptionMap.put("io-generate-html", new OptionStrings("Generate HTML output", 
-            "TRUE", "io", true));
-        checkBoxOptionMap.put("io-preserve-mallet", 
-            new OptionStrings("Preserve raw MALLET output", 
-            "FALSE", "io", true));
+            "TRUE", "io", "TRUE"));
+        checkBoxOptionMap.put("io-preserve-mallet", new OptionStrings("Preserve raw MALLET output", 
+            "FALSE", "io", "TRUE"));
 
         //// Importing field options ////
 
         // This regex accepts all unicode characters.
-        fieldOptionMap.put("--token-regex", 
-            new OptionStrings("Tokenize with regular expression", 
-            "[\\p{L}\\p{N}_]+", "import", true));
+        fieldOptionMap.put("--token-regex", new OptionStrings("Tokenize with regular expression", 
+            "[\\p{L}\\p{N}_]+", "import", "TRUE"));
 
         //// Training field options ////
 
         fieldOptionMap.put("--num-iterations", new OptionStrings("Number of iterations ", 
-            "400", "train", true));
-        fieldOptionMap.put("--num-top-words", 
-            new OptionStrings("Number of topic words to print ", 
-            "20", "train", true));
-        fieldOptionMap.put("--optimize-interval", 
-            new OptionStrings("Interval between hyperprior optimizations ", 
-            "10", "train", true));
+            "400", "train", "TRUE"));
+        fieldOptionMap.put("--num-top-words", new OptionStrings("Number of topic words to print ", 
+            "20", "train", "TRUE"));
+        fieldOptionMap.put("--optimize-interval", new OptionStrings("Interval between hyperprior optimizations ", 
+            "10", "train", "TRUE"));
         fieldOptionMap.put("--num-threads", new OptionStrings("Number of training threads ", 
-            "4", "train", true));
+            "4", "train", "TRUE"));
 
         //// Input and Output Options ////
 
-        fieldOptionMap.put("io-segment-files", 
-            new OptionStrings("Divide input into n-word chunks", 
-            "0", "io", true));
-        fieldOptionMap.put("io-metadata-delimiter", 
-            new OptionStrings("Metadata CSV delimiter", ",", "io", true));
+        fieldOptionMap.put("io-segment-files", new OptionStrings("Divide input into n-word chunks", 
+            "0", "io", "TRUE"));
+        fieldOptionMap.put("io-metadata-delimiter", new OptionStrings("Metadata CSV delimiter", 
+            ",", "io", "TRUE"));
         fieldOptionMap.put("io-output-delimiter", new OptionStrings("Output CSV delimiter", 
-            ",", "io", true));
+            ",", "io", "TRUE"));
 
         //// Disabled options ////
 
         // These two are disabled right now because I don't think they're
         // especially useful, and they're adding complexity to the interface.
-        fieldOptionMap.put("--show-topics-interval", 
-            new OptionStrings("Topic preview interval", "100", "train", false));
-        fieldOptionMap.put("--doc-topics-threshold", 
-            new OptionStrings("Topic proportion threshold ", "0.0", "train", false));
+        fieldOptionMap.put("--show-topics-interval", new OptionStrings("Topic preview interval", 
+            "100", "train", "FALSE"));
+        fieldOptionMap.put("--doc-topics-threshold", new OptionStrings("Topic proportion threshold ", 
+            "0.0", "train", "FALSE"));
 
     }
 
@@ -437,23 +396,23 @@ public class TopicModelingToolGUI {
     public void initAdvControls() {
         for (String k : fieldOptionMap.keySet()) {
             if (k.equals("--stoplist-file")) {
-                advFieldMap.put(k, accessor.getStopFileField());
+                advFieldMap.put(k, stopFileField);
             } else {
-                JTextField tempField = new JTextField(fieldOptionMap.get(k).getOptionB());
+                JTextField tempField = new JTextField(fieldOptionMap.get(k).getOptionStringB());
                 advFieldMap.put(k, tempField);
             }
         }
 
         for (String k : checkBoxOptionMap.keySet()) {
-            JCheckBox tempCheckBox = new JCheckBox(checkBoxOptionMap.get(k).getOptionA());
-            if(checkBoxOptionMap.get(k).getOptionB().equals("TRUE")) {
+            JCheckBox tempCheckBox = new JCheckBox(checkBoxOptionMap.get(k).getOptionStringA());
+            if(checkBoxOptionMap.get(k).getOptionStringB().equals("TRUE")) {
                 tempCheckBox.setSelected(true);
             }
 
             advCheckBoxMap.put(k, tempCheckBox);
 
             if (k.equals("--remove-stopwords")) {
-                this.stopBox = tempCheckBox;
+                stopBox = tempCheckBox;
             }
         }
     }
@@ -463,19 +422,19 @@ public class TopicModelingToolGUI {
      */
     public void resetAdvControls() {
         for (String k : fieldOptionMap.keySet()) {
-            advFieldMap.get(k).setText(fieldOptionMap.get(k).getOptionB());
+            advFieldMap.get(k).setText(fieldOptionMap.get(k).getOptionStringB());
         }
 
         for (String k : checkBoxOptionMap.keySet()) {
-            if (checkBoxOptionMap.get(k).getOptionB().equals("TRUE")) {
+            if (checkBoxOptionMap.get(k).getOptionStringB().equals("TRUE")) {
                 advCheckBoxMap.get(k).setSelected(true);
             } else {
                 advCheckBoxMap.get(k).setSelected(false);
             }
         }
 
-        accessor.setMetadataFileField(DEFAULT_METADATA_FILE);
-        accessor.setStopFileField(DEFAULT_STOPLIST_FILE);
+        metadataFileField.setText(DEFAULT_METADATA_FILE);
+        stopFileField.setText(DEFAULT_STOPLIST_FILE);
     }
 
     /**
@@ -487,7 +446,7 @@ public class TopicModelingToolGUI {
         ArrayList<String> advArgs = new ArrayList<String>();
 
         for (String k : checkBoxOptionMap.keySet()) {
-            if (checkBoxOptionMap.get(k).getOptionC().equals(key)) {
+            if (checkBoxOptionMap.get(k).getOptionStringC().equals(key)) {
                 if (advCheckBoxMap.get(k).isSelected()) {
                     advArgs.add(k);
                 }
@@ -495,7 +454,7 @@ public class TopicModelingToolGUI {
         }
 
         for (String k : fieldOptionMap.keySet()) {
-            if (fieldOptionMap.get(k).getOptionC().equals(key)) {
+            if (fieldOptionMap.get(k).getOptionStringC().equals(key)) {
                 String v = advFieldMap.get(k).getText();
 
                 // MALLET displays one less word than specified. (Why?)
@@ -528,7 +487,7 @@ public class TopicModelingToolGUI {
         allFileChoosers.add(chooser);
         chooser.setFileSelectionMode(mode);
 
-        Path home = accessor.getUserHomePath();
+        Path home = getUserHomePath();
         chooser.setCurrentDirectory(home.toFile());
 
         JButton button = new JButton(buttonText, createImageIcon(buttonIcon));
@@ -544,7 +503,7 @@ public class TopicModelingToolGUI {
      */
     public void buildAdvPanel() {
         advancedFrame = new JFrame("TopicModelingTool");
-        this.advPanel = new JPanel(new BorderLayout());
+        advPanel = new JPanel(new BorderLayout());
 
         //// Checkbox Panel ////
 
@@ -563,10 +522,10 @@ public class TopicModelingToolGUI {
         advFieldPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         Iterator<JTextField> fieldIter = advFieldMap.values().iterator();
-        for (OptionStrings opts : fieldOptionMap.values()) {
+        for (String[] opts : fieldOptionMap.values()) {
             JTextField field = fieldIter.next();
-            if (opts.getOptionC().equals("TRUE")) {
-                advFieldPanel.add(new Label(opts.getOptionA()));
+            if (opts[3].equals("TRUE")) {
+                advFieldPanel.add(new Label(opts[0]));
                 advFieldPanel.add(field);
             }
         }
@@ -576,25 +535,25 @@ public class TopicModelingToolGUI {
         Box advBox = new Box(BoxLayout.Y_AXIS);
         advBox.add(advCheckBoxPanel);
         advBox.add(advFieldPanel);
-        this.advPanel.add(advBox, BorderLayout.CENTER);
+        advPanel.add(advBox, BorderLayout.CENTER);
 
         //// File Choosers ////
 
         JPanel fcPanel = new JPanel(new GridLayout(2, 3));
 
-        accessor.enableMetadataFileField(true);
-        accessor.setEditableMetadataFileField(false);
-        accessor.setMetadataFileField(DEFAULT_METADATA_FILE);
+        metadataFileField.setEnabled(true);
+        metadataFileField.setEditable(false);
+        metadataFileField.setText(DEFAULT_METADATA_FILE);
         addChooserPanel(
-            JFileChooser.FILES_ONLY, accessor.getMetadataFileField(), "Metadata File...",
+            JFileChooser.FILES_ONLY, metadataFileField, "Metadata File...",
             "/images/Open16.gif", "Metadata File", fcPanel
         );
 
-        accessor.enableStopFileField(true);
-        accessor.setEditableStopFileField(false);
-        accessor.setStopFileField(DEFAULT_STOPLIST_FILE);
+        stopFileField.setEnabled(true);
+        stopFileField.setEditable(false);
+        stopFileField.setText(DEFAULT_STOPLIST_FILE);
         addChooserPanel(
-            JFileChooser.FILES_ONLY, accessor.getStopFileField(), "Stopword File...",
+            JFileChooser.FILES_ONLY, stopFileField, "Stopword File...",
             "/images/Open16.gif", "Stopword File", fcPanel
         );
 
@@ -602,7 +561,7 @@ public class TopicModelingToolGUI {
 
         //// Buttons ////
 
-        this.advPanel.add(fcPanel, BorderLayout.NORTH);
+        advPanel.add(fcPanel, BorderLayout.NORTH);
         JButton resetButton = new JButton("Default Options");
         resetButton.addActionListener(new ResetButtonListener());
         JPanel btmPanel = new JPanel();
@@ -620,9 +579,9 @@ public class TopicModelingToolGUI {
 
         //// Assemble Panel ////
 
-        this.advPanel.add(btmPanel, BorderLayout.SOUTH);
-        this.advPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        advancedFrame.getContentPane().add(this.advPanel);
+        advPanel.add(btmPanel, BorderLayout.SOUTH);
+        advPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        advancedFrame.getContentPane().add(advPanel);
         advancedFrame.setLocation(550, 100);
         advancedFrame.setSize(450, 300);
         advancedFrame.pack();
@@ -634,11 +593,13 @@ public class TopicModelingToolGUI {
      * Go.
      */
     public void go() {
-        accessor.setUpNewLog();
+        log = new JTextArea(20, 20);
+        log.setMargin(new Insets(5, 5, 5, 5));
+        log.setEditable(false);
 
-        accessor.redirectSystemStreams();
+        redirectSystemStreams();
 
-        JScrollPane logScrollPane = new JScrollPane(accessor.getLog());
+        JScrollPane logScrollPane = new JScrollPane(log);
         setDefaultOptions();
         initAdvControls();
         buildAdvPanel();
@@ -652,22 +613,22 @@ public class TopicModelingToolGUI {
         JPanel inoutPanel = new JPanel(new GridLayout(0, 2, 5, 5));
         inoutPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        accessor.enableInputDirTfield(true);
-        accessor.setEditableInputDirTfield(false);
-        accessor.setInputDirTfield(DEFAULT_INPUT_DIR);
+        inputDirTfield.setEnabled(true);
+        inputDirTfield.setEditable(false);
+        inputDirTfield.setText(DEFAULT_INPUT_DIR);
 
         addChooserPanel(
-            JFileChooser.DIRECTORIES_ONLY, accessor.getInputDirTfield(), "Input Dir...",
+            JFileChooser.DIRECTORIES_ONLY, inputDirTfield, "Input Dir...",
             "/images/Open16.gif", "Input Dir", inoutPanel
         );
 
         //// Output File Chooser ////
 
-        accessor.enableOutputDirTfield(true);
-        accessor.setEditableOutputDirTfield(false);
-        accessor.setOutputDirTfield(DEFAULT_OUTPUT_DIR);
+        outputDirTfield.setEnabled(true);
+        outputDirTfield.setEditable(false);
+        outputDirTfield.setText(DEFAULT_OUTPUT_DIR);
         addChooserPanel(
-            JFileChooser.DIRECTORIES_ONLY, accessor.getOutputDirTfield(), "Output Dir...",
+            JFileChooser.DIRECTORIES_ONLY, outputDirTfield, "Output Dir...",
             "/images/Open16.gif", "Output Dir", inoutPanel
         );
 
@@ -675,23 +636,22 @@ public class TopicModelingToolGUI {
 
         // It just occurred to me that calling these settings
         // "Advanced..." could be a form of microagression.
-        this.advancedButton = new JButton("Optional Settings...");
-        this.advancedButton.addActionListener(new AdvancedButtonListener());
+        advancedButton = new JButton("Optional Settings...");
+        advancedButton.addActionListener(new AdvancedButtonListener());
 
         JPanel advancedPanel = new JPanel();
         advancedPanel.add(new Label("Number of topics:"));
-        this.numTopics.setText("10");
-        advancedPanel.add(this.numTopics);
-        advancedPanel.add(this.advancedButton);
+        numTopics.setText("10");
+        advancedPanel.add(numTopics);
+        advancedPanel.add(advancedButton);
 
         //// Train Button ////
 
-        this.trainButton = new JButton("<html><b>Learn Topics</b><html>", 
-            createImageIcon("/images/gears.png"));
-        this.trainButton.addActionListener(new TrainButtonListener());
+        trainButton = new JButton("<html><b>Learn Topics</b><html>", createImageIcon("/images/gears.png"));
+        trainButton.addActionListener(new TrainButtonListener());
 
         JPanel trainPanel = new JPanel();
-        trainPanel.add(this.trainButton);
+        trainPanel.add(trainButton);
 
         //// Button Box ////
 
@@ -710,16 +670,15 @@ public class TopicModelingToolGUI {
 
         //// Main Panel ////
 
-        mainPanel = new JPanel(new BorderLayout());
-        //JPanel mainPanel = new JPanel(new BorderLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout());
         //Add the buttons and the log to this panel.
         mainPanel.add(buttonBox, BorderLayout.NORTH);
 
-        this.clearButton = new JButton("Clear Console");
-        this.clearButton.addActionListener(new ClearButtonListener());
+        clearButton = new JButton("Clear Console");
+        clearButton.addActionListener(new ClearButtonListener());
 
         mainPanel.add(logScrollPane, BorderLayout.CENTER);
-        mainPanel.add(this.clearButton, BorderLayout.SOUTH);
+        mainPanel.add(clearButton, BorderLayout.SOUTH);
         mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         //// Root Window ////
@@ -737,85 +696,8 @@ public class TopicModelingToolGUI {
         createHelp1();
         createHelp2();
         resetAdvControls();
-        controller.runMalletCleanup();
+        runMalletCleanup();
 
         rootframe.setVisible(true);
-    }
-
-    public JFrame getRootFrame() {
-        return rootframe;
-    }
-
-    public void setRootFrame(Cursor cursor) {
-        rootframe.setCursor(cursor);
-    }
-
-    public void enableClearButton(boolean input) {
-        this.clearButton.setEnabled(input);
-    }
-
-    public void enableTrainButton(boolean input) {
-        this.trainButton.setEnabled(input);
-    }
-
-    public void setTrainButton(String input) {
-        this.trainButton.setText(input);
-    }
-
-    public void setFrameBusy(boolean input) {
-        frameBusy = input;
-    }
-
-    public JTextField getNumTopics() {
-        return this.numTopics;
-    }
-
-    public LinkedHashMap<String, OptionStrings> getCheckBoxOptionMap() {
-        return checkBoxOptionMap;
-    }
-
-    public LinkedHashMap<String, OptionStrings> getFieldOptionMap() {
-        return fieldOptionMap;
-    }
-
-    public LinkedHashMap<String, JTextField> getAdvFieldMap() {
-        return advFieldMap;
-    }
-
-    public LinkedHashMap<String, JCheckBox> getAdvCheckBoxMap() {
-        return advCheckBoxMap;
-    }
-
-    /**
-     * The main method.
-     *
-     * @param args the arguments
-     */
-    public static void main(String[] args, boolean istest) {
-        if (args.length > 0) {
-            DEFAULT_INPUT_DIR = args[0];
-        }
-
-        if (args.length > 1) {
-            DEFAULT_OUTPUT_DIR = args[1];
-        } else {
-            DEFAULT_OUTPUT_DIR = TopicModelingToolAccessor.getUserHomePath().toString();
-        }
-
-        if (args.length > 2) {
-            DEFAULT_METADATA_FILE = args[2];
-        }
-
-        TopicModelingToolGUI tmt = new TopicModelingToolGUI(istest);
-        tmt.go();
-
-        if (istest) {
-            tmt.controller.runMallet(tmt.getCheckBoxOptionMap(), tmt.getFieldOptionMap(), 
-                tmt.getAdvFieldMap(), tmt.getAdvCheckBoxMap());
-        }
-    }
-
-    public static void main(String[] args) {
-        TopicModelingToolGUI.main(args, false);
     }
 }
