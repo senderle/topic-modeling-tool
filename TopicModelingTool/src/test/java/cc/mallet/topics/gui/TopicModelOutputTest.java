@@ -1,6 +1,6 @@
 package cc.mallet.topics.gui;
 
-import cc.mallet.topics.gui.TopicModelingTool;
+import cc.mallet.topics.gui.TopicModelingToolGUI;
 import java.io.File;
 import junit.framework.TestCase;
 
@@ -17,6 +17,6 @@ public class TopicModelOutputTest extends TestCase {
         args[2] = new File(
                 "src/test/resources/data/dos-bulletin-1953-1954-metadata.csv"
                 ).getAbsolutePath();
-        TopicModelingTool.main(args, true); 
+        TopicModelingToolGUI.main(args, true); 
     }
 }

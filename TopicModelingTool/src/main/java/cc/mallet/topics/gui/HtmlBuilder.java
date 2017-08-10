@@ -14,13 +14,13 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import static cc.mallet.topics.gui.TopicModelingTool.TOPIC_WORDS;
-import static cc.mallet.topics.gui.TopicModelingTool.DOCS_IN_TOPICS;
-import static cc.mallet.topics.gui.TopicModelingTool.TOPICS_IN_DOCS;
+import static cc.mallet.topics.gui.TopicModelingToolController.TOPIC_WORDS;
+import static cc.mallet.topics.gui.TopicModelingToolController.DOCS_IN_TOPICS;
+import static cc.mallet.topics.gui.TopicModelingToolController.TOPICS_IN_DOCS;
 
-import static cc.mallet.topics.gui.TopicModelingTool.MALLET_OUT;
-import static cc.mallet.topics.gui.TopicModelingTool.CSV_OUT;
-import static cc.mallet.topics.gui.TopicModelingTool.HTML_OUT;
+import static cc.mallet.topics.gui.TopicModelingToolController.MALLET_OUT;
+import static cc.mallet.topics.gui.TopicModelingToolController.CSV_OUT;
+import static cc.mallet.topics.gui.TopicModelingToolController.HTML_OUT;
 
 public class HtmlBuilder {
     public static final String GUI_CSS = "malletgui.css";
@@ -272,7 +272,9 @@ public class HtmlBuilder {
     throws IOException {
         File htmlDir = new File(outputDir, HTML_OUT);
         htmlDir.mkdir();                            //FIXME case when folder already exists
-        createCss(htmlDir, TopicModelingTool.class.getResourceAsStream("/css/" + GUI_CSS));
+        // Class was originally TopicModelingToolGUI
+        // Let's see what happens
+        createCss(htmlDir, TopicModelingToolGUI.class.getResourceAsStream("/css/" + GUI_CSS));
 
         File topicsHtmlDir = new File(htmlDir, "Topics");
         topicsHtmlDir.mkdir();
