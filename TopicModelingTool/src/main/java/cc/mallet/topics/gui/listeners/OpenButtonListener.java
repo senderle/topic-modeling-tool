@@ -1,4 +1,4 @@
-package cc.mallet.topics.gui.listeners
+package cc.mallet.topics.gui.listeners;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -9,28 +9,48 @@ import javax.swing.filechooser.FileFilter;
 import java.util.*;
 import java.lang.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import cc.mallet.topics.gui.TopicModelingToolGUI;
+import cc.mallet.topics.gui.TopicModelingToolAccessor;
+
+/**
+* The listener interface for receiving openButton events. The same interface is used for both 
+* the input
+* and output directory options
+*
+*/
+
 public class OpenButtonListener implements ActionListener {
-	JFileChooser filechooser;
-	JTextField filefield;
-	String filedescription;
+	private JFileChooser filechooser;
+	private JTextField filefield;
+	private String filedescription;
+    private TopicModelingToolGUI gui;
+    private TopicModelingToolAccessor accessor;
 
 	public OpenButtonListener(
 		JFileChooser filech,
 		JTextField filef,
-		String filed) {
-		filechooser = filech;
-		filefield = filef;
-		filedescription = filed;
+		String filed,
+        TopicModelingToolGUI inputGui,
+        TopicModelingToolAccessor inputAccessor) {
+		this.filechooser = filech;
+		this.filefield = filef;
+		this.filedescription = filed;
+        this.gui = inputGui;
+        this.accessor = inputAccessor;
 	}
 
     /* (non-Javadoc)
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
-    	int returnVal = filechooser.showOpenDialog(mainPanel);
+    	int returnVal = this.filechooser.showOpenDialog(this.gui.getMainPanel());
 
     	if (returnVal == JFileChooser.APPROVE_OPTION) {
-    		File file = filechooser.getSelectedFile();
+    		File file = this.filechooser.getSelectedFile();
     		String inputDir = "";
 
     		try {
@@ -47,16 +67,18 @@ public class OpenButtonListener implements ActionListener {
     			inputType = " File: ";
     		}
 
-    		accessor.appendLog("Chose " + filedescription + inputType + inputDir);
+    		this.accessor.appendLog("Chose " + this.filedescription + inputType + inputDir);
 
-    		filefield.setText(inputDir);
+    		this.filefield.setText(inputDir);
 
-    		for (JFileChooser chooser : allFileChoosers) {
+            this.gui.setChoosers(file);
+
+    		/*for (JFileChooser chooser : allFileChoosers) {
     			chooser.setCurrentDirectory(file.getParentFile());
-    		}
+    		}*/
 
     	} else {
-    		accessor.appendLog("Open command cancelled by user.");
+    		this.accessor.appendLog("Open command cancelled by user.");
     	}
     }
 }
