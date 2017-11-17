@@ -148,13 +148,9 @@ public class TopicModelingToolController {
 
         HashMap<String, ArrayList<String>> arglists =
             new HashMap<String, ArrayList<String>>();
-        // ArrayList<LinkedHashMap<String, Option<String>>> optionMaps =
-        //    new ArrayList<LinkedHashMap<String, Option<String>>>();
 
         arglists.put("import", new ArrayList<String>());
         arglists.put("train", new ArrayList<String>());
-        // optionMaps.add(fieldOptionMap);
-        // optionMaps.add(checkBoxOptionMap);
 
         // ////// //
         // Import //

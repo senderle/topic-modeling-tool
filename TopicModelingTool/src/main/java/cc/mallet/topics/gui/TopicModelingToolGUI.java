@@ -366,6 +366,9 @@ public class TopicModelingToolGUI {
         // Field Format:
         // widgetMap.put("--MALLET-OPTION-or-io-key", new String[]
         //      {"Widget Label", "Default Value", "Widget Category", "Autogenerate Widget?"});
+        //
+
+        //// NOTE: Options will be displayed in the order they are added here.
 
         //// Nonstandard options ////
 
@@ -405,8 +408,14 @@ public class TopicModelingToolGUI {
             new Option<String>("Number of topic words to print ", 
             "20", "train", true));
         fieldOptionMap.put("--optimize-interval", 
-            new Option<String>("Interval between hyperprior optimizations ", 
+            new Option<String>("Alpha & Beta optimization frequency ", 
             "10", "train", true));
+        fieldOptionMap.put("--alpha", 
+            new Option<String>("Topic density parameter (Alpha) ", 
+            "50", "train", true));
+        fieldOptionMap.put("--beta", 
+            new Option<String>("Word density parameter (Beta) ", 
+            "0.01", "train", true));
         fieldOptionMap.put("--num-threads", new Option<String>("Number of training threads ", 
             "4", "train", true));
 
@@ -789,7 +798,8 @@ public class TopicModelingToolGUI {
     /**
      * The main method.
      *
-     * @param args the arguments
+     * @param args the command-line arguments
+     * @param istest whether this is a test run
      */
     public static void main(String[] args, boolean istest) {
         if (args.length > 0) {
