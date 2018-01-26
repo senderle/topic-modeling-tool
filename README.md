@@ -26,25 +26,28 @@ issue tag helpful.
 
 The Topic Modeling Tool now has native Windows and Mac apps, and because of
 unicode issues, these are currently the best options for installation. 
-Just follow the instructions for your operating system.
+Just follow the instructions for your operating system. **Do not try
+to install by clicking on [Clone or download] > [Download ZIP].**
+It [won't work](https://github.com/senderle/topic-modeling-tool/issues/63#issuecomment-360933035).
 
 **For Macs**: 
-* Download `TopicModelingTool.dmg`.
+* Download [`TopicModelingTool.dmg`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.dmg).
 * Open it by double-clicking.
 * Drag the app into your `Applications` folder -- or into any folder at all.
 * Run the app by double-clicking.
 
 **For Windows PCs**:
-* Download `TopicModelingTool.zip`.
+* Download [`TopicModelingTool.zip`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.zip).
 * Extract the files into any folder and open it.
 * Double-click on the file called `TopicModelingTool.exe` to run it.
 
-If you want to run the plain `.jar` file, you'll need to have a fairly 
-recent version of Java; the version that came with your computer may 
-not work, especially if your computer is a Mac. Whatever your operating 
-system, you can install an updated version of Java by following the 
-instructions for your operating system 
-[here](https://java.com/en/download/help/download_options.xml).
+If you want to run the 
+[plain `.jar` file](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.jar), 
+you'll need to have a fairly recent version of Java; the version that 
+came with your computer may not work, especially if your computer is 
+a Mac. Whatever your operating system, you can install an updated 
+version of Java by following the instructions for your operating 
+system [here](https://java.com/en/download/help/download_options.xml).
 
 ## Windows Unicode Support:
 
