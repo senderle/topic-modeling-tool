@@ -38,6 +38,7 @@ It [won't work](https://github.com/senderle/topic-modeling-tool/issues/63#issuec
 
 **For Windows PCs**:
 * Download [`TopicModelingTool.zip`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.zip).
+    * NOTE: The native PC build is out-of-date. [Help wanted](https://github.com/senderle/topic-modeling-tool/issues/70).
 * Extract the files into any folder and open it.
 * Double-click on the file called `TopicModelingTool.exe` to run it.
 
