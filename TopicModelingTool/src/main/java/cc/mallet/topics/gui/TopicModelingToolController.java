@@ -120,11 +120,28 @@ public class TopicModelingToolController {
         this.gui.enableClearButton(false);
         this.gui.enableTrainButton(false);
 
-        int nsegments =
-            Integer.parseInt(advFieldMap.get("io-segment-files").getText());
+        String nsegmentsString =
+            advFieldMap.get("io-segment-files").getText();
+        int nsegments = 0;
         String delim = null;
 
-        if (nsegments > 0) {
+        if (! nsegmentsString.equals("")) {
+            try {
+                nsegments = Integer.parseInt(nsegmentsString);
+                nsegmentsString = "number";
+            } catch (NumberFormatException n) {
+                nsegmentsString = "error";
+            }
+        }
+
+        if (nsegmentsString.equals("number") && nsegments < 100) {
+            this.accessor.appendLog("Texts can't be segmented into chunks smaller than 100 words.");
+            this.accessor.appendLog("Please enter a number larger than 100 in the 'Divide input into n-word chunks' field");
+            this.accessor.appendLog("(in the Optional Settings menu).");
+        } else if (nsegmentsString.equals("error")) {
+            this.accessor.appendLog("WARNING: The 'Divide input into n-word chunks' field (in the Optional Settings menu)");
+            this.accessor.appendLog("contains a non-numerical value. It is being ignored.");
+        } else if (nsegmentsString.equals("number") && nsegments > 100) {
             delim = advFieldMap.get("io-metadata-delimiter").getText();
             delim = TopicModelingToolAccessor.escapeTab(delim);
 

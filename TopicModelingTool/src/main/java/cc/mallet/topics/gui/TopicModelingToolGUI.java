@@ -248,28 +248,33 @@ public class TopicModelingToolGUI {
 
         //// Training field options ////
 
-        this.fieldOptionMap.put("--num-iterations", new Option<String>("Number of iterations ", 
-            "400", "train", true));
+        this.fieldOptionMap.put("--num-iterations", 
+                new Option<String>("Number of iterations ", 
+                    "400", "train", true));
+        this.fieldOptionMap.put("--num-threads", 
+                new Option<String>("Number of training threads ", 
+                    "4", "train", true));
         this.fieldOptionMap.put("--num-top-words", 
-            new Option<String>("Number of topic words to print ", 
-            "20", "train", true));
+                new Option<String>("Number of topic words to print ", 
+                    "20", "train", true));
         this.fieldOptionMap.put("--optimize-interval", 
-            new Option<String>("Alpha & Beta optimization frequency ", 
-            "10", "train", true));
+                new Option<String>("Alpha & Beta optimization frequency ", 
+                    "10", "train", true));
         this.fieldOptionMap.put("--alpha", 
-            new Option<String>("Topic density parameter (Alpha) ", 
-            "50", "train", true));
+                new Option<String>("Topic density parameter (Alpha) ", 
+                    "50", "train", true));
         this.fieldOptionMap.put("--beta", 
-            new Option<String>("Word density parameter (Beta) ", 
-            "0.01", "train", true));
-        this.fieldOptionMap.put("--num-threads", new Option<String>("Number of training threads ", 
-            "4", "train", true));
+                new Option<String>("Word density parameter (Beta) ", 
+                    "0.01", "train", true));
+        this.fieldOptionMap.put("--random-seed",
+                new Option<String>("Random number generator seed ",
+                    "0", "train", true));
 
         //// Input and Output Options ////
 
         this.fieldOptionMap.put("io-segment-files", 
             new Option<String>("Divide input into n-word chunks", 
-            "0", "io", true));
+            "", "io", true));
         this.fieldOptionMap.put("io-metadata-delimiter", 
             new Option<String>("Metadata CSV delimiter", ",", "io", true));
         this.fieldOptionMap.put("io-output-delimiter", new Option<String>("Output CSV delimiter", 
