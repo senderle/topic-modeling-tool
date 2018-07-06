@@ -59,10 +59,6 @@ We recommend starting with an organized workspace containing just the following 
       
       This directory will contain the output that the Topic Modeling Tool generates. The tool generates several directories and temporary files; this ensures they don't clutter up your workspace. If the tool runs successfully, you will see only two directories here when it's done: `output_csv` and `output_html`. We'll talk more about their contents later. If the tool fails, there may be other files here, but it's safe to delete all of them before trying again.
       
-    * **`TopicModelingTool.jar`** (file; may be downloaded [here](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.jar))
-      
-      This is the tool itself. Once you have Java installed correctly, you will double-click on this to start using it. If you have a Mac, you may need to press control while double-clicking, and then select "Open" to bypass the default security restrictions.
-      
     * **`metadata.csv`** (file; optional)
     
       This file is optional, but if it is present, the Topic Modeling Tool will join its own output together with the data in it. This will allow you to make use of some powerful visualization tools almost immediately. This is one of the biggest changes to the tool, and it's worth making use of! It does, however, add some complexity to the tool, and so we ask that metadata files follow these three simple rules: 
