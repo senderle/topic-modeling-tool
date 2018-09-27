@@ -20,8 +20,8 @@ To start using some of these new features right away, consult the
 [quickstart guide](https://senderle.github.io/topic-modeling-tool/documentation/2017/01/06/quickstart.html).
 For tinkerers, there's a guide to the tool's 
 [optional settings](https://senderle.github.io/topic-modeling-tool/documentation/2018/09/27/optional-settings.html).
-You may also find useful information among the 
-[documentation](https://github.com/senderle/topic-modeling-tool/labels/documentation)
+You may also find useful information in the discussion threads under 
+[documentation](https://github.com/senderle/topic-modeling-tool/labels/documentation) 
 issues.
 
 ## Requirements:
