@@ -118,7 +118,7 @@ ___
 
 This version of the tool was forked from the 
 [original version](http://code.google.com/p/topic-modeling-tool) 
-by [David Newman](http://www.ics.uci.edu/~newman/) and 
+by [David Newman](https://scholar.google.com/citations?user=3z-mSpYAAAAJ&hl=en) and 
 [Arun Balagopalan](https://github.com/arunbg).
 
 Previous work on the GUI for MALLET has been supported by a National Leadership 
