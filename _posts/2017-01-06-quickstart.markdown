@@ -21,7 +21,7 @@ Although the Topic Modeling Tool is built with Java, it is possible to run it as
 
 #### For Macs
   
-  * Download [`TopicModelingTool.dmg`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.dmg).
+  * Download [`TopicModelingTool.dmg`](https://github.com/senderle/topic-modeling-tool/blob/main/TopicModelingTool.dmg?raw=true).
   
   * Open it by double-clicking.
   
@@ -33,7 +33,7 @@ Although the Topic Modeling Tool is built with Java, it is possible to run it as
 
 #### For Windows PCs
 
-  * Download [`TopicModelingTool.zip`](https://github.com/senderle/topic-modeling-tool/raw/master/TopicModelingTool.zip).
+  * Download [`TopicModelingTool.zip`](https://github.com/senderle/topic-modeling-tool/blob/main/TopicModelingTool.zip?raw=true).
   
   * Extract the files into any folder.
   
