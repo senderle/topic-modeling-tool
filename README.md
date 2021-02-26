@@ -3,7 +3,7 @@
 
 # Topic Modeling Tool
 
-## A GUI for MALLET's implementation of LDA.
+## An updated GUI for MALLET's implementation of LDA.[*](#acknowledgements)
 
 ### New features:
 
@@ -114,7 +114,7 @@ This has been tested on both Macs and Windows PCs.
     
 ___
 
-#### Acknowledgements:
+#### Acknowledgements:<a name="acknowledgements"></a>
 
 This version of the tool was forked from the 
 [original version](http://code.google.com/p/topic-modeling-tool) 
