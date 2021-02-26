@@ -117,7 +117,7 @@ ___
 #### Acknowledgements:<a name="acknowledgements"></a>
 
 This version of the tool was forked from the 
-[original version](http://code.google.com/p/topic-modeling-tool) 
+[original version](https://github.com/arunbg/Topic-Modeling-Tool) 
 by [David Newman](https://scholar.google.com/citations?user=3z-mSpYAAAAJ&hl=en) and 
 [Arun Balagopalan](https://github.com/arunbg).
 
